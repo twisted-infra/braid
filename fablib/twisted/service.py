@@ -1,6 +1,6 @@
 import os
 
-from fabric.api import sudo, put, env, cd, prefix, run
+from fabric.api import sudo, put, env, cd, prefix
 
 from fablib import package, pip, fails
 
@@ -22,7 +22,7 @@ def bootstrap_base():
     # Give all users in the 'service-admin' group permission to execute
     # commands as any user in the 'service' group
     sudoer_conf = os.path.join(os.path.dirname(__file__),
-            'service-admin-sudoer.conf')
+                               'service-admin-sudoer.conf')
     put(sudoer_conf, '/etc/sudoers.d/service-admin', use_sudo=True, mode=0440)
     sudo('chown root:root /etc/sudoers.d/service-admin')
 
@@ -32,9 +32,9 @@ def bootstrap_base():
 
     # Support for simple twistd init scripts
     initscript_runner = os.path.join(os.path.dirname(__file__),
-            'initscript-runner.sh')
+                                     'initscript-runner.sh')
     put(initscript_runner, '/usr/bin/twistd-service', use_sudo=True,
-            mode=0755)
+        mode=0755)
 
 
 def bootstrap(service):
@@ -57,8 +57,10 @@ def bootstrap(service):
     # Create a virtualenv
     # TODO: The version of python should be configurable
     if fails('ls {}'.format(virtualenv_directory)):
-        sudo('virtualenv --python=pypy --prompt=\\({}\\) {}'.format(service,
-                virtualenv_directory), user=service_user)
+        sudo('virtualenv --python=pypy --prompt=\\({}\\) {}'.format(
+            service,
+            virtualenv_directory
+        ), user=service_user)
 
     # Install twisted
     pip.install(virtualenv_directory, 'twisted')

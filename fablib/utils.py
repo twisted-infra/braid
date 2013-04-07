@@ -42,5 +42,5 @@ class requires_root(object):
             if self.func.__module__:
                 name = self.func.__module__ + '.' + name
             print('The execution of the function {} requires root '
-                    'privileges.'.format(name))
+                  'privileges.'.format(name))
             sys.exit(1)
