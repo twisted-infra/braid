@@ -2,8 +2,8 @@
 
 ### BEGIN INIT INFO
 # Provides:          dns
-# Required-Start:    $syslog $named $network $time
-# Required-Stop:     $syslog $named $network
+# Required-Start:    $named $network $time
+# Required-Stop:     $named $network
 # Should-Start:
 # Should-Stop:
 # Default-Start:     2 3 4 5
@@ -11,6 +11,8 @@
 # Short-Description: Twisted DNS server
 # Description:       dns is a DNS server based on Twisted Names
 ### END INIT INFO
+
+# TODO: Check required start and required stop
 
 TWISTD='authbind --deep twistd'
 SERVICE='dns'
