@@ -22,6 +22,7 @@ def install():
 
     initscript = os.path.join(os.path.dirname(__file__), 'initscript.sh')
     put(initscript, '/srv/dns/etc/init.d/dns', use_sudo=True, mode=0755)
+    sudo('chown dns:dns /srv/dns/etc/init.d/dns')
     sudo('ln -fs /srv/dns/etc/init.d/dns /etc/init.d/dns')
     sudo('update-rc.d dns defaults')
 
