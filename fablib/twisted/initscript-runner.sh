@@ -59,11 +59,12 @@ function running() {
 	# pidfile exists and contains a pid but the corresponding process does
 	# not exist, we consider that it has crashed.
 	_get_pidfile
-	local pid=$(cat "$PIDFILE" 2>/dev/null)
+	_get_user
+	local pid=$(sudo -u $RUNAS cat "$PIDFILE" 2>/dev/null)
 
 	if [ -z "$pid" ] ; then
 		return 1  # No pid defined, process stopped
-	elif kill -0 $pid ; then
+	elif sudo -u $RUNAS kill -0 $pid ; then
 		return 0  # Pid defined and process killable, still running
 	else
 		return 2  # Pid defined but process not killable, crashed
@@ -103,28 +104,23 @@ function start_twistd() {
 	
 	_get_pidfile
 	_get_logfile
+	_get_user
 
 	local pidfile="--pidfile=$PIDFILE"
 	local logfile="--logfile=$LOGFILE"
 
 	if [ ! -z "$SERVICE" ] ; then
 		local rundir="--rundir=$(_get_prefix)"
-
-		# Configuration for setuid and setgid. Note that the process is still
-		# started as the current user before calling setuid/setgid. This means
-		# that pidfiles and logfiles are created with the original uid and gid.
-		# TODO: We may want to change this behavior.
-		if [ $(whoami) != $SERVICE ] ; then
-			# Only set uid if it differs from the current user
-			local uid="--uid=$(id -u $SERVICE)"
-		fi
-		local gid="--gid=$(id -g $SERVICE)"
 	fi
 
-	if $TWISTD $pidfile $logfile $rundir $uid $gid $@ ; then
+	local cmd="$venv $TWISTD $pidfile $logfile $rundir $uid $gid $@"
+
+	sudo -u $RUNAS /bin/bash -c "source $(_get_prefix)/venv/bin/activate && $cmd"
+	
+	if [ $? = "0" ] ; then
 		sleep $STARTUP_DELAY
 		if running ; then
-			echo " * Service started (pid=$(cat "$PIDFILE" 2>/dev/null))"
+			echo " * Service started (pid=$(sudo -u $RUNAS cat "$PIDFILE" 2>/dev/null))"
 		else
 			echo " * Service failed to start (exit code was 0!)"
 			echo "   (logfile saved to $LOGFILE)"
@@ -142,15 +138,17 @@ function stop_twistd() {
 	# number of attempts the process is still running, then it is killed
 	if running ; then
 		_get_pidfile
-		local pid=$(cat "$PIDFILE" 2>/dev/null)
+		_get_user
+		local pid=$(sudo -u $RUNAS cat "$PIDFILE" 2>/dev/null)
 
 		echo " * Stopping service..."
-		kill $pid
+		sudo -u $RUNAS kill $pid
 		sleep $SHUTDOWN_DELAY
 		
 		for i in $(seq $SIGTERM_ATTEMPTS) ; do
 			if running ; then
 				echo " * Still running..."
+				sudo -u $RUNAS kill $pid
 				sleep $SHUTDOWN_DELAY
 			else
 				echo " * Service stopped"
@@ -160,7 +158,7 @@ function stop_twistd() {
 
 		if running ; then
 			echo " * Killing..."
-			kill -9 $pid
+			sudo -u $RUNAS kill -9 $pid
 			rm -f $PIDFILE
 		fi
 	else
@@ -201,6 +199,15 @@ function _get_logfile() {
 	if [ -z "$LOGFILE" ] ; then
 		_check_service 'LOGFILE'
 		LOGFILE="$(_get_prefix)/var/log/$SERVICE.log"
+	fi
+}
+
+function _get_user() {
+	# If the RUNAS variable is not explicitly set, construct it using the
+	# SERVICE variable.
+	if [ -z "$RUNAS" ] ; then
+		_check_service 'RUNAS'
+		RUNAS="$SERVICE"
 	fi
 }
 
