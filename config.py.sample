@@ -1,0 +1,7 @@
+HOSTS = [
+    'twistedmatrix.com',
+]
+
+BASE_SERVICE_DIRECTORY = '/srv'
+
+USER = '<your system user>'
