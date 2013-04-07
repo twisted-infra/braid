@@ -1,0 +1,36 @@
+"""
+This file is a simple entry point, nothing is final about it!
+Just experimenting for now.
+"""
+
+from fabric.api import task, sudo
+
+from fablib import package, service, load_config, requires_root
+
+from services import dns
+
+
+__all__ = ['dns']
+
+
+load_config('config')
+
+
+# TODO: Add hooks to check if updated to upstream before running any command
+
+
+@task
+@requires_root
+def install_exim():
+    package.install('exim4')
+    service.enable('exim4')
+
+
+@task
+@requires_root
+def make_service_admin(username):
+    """
+    Simply add the given user to the 'service-admin' group. This allows the
+    user to execute any command as any service-specific user through sudo.
+    """
+    sudo('adduser {} service-admin'.format(username))
