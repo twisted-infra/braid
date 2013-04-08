@@ -60,11 +60,11 @@ function running() {
 	# not exist, we consider that it has crashed.
 	_get_pidfile
 	_get_user
-	local pid=$(sudo -u $RUNAS cat "$PIDFILE" 2>/dev/null)
+	local pid=$($RUNAS_CMD cat "$PIDFILE" 2>/dev/null)
 
 	if [ -z "$pid" ] ; then
 		return 1  # No pid defined, process stopped
-	elif sudo -u $RUNAS kill -0 $pid ; then
+	elif $RUNAS_CMD kill -0 $pid ; then
 		return 0  # Pid defined and process killable, still running
 	else
 		return 2  # Pid defined but process not killable, crashed
@@ -115,12 +115,12 @@ function start_twistd() {
 
 	local cmd="$venv $TWISTD $pidfile $logfile $rundir $uid $gid $@"
 
-	sudo -u $RUNAS /bin/bash -c "source $(_get_prefix)/venv/bin/activate && $cmd"
+	$RUNAS_CMD /bin/bash -c "source $(_get_prefix)/venv/bin/activate && $cmd"
 	
 	if [ $? = "0" ] ; then
 		sleep $STARTUP_DELAY
 		if running ; then
-			echo " * Service started (pid=$(sudo -u $RUNAS cat "$PIDFILE" 2>/dev/null))"
+			echo " * Service started (pid=$($RUNAS_CMD cat "$PIDFILE" 2>/dev/null))"
 		else
 			echo " * Service failed to start (exit code was 0!)"
 			echo "   (logfile saved to $LOGFILE)"
@@ -139,16 +139,16 @@ function stop_twistd() {
 	if running ; then
 		_get_pidfile
 		_get_user
-		local pid=$(sudo -u $RUNAS cat "$PIDFILE" 2>/dev/null)
+		local pid=$($RUNAS_CMD cat "$PIDFILE" 2>/dev/null)
 
 		echo " * Stopping service..."
-		sudo -u $RUNAS kill $pid
+		$RUNAS_CMD kill $pid
 		sleep $SHUTDOWN_DELAY
 		
 		for i in $(seq $SIGTERM_ATTEMPTS) ; do
 			if running ; then
 				echo " * Still running..."
-				sudo -u $RUNAS kill $pid
+				$RUNAS_CMD kill $pid
 				sleep $SHUTDOWN_DELAY
 			else
 				echo " * Service stopped"
@@ -158,7 +158,7 @@ function stop_twistd() {
 
 		if running ; then
 			echo " * Killing..."
-			sudo -u $RUNAS kill -9 $pid
+			$RUNAS_CMD kill -9 $pid
 			rm -f $PIDFILE
 		fi
 	else
@@ -208,6 +208,10 @@ function _get_user() {
 	if [ -z "$RUNAS" ] ; then
 		_check_service 'RUNAS'
 		RUNAS="$SERVICE"
+	fi
+
+	if [ ! -z "$RUNAS" -a $(whoami) != "$RUNAS" ] ; then
+		RUNAS_CMD="sudo -u $RUNAS"
 	fi
 }
 
