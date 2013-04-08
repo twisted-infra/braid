@@ -12,12 +12,12 @@ def bootstrap_base():
     """
 
     # Each service specific system user shall be added to the 'service' group
-    sudo('addgroup --system service')
+    sudo('groupadd -f --system service')
 
     # Each user which has to be able to administer services (for which a user
     # exists in the 'service' group) shall be added to the 'service-admin'
     # group
-    sudo('addgroup --system service-admin')
+    sudo('groupadd -f --system service-admin')
 
     # Give all users in the 'service-admin' group permission to execute
     # commands as any user in the 'service' group
@@ -47,12 +47,10 @@ def bootstrap(service):
 
     # Add a new user for this specific service and delegate administration to
     # users in the service-admin group
-    sudo('adduser --system --no-create-home --group {}'.format(service_user))
-    sudo('adduser {} service'.format(service_user))
-
-    # Create service directory
-    sudo('mkdir -p {}'.format(service_directory))
-    sudo('chown {0}:{0} {1}'.format(service_user, service_directory))
+    if fails('id {}'.format(service_user)):
+        sudo('useradd --base-dir /srv --groups service --user-group '
+             '--create-home --system --shell '
+             '/bin/false {}'.format(service_user))
 
     # Create a virtualenv
     # TODO: The version of python should be configurable

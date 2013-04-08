@@ -39,4 +39,4 @@ def make_service_admin(username):
     Simply add the given user to the 'service-admin' group. This allows the
     user to execute any command as any service-specific user through sudo.
     """
-    sudo('adduser {} service-admin'.format(username))
+    sudo('usermod -a -G service-admin {}'.format(username))
