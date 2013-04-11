@@ -13,10 +13,10 @@ from fabric.api import task, sudo
 
 from fablib import package, service, load_config, requires_root
 
-from services import dns
+from services import dns, trac
 
 
-__all__ = ['dns']
+__all__ = ['dns', 'trac', 'make_service_admin']
 
 
 load_config('config')
