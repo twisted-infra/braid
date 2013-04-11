@@ -20,6 +20,7 @@ def install():
     authbind.install()
     authbind.allow('dns', 53)
 
+    # Install initscript
     initscript = os.path.join(os.path.dirname(__file__), 'initscript.sh')
     put(initscript, '/srv/dns/etc/init.d/dns', use_sudo=True, mode=0755)
     sudo('chown dns:dns /srv/dns/etc/init.d/dns')
