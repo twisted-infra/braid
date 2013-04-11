@@ -5,7 +5,7 @@ from fabric.api import sudo, put, env, cd, prefix
 from fablib import package, pip, fails
 
 
-def bootstrap_base():
+def bootstrap_base(python):
     """
     Prepare the machine to be able to correctly install, configure and execute
     twisted services.
@@ -27,7 +27,7 @@ def bootstrap_base():
     sudo('chown root:root /etc/sudoers.d/service-admin')
 
     # Install required packages
-    package.install('pypy-dev')
+    package.install('{}-dev'.format(python))
     package.install('python-virtualenv')
 
     # Support for simple twistd init scripts
@@ -37,13 +37,13 @@ def bootstrap_base():
         mode=0755)
 
 
-def bootstrap(service):
+def bootstrap(service, python='pypy'):
     service_user = service
     service_directory = os.path.join(env.base_service_directory, service)
     virtualenv_directory = os.path.join(service_directory, 'venv')
 
     # Setup base environment for all services
-    bootstrap_base()
+    bootstrap_base(python)
 
     # Add a new user for this specific service and delegate administration to
     # users in the service-admin group
@@ -53,9 +53,9 @@ def bootstrap(service):
              '/bin/false {}'.format(service_user))
 
     # Create a virtualenv
-    # TODO: The version of python should be configurable
     if fails('ls {}'.format(virtualenv_directory)):
-        sudo('virtualenv --python=pypy --prompt=\\({}\\) {}'.format(
+        sudo('virtualenv --python={} --prompt=\\({}\\) {}'.format(
+            python,
             service,
             virtualenv_directory
         ), user=service_user)
