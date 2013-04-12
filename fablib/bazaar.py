@@ -1,6 +1,6 @@
 import os
 
-from fabric.api import run, sudo
+from fabric.api import sudo
 
 from fablib import package, fails
 
