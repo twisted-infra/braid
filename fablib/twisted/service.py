@@ -1,6 +1,6 @@
 import os
 
-from fabric.api import sudo, put, env, cd, prefix
+from fabric.api import sudo, put, env, cd, prefix, settings
 
 from fablib import package, pip, fails
 
@@ -52,20 +52,20 @@ def bootstrap(service, python='pypy'):
              '--create-home --system --shell '
              '/bin/false {}'.format(service_user))
 
-    # Create a virtualenv
-    if fails('ls {}'.format(virtualenv_directory)):
-        sudo('virtualenv --python={} --prompt=\\({}\\) {}'.format(
-            python,
-            service,
-            virtualenv_directory
-        ), user=service_user)
+    with cd(service_directory), settings(sudo_user=service_user):
+        # Create a virtualenv
+        if fails('ls {}'.format(virtualenv_directory)):
+                sudo('virtualenv --python={} --prompt=\\({}\\) {}'.format(
+                    python,
+                    service,
+                    virtualenv_directory
+                ))
 
-    # Install twisted
-    pip.install(virtualenv_directory, 'twisted')
+        # Install twisted
+        pip.install(virtualenv_directory, 'twisted')
 
-    # Create base directory setup
-    with cd(service_directory):
-        sudo('mkdir -p var/log var/run etc/init.d', user=service_user)
+        # Create base directory setup
+        sudo('mkdir -p var/log var/run etc/init.d')
 
 
 def _service_action(service, action):
