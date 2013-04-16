@@ -1,6 +1,6 @@
 import os
 
-from fabric.api import sudo, put, env, cd, prefix, settings
+from fabric.api import sudo, put, env, cd, prefix, settings, run
 from fabric.contrib.files import upload_template
 
 from fablib import package, pip, fails
@@ -49,20 +49,20 @@ def bootstrap(service, python='pypy'):
              '--create-home --system --shell '
              '/bin/false {}'.format(service_user))
 
-    with cd(service_directory), settings(sudo_user=service_user):
+    with settings(user=service_user):
         # Create a virtualenv
         if fails('ls {}'.format(virtualenv_directory)):
-                sudo('virtualenv --python={} --prompt=\\({}\\) {}'.format(
-                    python,
-                    service,
-                    virtualenv_directory
+            run('virtualenv --python={} --prompt=\\({}\\) {}'.format(
+                python,
+                service,
+                virtualenv_directory
                 ))
 
         # Install twisted
         pip.install(virtualenv_directory, 'twisted')
 
         # Create base directory setup
-        sudo('mkdir -p var/log var/run etc/init.d')
+        run('mkdir -p var/log var/run etc/init.d')
 
         stopFile = FilePath(__file__).sibling('stop')
         upload_template(stopFile.path, 'stop',

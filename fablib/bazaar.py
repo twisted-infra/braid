@@ -1,6 +1,6 @@
 import os
 
-from fabric.api import sudo
+from fabric.api import run
 
 from fablib import package, fails
 
@@ -13,8 +13,8 @@ def branch(branch, location):
     # TODO: Change sudo to run and provide a context manager to override the
     # user when calling run
     if fails('[ -d {}/.bzr ]'.format(location)):
-        sudo('mkdir -p {}'.format(os.path.dirname(location)))
-        sudo('bzr branch {} {}'.format(branch, location))
+        run('mkdir -p {}'.format(os.path.dirname(location)))
+        run('bzr branch {} {}'.format(branch, location))
     else:
         # FIXME: We currently don't check that this the correct branch
-        sudo('bzr update {}'.format(location))
+        run('bzr update {}'.format(location))

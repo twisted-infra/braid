@@ -1,6 +1,6 @@
 import os
 
-from fabric.api import put, task, sudo, cd, settings
+from fabric.api import put, task, sudo, cd, settings, run
 
 from fablib import authbind, requires_root, bazaar
 from fablib.twisted import service
@@ -26,15 +26,15 @@ def install():
     bazaar.install()
 
     # Install initscript
-    startFile = FilePath(__file__).sibling('start')
-    put(startFile.path, '/srv/t-names/start', mode=0755)
-    sudo('chown %s: /srv/t-names/start' % (serviceName,))
+    with settings(user=serviceName):
+        startFile = FilePath(__file__).sibling('start')
+        put(startFile.path, '/srv/t-names/start', mode=0755)
 
     update()
 
 @task
 def update():
-    with cd('/srv/t-names'), settings(sudo_user=serviceName):
+    with settings(user=serviceName):
         # TODO: This is a temp location for testing
         bazaar.branch('http://cube.twistedmatrix.com/~tomprince/Zones', '/srv/t-names/Zones')
         # TODO restart
@@ -42,14 +42,22 @@ def update():
 
 @task
 def start():
-    service.start('dns')
+    with settings(user=serviceName):
+        run('./start', pty=False)
 
 
 @task
 def stop():
-    service.stop('dns')
+    with settings(user=serviceName):
+        run('./stop')
 
 
 @task
 def restart():
-    service.restart('dns')
+    stop()
+    start()
+
+@task
+def log():
+    with settings(user=serviceName):
+        run('tail -f twistd.log')

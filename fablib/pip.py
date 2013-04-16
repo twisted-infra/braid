@@ -1,6 +1,6 @@
 import os
 
-from fabric.api import sudo, prefix
+from fabric.api import run, prefix
 
 
 def install(venv, package):
@@ -8,4 +8,4 @@ def install(venv, package):
     venv = os.path.join(venv, 'bin', 'activate')
 
     with prefix('source {}'.format(venv)):
-        sudo('pip install {}'.format(package))
+        run('pip install {}'.format(package))
