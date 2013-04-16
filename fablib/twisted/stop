@@ -1,0 +1,12 @@
+#!/usr/bin/python
+
+import subprocess
+from twisted.python.filepath import FilePath
+
+service = '%(service)s'
+pidfile = (FilePath('/srv').child(service)
+                           .child('var')
+                           .child('run')
+                           .child('%s.pid' % (service,)))
+pid = pidfile.getContent()
+subprocess.check_call(['kill', pid])

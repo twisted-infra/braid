@@ -6,6 +6,14 @@ from fablib import authbind, requires_root
 from fablib.twisted import service
 
 
+args = ['dns',
+        '--pyzone', '$Z/twistedmatrix.com',
+        '--pyzone', '$Z/divunal.com',
+        '--pyzone', '$Z/intarweb.us',
+        '--pyzone', '$Z/ynchrono.us',
+        '--pyzone', '$Z/divmod.com',
+        ]
+
 @task
 @requires_root
 def install():
@@ -14,19 +22,14 @@ def install():
     # - Rename dns to t-names or whatever (locations, scripts,...)
 
     # Bootstrap a new service environment
-    service.bootstrap('dns')
+    service.bootstrap('dns', )
 
     # Setup authbind
     authbind.install()
     authbind.allow('dns', 53)
 
     # Install initscript
-    initscript = os.path.join(os.path.dirname(__file__), 'initscript.sh')
-    put(initscript, '/srv/dns/etc/init.d/dns', use_sudo=True, mode=0755)
-    sudo('chown dns:dns /srv/dns/etc/init.d/dns')
-    sudo('ln -fs /srv/dns/etc/init.d/dns /etc/init.d/dns')
-    sudo('update-rc.d dns defaults')
-
+    # TODO
 
 @task
 def update():
