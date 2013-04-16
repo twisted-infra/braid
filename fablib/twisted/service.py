@@ -34,7 +34,7 @@ def bootstrap_base(python):
     package.install('python-virtualenv')
 
 
-def bootstrap(service, args, python='pypy', wantAuthbind=True):
+def bootstrap(service, python='pypy'):
     service_user = service
     service_directory = os.path.join(env.base_service_directory, service)
     virtualenv_directory = os.path.join(service_directory, 'venv')
@@ -64,19 +64,10 @@ def bootstrap(service, args, python='pypy', wantAuthbind=True):
         # Create base directory setup
         sudo('mkdir -p var/log var/run etc/init.d')
 
-        startFile = FilePath(__file__).sibling('start')
-        upload_template(startFile.path, 'stop',
-                        context={
-                            'service': service,
-                            'args': args,
-                            'env', env,
-                            'wantAuthbind': wantAuthbind,
-                            },
-                        use_sudo=True, mode=0755)
         stopFile = FilePath(__file__).sibling('stop')
         upload_template(stopFile.path, 'stop',
                         context={'service': service},
-                        use_sudo=True, mode=0755)
+                        mode=0755)
 
 
 def _service_action(service, action):
