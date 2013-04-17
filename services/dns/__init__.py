@@ -2,8 +2,8 @@ import os
 
 from fabric.api import put, task, sudo, cd, settings, run
 
-from fablib import authbind, requires_root, bazaar
-from fablib.twisted import service
+from braid import authbind, requires_root, bazaar
+from braid.twisted import service
 
 from twisted.python.filepath import FilePath
 

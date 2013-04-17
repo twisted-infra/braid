@@ -2,7 +2,7 @@ import os
 
 from fabric.api import sudo
 
-from fablib import package
+from braid import package
 
 
 def install():

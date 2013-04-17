@@ -2,8 +2,8 @@ import os
 
 from fabric.api import task, sudo, put, prefix
 
-from fablib import postgres, requires_root, bazaar, pip, authbind, fails
-from fablib.twisted import service
+from braid import postgres, requires_root, bazaar, pip, authbind, fails
+from braid.twisted import service
 
 
 @task

@@ -1,4 +1,4 @@
-from fablib import package
+from braid import package
 
 
 def install():

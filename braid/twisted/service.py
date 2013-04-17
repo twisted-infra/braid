@@ -3,7 +3,7 @@ import os
 from fabric.api import sudo, put, env, cd, prefix, settings, run
 from fabric.contrib.files import upload_template
 
-from fablib import package, pip, fails
+from braid import package, pip, fails
 
 from twisted.python.filepath import FilePath
 

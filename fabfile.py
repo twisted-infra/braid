@@ -11,7 +11,7 @@ Just experimenting for now.
 
 from fabric.api import task, sudo
 
-from fablib import package, service, load_config, requires_root
+from braid import package, service, load_config, requires_root
 
 from services import dns, trac
 
