@@ -4,8 +4,8 @@ setup(
     name='braid',
     version='0.0',
     description='Tools for adminstering twisted labs machines',
-    author='Jonathan Stoppani',
-    author_email='jonathan.stoppani@wsfcomp.com',
+    author='Twisted Matrix Laboratories',
+    author_email='jonathan@stoppani.name',
     packages=['braid', 'braid.twisted'],
     install_requires=[
         'fabric',
