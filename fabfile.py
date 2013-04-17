@@ -16,7 +16,7 @@ from braid import package, service, load_config, requires_root
 from services import dns, trac
 
 
-__all__ = ['dns', 'trac', 'make_service_admin']
+__all__ = ['trac', 'make_service_admin']
 
 
 load_config('config')

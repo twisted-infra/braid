@@ -36,8 +36,6 @@ def bootstrap_base(python):
 
 def bootstrap(service, python='pypy'):
     service_user = service
-    service_directory = os.path.join(env.base_service_directory, service)
-    virtualenv_directory = os.path.join(service_directory, 'venv')
 
     # Setup base environment for all services
     bootstrap_base(python)
@@ -47,19 +45,11 @@ def bootstrap(service, python='pypy'):
     if fails('id {}'.format(service_user)):
         sudo('useradd --base-dir /srv --groups service --user-group '
              '--create-home --system --shell '
-             '/bin/false {}'.format(service_user))
+             '/bin/bash {}'.format(service_user))
 
     with settings(user=service_user):
-        # Create a virtualenv
-        if fails('ls {}'.format(virtualenv_directory)):
-            run('virtualenv --python={} --prompt=\\({}\\) {}'.format(
-                python,
-                service,
-                virtualenv_directory
-                ))
-
         # Install twisted
-        pip.install(virtualenv_directory, 'twisted')
+        pip.install('twisted')
 
         # Create base directory setup
         run('mkdir -p var/log var/run etc/init.d')
