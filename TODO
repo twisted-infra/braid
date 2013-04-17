@@ -1,0 +1,31 @@
+Brain-dump:
+
+- Figure out how to handle config, with split-repos
+
+  Perhaps this is just `~/.fabricrc` or maybe we want a `~/.braidrc` instead.
+  Or maybe we don't actually need a config file. We just point things at dornkirk,
+  and override on the command file.
+
+- Initialize /etc/ssh/sshd_config to use 'Match Group service' for authorized keys.
+
+  Also figure out where we should put keys, and add some tools for updating them.
+
+  The latter perhaps wants to use something like launchpadadduser.
+
+- If we don't use virtualenv, we need to get pip installed for pypy. Also, it might
+  make sense to use the latest release of pypy, rather than the packaged version.
+
+  Also, how do ~/start scripts then invoke twistd? This is the part of the fancy
+  initscript wrapper that seems the most useful. But I think it only needs to be
+  a couple of lines. (Or maybe a few more, but clearer lines of
+  twisted.python.usage.)
+
+- Implemente other services.
+
+- The setup of the base image should probably be a seperate command, rather than
+  automatically being called by each service. This includes stuff like python, pypy
+  gcc (for 'pip install twisted'), git, bzr.
+
+  Do we want to verify that stuff is installed, before doing the service install then?
+
+- Adding and maintaining crontab entries.
