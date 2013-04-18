@@ -39,7 +39,7 @@ def bootstrap(service, python='pypy'):
     if fails('id {}'.format(serviceUser)):
         with settings(user='root'):
             run('useradd --base-dir /srv --groups service --user-group '
-                '--create-home --system --shell /bin/bash'
+                '--create-home --system --shell /bin/bash '
                 '{}'.format(serviceUser))
 
     with settings(user=serviceUser):
