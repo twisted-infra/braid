@@ -31,3 +31,18 @@ Brain-dump:
 - Adding and maintaining crontab entries.
 
 - Add 'log' targets to services for tailing (or less +F-ing?) log files.
+
+- Something that would be nice for testing is the ability to specify a
+  non-default repo for update commands. I'd like to be able to test against a
+  commit in a local repo, without having to push to a public repo first.
+
+- Coding-style fixes
+  - docstings
+  - camelCase
+  - Other fabric/braid specific style guidelines?
+
+
+Future stuff:
+- Automatic maintence log generation?
+- Alternate handling of ssh-keys not using 'Match Group'?
+  - Perhaps useful for buildslaves.
