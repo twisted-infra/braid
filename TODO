@@ -29,3 +29,5 @@ Brain-dump:
   Do we want to verify that stuff is installed, before doing the service install then?
 
 - Adding and maintaining crontab entries.
+
+- Add 'log' targets to services for tailing (or less +F-ing?) log files.
