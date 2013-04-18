@@ -11,14 +11,14 @@ Just experimenting for now.
 
 from fabric.api import task, sudo
 
-from braid import package, service, load_config, requires_root
+from braid import package, service, requires_root
 
-from braid import pypy
+from braid import base, pypy
 
 from services import trac
 
 
-__all__ = ['trac', 'make_service_admin', 'pypy']
+__all__ = ['base', 'trac', 'make_service_admin', 'pypy']
 
 
 
