@@ -1,5 +1,5 @@
-from fabric.api import sudo
+from fabric.api import with_settings, run
 
-
+@with_settings(user='root')
 def install(package):
-    sudo('apt-get --yes --quiet install {}'.format(package))
+    run('apt-get --yes --quiet install {}'.format(package))
