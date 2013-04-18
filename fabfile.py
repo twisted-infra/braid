@@ -13,13 +13,13 @@ from fabric.api import task, sudo
 
 from braid import package, service, load_config, requires_root
 
-from services import dns, trac
+from braid import pypy
+
+from services import trac
 
 
-__all__ = ['trac', 'make_service_admin']
+__all__ = ['trac', 'make_service_admin', 'pypy']
 
-
-load_config('config')
 
 
 # TODO: Add hooks to check if updated to upstream before running any command
