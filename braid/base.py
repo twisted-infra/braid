@@ -15,3 +15,17 @@ def bootstrap():
     sudo('groupadd -f --system service')
 
     pypy.install()
+
+    sshConfig()
+
+def sshConfig():
+    """
+    Install ssh config that allows anyone who can login as root
+    to login as any service.
+    """
+    configFile = FilePath(__file__).sibling('sshd_config')
+    put(configFile.path, '/etc/ssh/sshd_config', use_sudo=True)
+
+    sudo('chgrp service /root/.ssh/authorized_keys')
+    sudo('chmod go+X /root /root/.ssh')
+    sudo('chmod g+r /root/.ssh/authorized_keys')

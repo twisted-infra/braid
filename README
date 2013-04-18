@@ -8,3 +8,12 @@ currently contains a fabfile for global configuration of dornkirk.
 The idea is that each individual service (e.g., t-names, www-data, trac,
 buildbot) will have a configuration repo with a fabfile that uses braid to
 deploy itself on a given machine.
+
+
+style-notes
+===========
+Things that want to root want to be run with `sudo`, and files `put` with
+`use_sudo`. When dealing with things that want to be run as other users,
+`run` should be used, and a ssh connection as that user (with
+`settings(user='user')` or the like. `braid.base.sshConfig` sets things up so
+anybody with root keys can log-in as any user in the `service` group.
