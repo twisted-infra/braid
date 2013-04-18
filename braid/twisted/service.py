@@ -12,10 +12,9 @@ def bootstrap(service, python='pypy'):
     # Add a new user for this specific service and delegate administration to
     # users in the service-admin group
     if fails('id {}'.format(serviceUser)):
-        with settings(user='root'):
-            sudo('useradd --base-dir /srv --groups service --user-group '
-                '--create-home --system --shell /bin/bash '
-                '{}'.format(serviceUser))
+        sudo('useradd --base-dir /srv --groups service --user-group '
+            '--create-home --system --shell /bin/bash '
+            '{}'.format(serviceUser))
 
     with settings(user=serviceUser):
         # Install twisted
