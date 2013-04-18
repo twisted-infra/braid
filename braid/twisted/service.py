@@ -1,5 +1,4 @@
-from fabric.api import settings, sudo, run
-from fabric.contrib.files import upload_template
+from fabric.api import settings, sudo, run, put
 
 from braid import pip, fails
 
@@ -26,6 +25,4 @@ def bootstrap(service, python='pypy'):
         run('mkdir -p Run')
 
         stopFile = FilePath(__file__).sibling('stop')
-        upload_template(stopFile.path, 'stop',
-                        context={'service': service},
-                        mode=0755)
+        put(stopFile.path, 'stop', mode=0755)
