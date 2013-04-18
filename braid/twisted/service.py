@@ -47,7 +47,7 @@ def bootstrap(service, python='pypy'):
         pip.install('twisted')
 
         # Create base directory setup
-        run('mkdir -p var/log var/run etc/init.d')
+        run('mkdir -p Run')
 
         stopFile = FilePath(__file__).sibling('stop')
         upload_template(stopFile.path, 'stop',
