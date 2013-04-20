@@ -1,4 +1,4 @@
-from fabric.api import settings, sudo, run, put
+from fabric.api import settings, sudo, run, put, task, with_settings
 
 from braid import pip, fails
 
@@ -25,3 +25,28 @@ def bootstrap(service, python='pypy'):
 
         stopFile = FilePath(__file__).sibling('stop')
         put(stopFile.path, 'stop', mode=0755)
+
+def serviceTasks(service):
+    @task
+    @with_settings(user=service)
+    def start():
+        run('./start', pty=False)
+
+
+    @task
+    @with_settings(user=service)
+    def stop():
+        run('./stop')
+
+
+    @task
+    def restart():
+        stop()
+        start()
+
+    @task
+    @with_settings(user=service)
+    def log():
+        run('tail -f Run/twistd.log')
+
+    return {fn.__name__: fn for fn in [start, stop, restart, log]}
