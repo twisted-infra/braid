@@ -47,12 +47,12 @@ class Service(object):
     @task
     def start(self):
         with settings(user=self.serviceUser):
-            run('./{}/start'.format(self.binDir), pty=False)
+            run('{}/start'.format(self.binDir), pty=False)
 
     @task
     def stop(self):
         with settings(user=self.serviceUser):
-            run('./{}/start'.format(self.binDir))
+            run('{}/start'.format(self.binDir))
 
     @task
     def restart(self):
