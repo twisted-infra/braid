@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from fabric.api import sudo, task, put
 
 from twisted.python.filepath import FilePath
