@@ -31,12 +31,20 @@ class requiresRoot(object):
         self._func = func
         for attr in WRAPPER_ASSIGNMENTS:
             setattr(self, attr, getattr(func, attr))
+        self.isTask = getattr(func, 'isTask', False)
 
     def hasSudoCapabilities(self):
         if requiresRoot.canRoot is None:
             with quiet():
                 requiresRoot.canRoot = run('sudo -n whoami').succeeded
         return requiresRoot.canRoot
+
+    def __get__(self, obj, objtype):
+        if obj is None:
+            return self
+        self._func.isTask = self.isTask
+        new_func = self._func.__get__(obj, objtype)
+        return self.__class__(new_func)
 
     def __repr__(self):
         return repr(self._func)
