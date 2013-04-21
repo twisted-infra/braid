@@ -13,14 +13,14 @@ def load_config(path):
             setattr(env, k.lower(), getattr(module, k))
 
 
-def succeeds(cmd, use_sudo=False):
-    func = sudo if use_sudo else run
+def succeeds(cmd, useSudo=False):
+    func = sudo if useSudo else run
     with quiet():
         return func(cmd).succeeded
 
 
-def fails(cmd, use_sudo=False):
-    return not succeeds(cmd, use_sudo)
+def fails(cmd, useSudo=False):
+    return not succeeds(cmd, useSudo)
 
 
 class requiresRoot(object):
