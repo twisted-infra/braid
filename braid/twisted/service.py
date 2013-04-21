@@ -13,6 +13,10 @@ def task(func):
 class Service(object):
 
     baseServicesDirectory = '/srv'
+    runDir = '~/run'
+    logDir = '~/log'
+    srcDir = '~/src'
+    binDir = '~/bin'
 
     def __init__(self, serviceName):
         self.serviceName = serviceName
@@ -30,21 +34,26 @@ class Service(object):
             pip.install('twisted')
 
             # Create base directory setup
-            run('mkdir -p Run')
+            run('mkdir -p {} {} {} {}'.format(
+                self.runDir,
+                self.logDir,
+                self.binDir,
+                self.srcDir,
+            ))
 
             # Create stop script
             stopFile = FilePath(__file__).sibling('stop')
-            put(stopFile.path, 'stop', mode=0755)
+            put(stopFile.path, '{}/stop'.format(self.binDir), mode=0755)
 
     @task
     def start(self):
         with settings(user=self.serviceUser):
-            run('./start', pty=False)
+            run('./{}/start'.format(self.binDir), pty=False)
 
     @task
     def stop(self):
         with settings(user=self.serviceUser):
-            run('./stop')
+            run('./{}/start'.format(self.binDir))
 
     @task
     def restart(self):
@@ -54,7 +63,7 @@ class Service(object):
     @task
     def log(self):
         with settings(user=self.serviceUser):
-            run('tail -f Run/twistd.log')
+            run('tail -f {}/twistd.log'.format(self.logDir))
 
     def getTasks(self):
         tasks = (getattr(self, attr) for attr in dir(self))
