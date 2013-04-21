@@ -4,7 +4,9 @@ from braid import pip, fails
 
 from twisted.python.filepath import FilePath
 
+
 base_service_directory = '/srv'
+
 
 def bootstrap(service, python='pypy'):
     serviceUser = service
@@ -13,8 +15,8 @@ def bootstrap(service, python='pypy'):
     # users in the service-admin group
     if fails('id {}'.format(serviceUser)):
         sudo('useradd --base-dir /srv --groups service --user-group '
-            '--create-home --system --shell /bin/bash '
-            '{}'.format(serviceUser))
+             '--create-home --system --shell /bin/bash '
+             '{}'.format(serviceUser))
 
     with settings(user=serviceUser):
         # Install twisted
@@ -26,18 +28,17 @@ def bootstrap(service, python='pypy'):
         stopFile = FilePath(__file__).sibling('stop')
         put(stopFile.path, 'stop', mode=0755)
 
+
 def serviceTasks(service):
     @task
     @with_settings(user=service)
     def start():
         run('./start', pty=False)
 
-
     @task
     @with_settings(user=service)
     def stop():
         run('./stop')
-
 
     @task
     def restart():

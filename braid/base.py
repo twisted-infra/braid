@@ -6,6 +6,7 @@ from twisted.python.filepath import FilePath
 
 from braid import pypy
 
+
 @task
 def bootstrap():
     """
@@ -19,6 +20,7 @@ def bootstrap():
     pypy.install()
 
     sshConfig()
+
 
 def sshConfig():
     """
