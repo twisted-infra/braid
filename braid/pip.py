@@ -1,6 +1,4 @@
-import os
-
-from fabric.api import run, prefix
+from fabric.api import run
 
 
 def install(package):

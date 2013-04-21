@@ -1,5 +1,3 @@
-import os
-
 from fabric.api import run, cd
 
 from braid import package, fails
