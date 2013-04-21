@@ -4,7 +4,7 @@ from fabric.api import sudo, task, put
 
 from twisted.python.filepath import FilePath
 
-from braid import pypy
+from braid import pypy, service
 
 
 @task
@@ -33,3 +33,4 @@ def sshConfig():
     sudo('chgrp service /root/.ssh/authorized_keys')
     sudo('chmod go+X /root /root/.ssh')
     sudo('chmod g+r /root/.ssh/authorized_keys')
+    service.restart('ssh')
