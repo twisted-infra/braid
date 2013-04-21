@@ -9,6 +9,9 @@ from twisted.python.reflect import prefixedMethods
 TASK_PREFIX = 'task_'
 
 def _stripPrefix(f):
+    """
+    Get the unprefixed name of C{f}.
+    """
     return f.__name__[len(TASK_PREFIX):]
 
 class Service(object):
@@ -46,22 +49,45 @@ class Service(object):
             put(stopFile.path, '{}/stop'.format(self.binDir), mode=0755)
 
     def task_start(self):
+        """
+        Stop the service
+        """
         with settings(user=self.serviceUser):
             run('{}/start'.format(self.binDir), pty=False)
 
     def task_stop(self):
+        """
+        Start the service.
+        """
         with settings(user=self.serviceUser):
             run('{}/start'.format(self.binDir))
 
     def task_restart(self):
+        """
+        Restart the service.
+        """
         self.stop()
         self.start()
 
     def task_log(self):
+        """
+        Tail the log of the service.
+        """
         with settings(user=self.serviceUser):
             run('tail -f {}/twistd.log'.format(self.logDir))
 
     def getTasks(self):
+        """
+        Get all tasks of this L{Service} object.
+
+        Intended to be used like::
+
+            globals.updated(Service('name').getTasks())
+
+        at the module level of a fabfile.
+
+        @returns: L{dict} of L{fabric.tasks.Task}
+        """
         tasks = [(t, _stripPrefix(t))
                  for t in prefixedMethods(self, TASK_PREFIX)]
         return { name: task(name=name)(t) for t, name in tasks }
