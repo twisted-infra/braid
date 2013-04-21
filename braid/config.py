@@ -53,4 +53,4 @@ def environment(envName):
 
 
 for envName in ENVIRONMENTS:
-    globals()[envName] = task(name=envName)(lambda: environment(envName))
+    globals()[envName] = task(name=envName)(lambda envName=envName: environment(envName))
