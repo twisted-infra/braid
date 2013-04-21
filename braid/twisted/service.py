@@ -1,6 +1,7 @@
-from fabric.api import settings, sudo, run, put, task
+from fabric.api import settings, sudo, run, put, task, abort
 
 from braid import pip, fails
+from braid.utils import hasSudoCapabilities
 
 from twisted.python.filepath import FilePath
 from twisted.python.reflect import prefixedMethods
@@ -29,6 +30,9 @@ class Service(object):
     def bootstrap(self, python='pypy'):
         # Create the user only if it does not already exist
         if fails('id {}'.format(self.serviceUser)):
+            if not hasSudoCapabilities():
+                abort("User {} doesn't exist and we can't create it."
+                      .format(self.serviceUser))
             sudo('useradd --base-dir {} --groups service --user-group '
                  '--create-home --system --shell /bin/bash '
                  '{}'.format(self.baseServicesDirectory, self.serviceUser))

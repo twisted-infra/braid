@@ -1,9 +1,8 @@
 from __future__ import print_function
 
 import importlib
-import functools
 
-from fabric.api import env, sudo, run, quiet, abort
+from fabric.api import env, sudo, run, quiet
 
 
 def load_config(path):
@@ -29,16 +28,3 @@ def hasSudoCapabilities():
         with quiet():
             env.canRoot[env.host_string] = run('sudo -n whoami').succeeded
     return env.canRoot[env.host_string]
-
-def requiresRoot(f):
-    @functools.wraps(f)
-    def wrapper(*args, **kwargs):
-        if hasSudoCapabilities():
-            return f(*args, **kwargs)
-        else:
-            name = f.__name__
-            if f.__module__:
-                name = f.__module__ + '.' + name
-            abort('The execution of the function {} requires root '
-                  'privileges.'.format(name))
-    return wrapper
