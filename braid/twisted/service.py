@@ -1,14 +1,15 @@
-from fabric.api import settings, sudo, run, put, task as fabricTask
+from fabric.api import settings, sudo, run, put, task
 
 from braid import pip, fails
 
 from twisted.python.filepath import FilePath
+from twisted.python.reflect import prefixedMethods
 
 
-def task(func):
-    func.isTask = True
-    return func
+TASK_PREFIX = 'task_'
 
+def _stripPrefix(f):
+    return f.__name__[len(TASK_PREFIX):]
 
 class Service(object):
 
@@ -44,28 +45,23 @@ class Service(object):
             stopFile = FilePath(__file__).sibling('stop')
             put(stopFile.path, '{}/stop'.format(self.binDir), mode=0755)
 
-    @task
-    def start(self):
+    def task_start(self):
         with settings(user=self.serviceUser):
             run('{}/start'.format(self.binDir), pty=False)
 
-    @task
-    def stop(self):
+    def task_stop(self):
         with settings(user=self.serviceUser):
             run('{}/start'.format(self.binDir))
 
-    @task
-    def restart(self):
+    def task_restart(self):
         self.stop()
         self.start()
 
-    @task
-    def log(self):
+    def task_log(self):
         with settings(user=self.serviceUser):
             run('tail -f {}/twistd.log'.format(self.logDir))
 
     def getTasks(self):
-        tasks = (getattr(self, attr) for attr in dir(self))
-        tasks = (task for task in tasks if getattr(task, 'isTask', False))
-        tasks = (fabricTask(task) for task in tasks)
-        return {task.__name__: task for task in tasks}
+        tasks = [(t, _stripPrefix(t))
+                 for t in prefixedMethods(self, TASK_PREFIX)]
+        return { name: task(name=name)(t) for t, name in tasks }
