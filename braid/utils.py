@@ -1,10 +1,9 @@
 from __future__ import print_function
 
 import importlib
-import sys
-from functools import WRAPPER_ASSIGNMENTS
+import functools
 
-from fabric.api import env, sudo, run, quiet
+from fabric.api import env, sudo, run, quiet, abort
 
 
 def load_config(path):
@@ -24,38 +23,22 @@ def fails(cmd, useSudo=False):
     return not succeeds(cmd, useSudo)
 
 
-class requiresRoot(object):
-    canRoot = None
+def hasSudoCapabilities():
+    env.setdefault('canRoot', {})
+    if env.canRoot.get(env.host_string) is None:
+        with quiet():
+            env.canRoot[env.host_string] = run('sudo -n whoami').succeeded
+    return env.canRoot[env.host_string]
 
-    def __init__(self, func):
-        self._func = func
-        for attr in WRAPPER_ASSIGNMENTS:
-            setattr(self, attr, getattr(func, attr))
-        self.isTask = getattr(func, 'isTask', False)
-
-    def hasSudoCapabilities(self):
-        if requiresRoot.canRoot is None:
-            with quiet():
-                requiresRoot.canRoot = run('sudo -n whoami').succeeded
-        return requiresRoot.canRoot
-
-    def __get__(self, obj, objtype):
-        if obj is None:
-            return self
-        self._func.isTask = self.isTask
-        new_func = self._func.__get__(obj, objtype)
-        return self.__class__(new_func)
-
-    def __repr__(self):
-        return repr(self._func)
-
-    def __call__(self, *args, **kwargs):
-        if self.hasSudoCapabilities():
-            return self._func(*args, **kwargs)
+def requiresRoot(f):
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        if hasSudoCapabilities():
+            return f(*args, **kwargs)
         else:
-            name = self._func.__name__
-            if self.func.__module__:
-                name = self.func.__module__ + '.' + name
-            print('The execution of the function {} requires root '
+            name = f.__name__
+            if f.__module__:
+                name = f.__module__ + '.' + name
+            abort('The execution of the function {} requires root '
                   'privileges.'.format(name))
-            sys.exit(1)
+    return wrapper
