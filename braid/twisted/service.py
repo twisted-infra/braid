@@ -61,10 +61,10 @@ class Service(object):
 
     def task_stop(self):
         """
-        Start the service.
+        Stop the service.
         """
         with settings(user=self.serviceUser):
-            run('{}/start'.format(self.binDir))
+            run('{}/stop'.format(self.binDir))
 
     def task_restart(self):
         """

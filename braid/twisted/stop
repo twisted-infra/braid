@@ -1,3 +1,3 @@
 #!/bin/bash
 
-kill $(cat ~/Run/twistd.pid)
+kill $(cat ~/run/twistd.pid)
