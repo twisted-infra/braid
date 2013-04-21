@@ -39,8 +39,8 @@ def loadEnvironmentConfig(envName, directories=CONFIG_DIRS, extension='.py'):
 @task
 def environment(env):
     """
-    Loads the passed environment configuration. This task can be invoked before
-    executing the desired Fabric action.
+    Load the passed environment configuration.
+    This task can be invoked before executing the desired Fabric action.
     """
     loadEnvironmentConfig(env)
 
@@ -48,6 +48,7 @@ def environment(env):
 @task
 def test():
     """
+    Load the configuration for the testing environment.
     Shortcut for the C{environment:testing} task.
     """
     loadEnvironmentConfig('testing')
@@ -56,6 +57,7 @@ def test():
 @task
 def prod():
     """
+    Load the configuration for the production environment.
     Shortcut for the C{environment:production} task.
     """
     loadEnvironmentConfig('production')
