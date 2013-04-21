@@ -1,53 +1,63 @@
-from fabric.api import settings, sudo, run, put, task, with_settings
+from fabric.api import settings, sudo, run, put, task as fabricTask
 
 from braid import pip, fails
 
 from twisted.python.filepath import FilePath
 
 
-base_service_directory = '/srv'
+def task(func):
+    func.isTask = True
+    return func
 
 
-def bootstrap(service, python='pypy'):
-    serviceUser = service
+class Service(object):
 
-    # Add a new user for this specific service and delegate administration to
-    # users in the service-admin group
-    if fails('id {}'.format(serviceUser)):
-        sudo('useradd --base-dir /srv --groups service --user-group '
-             '--create-home --system --shell /bin/bash '
-             '{}'.format(serviceUser))
+    baseServicesDirectory = '/srv'
 
-    with settings(user=serviceUser):
-        # Install twisted
-        pip.install('twisted')
+    def __init__(self, serviceName):
+        self.serviceName = serviceName
+        self.serviceUser = serviceName
 
-        # Create base directory setup
-        run('mkdir -p Run')
+    def bootstrap(self, python='pypy'):
+        # Create the user only if it does not already exist
+        if fails('id {}'.format(self.serviceUser)):
+            sudo('useradd --base-dir {} --groups service --user-group '
+                 '--create-home --system --shell /bin/bash '
+                 '{}'.format(self.baseServicesDirectory, self.serviceUser))
 
-        stopFile = FilePath(__file__).sibling('stop')
-        put(stopFile.path, 'stop', mode=0755)
+        with settings(user=self.serviceUser):
+            # Install twisted
+            pip.install('twisted')
 
+            # Create base directory setup
+            run('mkdir -p Run')
 
-def serviceTasks(service):
-    @task
-    @with_settings(user=service)
-    def start():
-        run('./start', pty=False)
-
-    @task
-    @with_settings(user=service)
-    def stop():
-        run('./stop')
+            # Create stop script
+            stopFile = FilePath(__file__).sibling('stop')
+            put(stopFile.path, 'stop', mode=0755)
 
     @task
-    def restart():
-        stop()
-        start()
+    def start(self):
+        with settings(user=self.serviceUser):
+            run('./start', pty=False)
 
     @task
-    @with_settings(user=service)
-    def log():
-        run('tail -f Run/twistd.log')
+    def stop(self):
+        with settings(user=self.serviceUser):
+            run('./stop')
 
-    return {fn.__name__: fn for fn in [start, stop, restart, log]}
+    @task
+    def restart(self):
+        self.stop()
+        self.start()
+
+    @task
+    def log(self):
+        with settings(user=self.serviceUser):
+            run('tail -f Run/twistd.log')
+
+    def getTasks(self):
+        tasks = (getattr(self, attr) for attr in dir(self))
+        tasks = (task for task in tasks if getattr(task, 'isTask', False))
+        tasks = (fabricTask(task) for task in tasks)
+        return {task.__name__: task for task in tasks}
