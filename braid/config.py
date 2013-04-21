@@ -27,8 +27,8 @@ def loadEnvironmentConfig(envName, directories=CONFIG_DIRS, extension='.py'):
     and stores all of its public uppercase attributes as attributes of Fabric's
     environment (all attribute names will be lowercased).
     """
-    for dir in directories:
-        path = FilePath(os.path.expanduser(dir)).child(envName + extension)
+    for confDir in directories:
+        path = FilePath(os.path.expanduser(confDir)).child(envName + extension)
         if path.exists():
             module = imp.load_source('braid.settings.' + envName, path.path)
             for k in dir(module):
