@@ -2,12 +2,12 @@ import os
 
 from fabric.api import task, sudo, put, prefix
 
-from braid import postgres, requires_root, bazaar, pip, authbind, fails
+from braid import postgres, requiresRoot, bazaar, pip, authbind, fails
 from braid.twisted import service
 
 
 @task
-@requires_root
+@requiresRoot
 def install():
     # Bootstrap a new service environment (we can't use pypy here because
     # psycopg2 does not build on it)

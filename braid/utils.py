@@ -23,20 +23,20 @@ def fails(cmd, use_sudo=False):
     return not succeeds(cmd, use_sudo)
 
 
-class requires_root(object):
-    can_root = None
+class requiresRoot(object):
+    canRoot = None
 
     def __init__(self, func):
         self.func = func
 
-    def has_sudo_capabilities(self):
-        if requires_root.can_root is None:
+    def hasSudoCapabilities(self):
+        if requiresRoot.canRoot is None:
             with quiet():
-                requires_root.can_root = run('sudo -n whoami').succeeded
-        return requires_root.can_root
+                requiresRoot.canRoot = run('sudo -n whoami').succeeded
+        return requiresRoot.canRoot
 
     def __call__(self, *args, **kwargs):
-        if self.has_sudo_capabilities():
+        if self.hasSudoCapabilities():
             return self.func(*args, **kwargs)
         else:
             name = self.func.__name__

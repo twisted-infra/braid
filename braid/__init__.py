@@ -1,3 +1,3 @@
-from .utils import load_config, succeeds, fails, requires_root
+from .utils import succeeds, fails, requiresRoot
 
-__all__ = ['load_config', 'succeeds', 'fails', 'requires_root']
+__all__ = ['succeeds', 'fails', 'requiresRoot']
