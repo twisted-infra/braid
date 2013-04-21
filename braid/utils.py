@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import importlib
 import sys
+from functools import WRAPPER_ASSIGNMENTS
 
 from fabric.api import env, sudo, run, quiet
 
@@ -27,7 +28,9 @@ class requiresRoot(object):
     canRoot = None
 
     def __init__(self, func):
-        self.func = func
+        self._func = func
+        for attr in WRAPPER_ASSIGNMENTS:
+            setattr(self, attr, getattr(func, attr))
 
     def hasSudoCapabilities(self):
         if requiresRoot.canRoot is None:
@@ -35,11 +38,14 @@ class requiresRoot(object):
                 requiresRoot.canRoot = run('sudo -n whoami').succeeded
         return requiresRoot.canRoot
 
+    def __repr__(self):
+        return repr(self._func)
+
     def __call__(self, *args, **kwargs):
         if self.hasSudoCapabilities():
-            return self.func(*args, **kwargs)
+            return self._func(*args, **kwargs)
         else:
-            name = self.func.__name__
+            name = self._func.__name__
             if self.func.__module__:
                 name = self.func.__module__ + '.' + name
             print('The execution of the function {} requires root '
