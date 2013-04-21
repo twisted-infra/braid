@@ -4,7 +4,7 @@ from fabric.api import sudo, task, put
 
 from twisted.python.filepath import FilePath
 
-from braid import pypy, service
+from braid import pypy, service, authbind, git
 
 
 @task
@@ -18,6 +18,8 @@ def bootstrap():
     sudo('groupadd -f --system service')
 
     pypy.install()
+    authbind.install()
+    git.install()
 
     sshConfig()
 
