@@ -4,8 +4,7 @@ Default configuration settings.
 
 ENVIRONMENTS = {
     'production': {
-        'hosts': ['10.2.1.118'] or
-        ['dornkirk.twistedmatrix.com'],
+        'hosts': ['dornkirk.twistedmatrix.com'],
         'user': 'root'
     },
 }
