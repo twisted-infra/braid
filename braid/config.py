@@ -17,6 +17,8 @@ CONFIG_DIRS = [
     '~/.config/braid',
 ]
 
+#FIXME: How to handle module level initialization here?
+
 def loadEnvironmentConfig(envFile):
     """
     Loads configuration directives for the specified environment into Fabric's
@@ -39,7 +41,6 @@ def loadEnvironments(directories=CONFIG_DIRS):
         for envFile in confDir.globChildren('*.env'):
             loadEnvironmentConfig(envFile)
 
-
 loadEnvironments()
 
 def environment(envName):
@@ -48,6 +49,7 @@ def environment(envName):
     This task can be invoked before executing the desired Fabric action.
     """
     env.update(ENVIRONMENTS[envName])
+    env['environment'] = envName
 
 
 for envName in ENVIRONMENTS:
