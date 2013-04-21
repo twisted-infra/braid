@@ -1,3 +1,5 @@
+from cStringIO import StringIO
+
 from fabric.api import settings, sudo, run, put, task, abort
 
 from braid import pip, fails
@@ -51,6 +53,16 @@ class Service(object):
             # Create stop script
             stopFile = FilePath(__file__).sibling('stop')
             put(stopFile.path, '{}/stop'.format(self.binDir), mode=0755)
+
+            readmeFile = FilePath(__file__).sibling('README')
+            #FIXME
+            readmeContext = {}
+            for key in ['srcDir', 'runDir', 'logDir', 'binDir', 'serviceName']:
+                readmeContext[key] = getattr(self, key)
+            tasks = [' - {}: {}'.format(t.name, t.__doc__.strip().splitlines()[0]) for t in self.getTasks().values()]
+            readmeContext['tasks'] = '\n'.join(tasks)
+            readme = readmeFile.getContent().format(**readmeContext)
+            put(StringIO(readme), 'README')
 
     def task_start(self):
         """

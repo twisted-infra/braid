@@ -1,0 +1,14 @@
+This service ({serviceName}) is administered using braid[1].
+
+For details about this particular service, see
+{srcDir}/README.
+
+Binaries (including init scripts): {binDir}
+Service Configuration: {srcDir}
+Logs: {logDir}
+Runtime data (including pidfile): {runDir}
+
+The following commands are availble through fabric):
+{tasks}
+
+[1] https://github.com/twisted-infra/braid
