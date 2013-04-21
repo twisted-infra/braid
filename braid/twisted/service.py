@@ -38,8 +38,7 @@ class Service(object):
                 self.runDir,
                 self.logDir,
                 self.binDir,
-                self.srcDir,
-            ))
+                self.srcDir))
 
             # Create stop script
             stopFile = FilePath(__file__).sibling('stop')

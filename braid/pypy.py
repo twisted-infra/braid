@@ -13,8 +13,8 @@ pypyDir = '/opt/pypy-2.0-beta2'
 def install():
     sudo('mkdir -p /opt')
     sudo('useradd --home-dir {} --gid bin '
-        '-M --system --shell /bin/false '
-        'pypy'.format(pypyDir))
+         '-M --system --shell /bin/false '
+         'pypy'.format(pypyDir))
 
     with cd('/opt'):
         for url in pypyURL, setuptoolsURL, pipURL:
