@@ -10,11 +10,9 @@ def install():
 
 
 def branch(branch, location):
-    # TODO: Change sudo to run and provide a context manager to override the
-    # user when calling run
     if fails('[ -d {}/.bzr ]'.format(location)):
         run('mkdir -p {}'.format(os.path.dirname(location)))
         run('bzr branch {} {}'.format(branch, location))
     else:
-        # FIXME: We currently don't check that this the correct branch
+        # FIXME (#5): We currently don't check that this the correct branch
         run('bzr update {}'.format(location))
