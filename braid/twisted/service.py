@@ -44,11 +44,10 @@ class Service(object):
             pip.install('twisted')
 
             # Create base directory setup
-            run('mkdir -p {} {} {} {}'.format(
+            run('mkdir -p {} {} {}'.format(
                 self.runDir,
                 self.logDir,
-                self.binDir,
-                self.configDir))
+                self.binDir))
 
             # Create stop script
             stopFile = FilePath(__file__).sibling('stop')
