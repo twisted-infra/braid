@@ -17,7 +17,8 @@ CONFIG_DIRS = [
     '~/.config/braid',
 ]
 
-#FIXME: How to handle module level initialization here?
+# FIXME: How to handle module level initialization here?
+# https://github.com/twisted-infra/braid/issues/6
 
 def loadEnvironmentConfig(envFile):
     """

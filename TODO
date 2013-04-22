@@ -13,10 +13,7 @@ Brain-dump:
 
   - The latter perhaps wants to use something like launchpadadduser.
 
-- If we don't use virtualenv, we need to get pip installed for pypy. Also, it might
-  make sense to use the latest release of pypy, rather than the packaged version.
-
-  Also, how do ~/start scripts then invoke twistd? This is the part of the fancy
+- Also, how do ~/start scripts then invoke twistd? This is the part of the fancy
   initscript wrapper that seems the most useful. But I think it only needs to be
   a couple of lines. (Or maybe a few more, but clearer lines of
   twisted.python.usage.)
@@ -36,9 +33,6 @@ Brain-dump:
 - Something that would be nice for testing is the ability to specify a
   non-default repo for update commands. I'd like to be able to test against a
   commit in a local repo, without having to push to a public repo first.
-
-- Add something like upload_template (or maybe a wrapper
-  for it, or something)
 
 - Coding-style fixes
   - docstings

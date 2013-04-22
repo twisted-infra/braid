@@ -55,7 +55,8 @@ class Service(object):
             put(stopFile.path, '{}/stop'.format(self.binDir), mode=0755)
 
             readmeFile = FilePath(__file__).sibling('README')
-            #FIXME
+            # FIXME: Clean this up
+            # https://github.com/twisted-infra/braid/issues/7
             readmeContext = {}
             for key in ['srcDir', 'runDir', 'logDir', 'binDir', 'serviceName']:
                 readmeContext[key] = getattr(self, key)

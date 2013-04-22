@@ -8,12 +8,11 @@ def install():
 
 
 def branch(branch, location):
-    # TODO: Change sudo to run and provide a context manager to override the
-    # user when calling run
     if fails('[ -d {}/.git ]'.format(location)):
         run('git clone {} {}'.format(branch, location))
     else:
         # FIXME: We currently don't check that this the correct branch
+        # https://github.com/twisted-infra/braid/issues/5
         with cd(location):
             run('git fetch origin')
             run('git reset --hard origin')

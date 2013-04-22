@@ -14,5 +14,6 @@ def branch(branch, location):
         run('mkdir -p {}'.format(os.path.dirname(location)))
         run('bzr branch {} {}'.format(branch, location))
     else:
-        # FIXME (#5): We currently don't check that this the correct branch
+        # FIXME (https://github.com/twisted-infra/braid/issues/5)
+        # We currently don't check that this the correct branch
         run('bzr update {}'.format(location))
