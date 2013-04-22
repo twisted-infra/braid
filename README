@@ -10,6 +10,14 @@ buildbot) will have a configuration repo with a fabfile that uses braid to
 deploy itself on a given machine.
 
 
+Currently Supported Services
+============================
+
+- [t-names](https://github.com/twisted-infra/t-names)
+- [twisted-website](https://code.launchpad.net/~tom.prince/twisted-website/twisted-website-braided)
+- [buildbot](https://github.com/twisted-infra/twisted-buildbot-configuration)
+
+
 style-notes
 ===========
 Things that want to root want to be run with `sudo`, and files `put` with
