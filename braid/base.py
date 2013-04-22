@@ -19,6 +19,7 @@ def bootstrap():
 
     # gcc is needed for 'pip install'
     package.install('gcc')
+    package.install('python-pip')
     pypy.install()
     authbind.install()
     git.install()
