@@ -1,5 +1,0 @@
-HOSTS = [
-    'your-test-system.com',
-]
-
-USER = '<your system user>'

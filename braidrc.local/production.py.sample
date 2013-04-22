@@ -1,5 +1,0 @@
-HOSTS = [
-    'twistedmatrix.com',
-]
-
-USER = '<your system user>'
