@@ -22,7 +22,7 @@ class Service(object):
     baseServicesDirectory = '/srv'
     runDir = '~/run'
     logDir = '~/log'
-    srcDir = '~/src'
+    configDir = '~/config'
     binDir = '~/bin'
 
     def __init__(self, serviceName):
@@ -48,7 +48,7 @@ class Service(object):
                 self.runDir,
                 self.logDir,
                 self.binDir,
-                self.srcDir))
+                self.configDir))
 
             # Create stop script
             stopFile = FilePath(__file__).sibling('stop')
@@ -58,7 +58,7 @@ class Service(object):
             # FIXME: Clean this up
             # https://github.com/twisted-infra/braid/issues/7
             readmeContext = {}
-            for key in ['srcDir', 'runDir', 'logDir', 'binDir', 'serviceName']:
+            for key in ['configDir', 'runDir', 'logDir', 'binDir', 'serviceName']:
                 readmeContext[key] = getattr(self, key)
             tasks = [' - {}: {}'.format(t.name, t.__doc__.strip().splitlines()[0]) for t in self.getTasks().values()]
             readmeContext['tasks'] = '\n'.join(tasks)

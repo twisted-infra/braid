@@ -1,10 +1,10 @@
 This service ({serviceName}) is administered using braid[1].
 
 For details about this particular service, see
-{srcDir}/README.
+{configDir}/README.
 
 Binaries (including init scripts): {binDir}
-Service Configuration: {srcDir}
+Service Configuration: {configDir}
 Logs: {logDir}
 Runtime data (including pidfile): {runDir}
 
