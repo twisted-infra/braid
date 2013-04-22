@@ -4,21 +4,22 @@ Support for multiple environments based on python configuration files.
 
 from __future__ import print_function, absolute_import
 
-import imp
 import os
 
 from twisted.python.filepath import FilePath
 
 from fabric.api import env, task
 
+from braid.settings import ENVIRONMENTS
+
 
 CONFIG_DIRS = [
-    '~/.braid',
-    './braidrc.local',
+    '~/.config/braid',
 ]
 
+#FIXME: How to handle module level initialization here?
 
-def loadEnvironmentConfig(envName, directories=CONFIG_DIRS, extension='.py'):
+def loadEnvironmentConfig(envFile):
     """
     Loads configuration directives for the specified environment into Fabric's
     C{env} variable.
@@ -27,37 +28,29 @@ def loadEnvironmentConfig(envName, directories=CONFIG_DIRS, extension='.py'):
     and stores all of its public uppercase attributes as attributes of Fabric's
     environment (all attribute names will be lowercased).
     """
-    for confDir in directories:
-        path = FilePath(os.path.expanduser(confDir)).child(envName + extension)
-        if path.exists():
-            module = imp.load_source('braid.settings.' + envName, path.path)
-            for k in dir(module):
-                if k == k.upper():
-                    setattr(env, k.lower(), getattr(module, k))
+    envName = os.path.splitext(envFile.basename())[0]
+    ENVIRONMENTS.setdefault(envName, {})
+    glob = { '__file__': envFile.path }
+    exec envFile.getContent() in glob
+    ENVIRONMENTS[envName].update(glob['ENVIRONMENT'])
 
 
-@task
-def environment(env):
+def loadEnvironments(directories=CONFIG_DIRS):
+    for directory in directories:
+        confDir = FilePath(os.path.expanduser(directory))
+        for envFile in confDir.globChildren('*.env'):
+            loadEnvironmentConfig(envFile)
+
+loadEnvironments()
+
+def environment(envName):
     """
     Load the passed environment configuration.
     This task can be invoked before executing the desired Fabric action.
     """
-    loadEnvironmentConfig(env)
+    env.update(ENVIRONMENTS[envName])
+    env['environment'] = envName
 
 
-@task
-def test():
-    """
-    Load the configuration for the testing environment.
-    Shortcut for the C{environment:testing} task.
-    """
-    loadEnvironmentConfig('testing')
-
-
-@task
-def prod():
-    """
-    Load the configuration for the production environment.
-    Shortcut for the C{environment:production} task.
-    """
-    loadEnvironmentConfig('production')
+for envName in ENVIRONMENTS:
+    globals()[envName] = task(name=envName)(lambda envName=envName: environment(envName))
