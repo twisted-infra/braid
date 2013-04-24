@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import functools
 
 from fabric.api import env, sudo, run, quiet
 
@@ -20,3 +21,19 @@ def hasSudoCapabilities():
         with quiet():
             env.canRoot[env.host_string] = run('sudo -n whoami').succeeded
     return env.canRoot[env.host_string]
+
+
+def cacheInEnvironment(f):
+    """
+    Decorator that caches the return value in fabric's environment.
+
+    The name used is the name of the function.
+    """
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        result = env.get(f.__name__)
+        if result is None:
+            result = f(*args, **kwargs)
+            env[f.__name__] = result
+        return result
+    return wrapper

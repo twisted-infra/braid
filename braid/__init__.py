@@ -1,3 +1,7 @@
-from .utils import succeeds, fails, hasSudoCapabilities
+from __future__ import absolute_import
 
-__all__ = ['succeeds', 'fails', 'hasSudoCapabilities']
+from braid.utils import (
+        succeeds, fails, hasSudoCapabilities,
+        cacheInEnvironment)
+
+__all__ = ['succeeds', 'fails', 'hasSudoCapabilities', 'cacheInEnvironment']
