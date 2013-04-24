@@ -4,7 +4,7 @@ from braid import package, fails
 
 
 def install():
-    package.install('git')
+    package.install(['git'])
 
 
 def branch(branch, location):

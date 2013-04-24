@@ -6,7 +6,7 @@ from braid import package, fails
 
 
 def install():
-    package.install('bzr')
+    package.install(['bzr'])
 
 
 def branch(branch, location):

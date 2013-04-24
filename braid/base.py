@@ -18,8 +18,7 @@ def bootstrap():
     sudo('groupadd -f --system service')
 
     # gcc is needed for 'pip install'
-    package.install('gcc')
-    package.install('python-pip')
+    package.install(['gcc', 'python-pip'])
     pypy.install()
     authbind.install()
     git.install()

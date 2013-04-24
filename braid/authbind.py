@@ -6,7 +6,7 @@ from braid import package, hasSudoCapabilities
 
 
 def install():
-    package.install('authbind')
+    package.install(['authbind'])
 
 
 def allow(user, port):
