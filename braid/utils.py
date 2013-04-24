@@ -1,15 +1,7 @@
 from __future__ import print_function
 
-import importlib
 
 from fabric.api import env, sudo, run, quiet
-
-
-def load_config(path):
-    module = importlib.import_module(path)
-    for k in dir(module):
-        if k == k.upper():
-            setattr(env, k.lower(), getattr(module, k))
 
 
 def succeeds(cmd, useSudo=False):
