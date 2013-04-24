@@ -54,8 +54,11 @@ def environment(envName):
     env['environment'] = envName
 
 
-for envName in ENVIRONMENTS:
+def makeEnv(envName):
     def activateEnvironment():
         environment(envName)
-    globals()[envName] = task(name=envName)(activateEnvironment)
-del activateEnvironment
+    return activateEnvironment
+
+
+for envName in ENVIRONMENTS:
+    globals()[envName] = task(name=envName)(makeEnv(envName))
