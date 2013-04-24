@@ -11,11 +11,13 @@ from twisted.python.reflect import prefixedMethods
 
 TASK_PREFIX = 'task_'
 
+
 def _stripPrefix(f):
     """
     Get the unprefixed name of C{f}.
     """
     return f.__name__[len(TASK_PREFIX):]
+
 
 class Service(object):
 
@@ -59,7 +61,9 @@ class Service(object):
             readmeContext = {}
             for key in ['configDir', 'runDir', 'logDir', 'binDir', 'serviceName']:
                 readmeContext[key] = getattr(self, key)
-            tasks = [' - {}: {}'.format(t.name, t.__doc__.strip().splitlines()[0]) for t in self.getTasks().values()]
+            tasks = self.getTasks().itervalues()
+            tasks = ((t.name, t.__doc__.strip().splitlines()[0]) for t in tasks)
+            tasks = (' - {}: {}'.format(t) for t in tasks)
             readmeContext['tasks'] = '\n'.join(tasks)
             readme = readmeFile.getContent().format(**readmeContext)
             put(StringIO(readme), 'README')
@@ -106,4 +110,4 @@ class Service(object):
         """
         tasks = [(t, _stripPrefix(t))
                  for t in prefixedMethods(self, TASK_PREFIX)]
-        return { name: task(name=name)(t) for t, name in tasks }
+        return {name: task(name=name)(t) for t, name in tasks}
