@@ -55,10 +55,11 @@ def environment(envName):
 
 
 def makeEnv(envName):
-    def activateEnvironment():
+    @task(name=envName)
+    def activate():
         environment(envName)
-    return activateEnvironment
+    activate.__doc__ = 'Load the {} environment configuration.'.format(envName)
+    return activate
 
 
-for envName in ENVIRONMENTS:
-    globals()[envName] = task(name=envName)(makeEnv(envName))
+globals().update({envName: makeEnv(envName) for envName in ENVIRONMENTS})
