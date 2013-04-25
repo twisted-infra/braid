@@ -10,8 +10,8 @@ Just experimenting for now.
 """
 
 
-from braid import base
+from braid import base, users
 from braid import config
 
 
-__all__ = ['base', 'config']
+__all__ = ['base', 'config', 'users']
