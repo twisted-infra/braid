@@ -31,6 +31,22 @@ class Service(object):
         self.serviceName = serviceName
         self.serviceUser = serviceName
 
+    def _generateReadme(self):
+        """
+        Generate a generic readme from the tasks available.
+        """
+        # FIXME: Clean this up
+        # https://github.com/twisted-infra/braid/issues/7
+        readmeFile = FilePath(__file__).sibling('README')
+        readmeContext = {}
+        for key in ['configDir', 'runDir', 'logDir', 'binDir', 'serviceName']:
+            readmeContext[key] = getattr(self, key)
+        tasks = self.getTasks().itervalues()
+        tasks = [(t.name, t.__doc__.strip().splitlines()[0]) for t in tasks]
+        tasks = [' - {}: {}'.format(*t) for t in tasks]
+        readmeContext['tasks'] = '\n'.join(tasks)
+        return readmeFile.getContent().format(**readmeContext)
+
     def bootstrap(self, python='pypy'):
         # Create the user only if it does not already exist
         if fails('id {}'.format(self.serviceUser)):
@@ -55,17 +71,7 @@ class Service(object):
             stopFile = FilePath(__file__).sibling('stop')
             put(stopFile.path, '{}/stop'.format(self.binDir), mode=0755)
 
-            readmeFile = FilePath(__file__).sibling('README')
-            # FIXME: Clean this up
-            # https://github.com/twisted-infra/braid/issues/7
-            readmeContext = {}
-            for key in ['configDir', 'runDir', 'logDir', 'binDir', 'serviceName']:
-                readmeContext[key] = getattr(self, key)
-            tasks = self.getTasks().itervalues()
-            tasks = ((t.name, t.__doc__.strip().splitlines()[0]) for t in tasks)
-            tasks = (' - {}: {}'.format(t) for t in tasks)
-            readmeContext['tasks'] = '\n'.join(tasks)
-            readme = readmeFile.getContent().format(**readmeContext)
+            readme = self._generateReadme()
             put(StringIO(readme), 'README')
 
     def task_start(self):
