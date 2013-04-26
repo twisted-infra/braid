@@ -10,6 +10,7 @@ setup(
     install_requires=[
         'fabric',
         'twisted >= 12.3.0',
+        'requests',
     ],
     zip_safe=False,
 )
