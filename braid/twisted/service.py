@@ -86,8 +86,8 @@ class Service(object):
         """
         Restart the service.
         """
-        self.stop()
-        self.start()
+        self.task_stop()
+        self.task_start()
 
     def task_log(self):
         """
