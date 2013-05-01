@@ -4,7 +4,7 @@ from fabric.api import sudo, task, put
 
 from twisted.python.filepath import FilePath
 
-from braid import pypy, service, authbind, git, package, bazaar
+from braid import pypy, service, authbind, git, package, bazaar, postgres
 
 
 @task
@@ -23,6 +23,7 @@ def bootstrap():
     authbind.install()
     git.install()
     bazaar.install()
+    postgres.install()
 
     sshConfig()
 
