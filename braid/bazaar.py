@@ -14,4 +14,4 @@ def branch(branch, location):
         run('mkdir -p {}'.format(os.path.dirname(location)))
         run('bzr branch {} {}'.format(branch, location))
     else:
-        run('bzr pull --overwrite -d {} {}'.format(location, branch))
+        run('bzr pull --verbose --overwrite -d {} {}'.format(location, branch), pty=False)
