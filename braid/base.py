@@ -17,10 +17,11 @@ def bootstrap():
     # Each service specific system user shall be added to the 'service' group
     sudo('groupadd -f --system service')
 
+    package.install(['python2.7', 'python2.7-dev'])
     # gcc is needed for 'pip install'
     package.install(['gcc', 'python-pip'])
     # For trac
-    package.install(['python-subversion'])
+    package.install(['python-subversion', 'enscript'])
     pypy.install()
     authbind.install()
     git.install()
