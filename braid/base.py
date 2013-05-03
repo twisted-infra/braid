@@ -19,6 +19,8 @@ def bootstrap():
 
     # gcc is needed for 'pip install'
     package.install(['gcc', 'python-pip'])
+    # For trac
+    package.install(['python-subversion'])
     pypy.install()
     authbind.install()
     git.install()
