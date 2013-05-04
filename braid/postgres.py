@@ -35,3 +35,15 @@ def createDb(name, owner):
     if not _dbExists(name):
         sudo('createdb -O {} {}'.format(owner, name), user='postgres',
              pty=False)
+
+
+def grantRead(user, database):
+    """
+    Grant read permissions to C{user} to all tables in C{database}.
+    """
+
+
+def grantReadWrite(user, database):
+    """
+    Grant read and write permissions to C{user} to all tables in C{database}.
+    """
