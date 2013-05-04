@@ -1,4 +1,4 @@
-from fabric.api import sudo, quiet
+from fabric.api import sudo, hide
 from braid import package
 from pipes import quote
 
@@ -8,7 +8,7 @@ def install():
 
 
 def _runQuery(query):
-    with quiet():
+    with hide('running', 'output'):
         return sudo('psql --no-align --no-readline --no-password --quiet '
                     '--tuples-only -c {}'.format(quote(query)),
                     user='postgres', pty=False, combine_stderr=False)
