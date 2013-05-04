@@ -7,10 +7,11 @@ def install():
     package.install(['postgresql-9.1', 'postgresql-server-dev-9.1'])
 
 
-def _runQuery(query):
+def _runQuery(query, database=None):
     with hide('running', 'output'):
+        database = '--dbname={}'.format(database) if database else ''
         return sudo('psql --no-align --no-readline --no-password --quiet '
-                    '--tuples-only -c {}'.format(quote(query)),
+                    '--tuples-only {} -c {}'.format(database, quote(query)),
                     user='postgres', pty=False, combine_stderr=False)
 
 
