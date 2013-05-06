@@ -63,9 +63,7 @@ def grantReadWrite(database, user):
     Grant read and write permissions to C{user} to all tables in C{database}.
     """
     _grantSchemaAccess(database, user)
-    # TODO: We may want to change the following to grant only a limited set of
-    # privileges.
-    _runQuery('grant all privileges on all tables in schema public to "{}";'
-              .format(user), database)
+    _runQuery('grant select, insert, update, delete on all tables in '
+              'schema public to "{}";'.format(user), database)
     _runQuery('grant all privileges on all sequences in schema public to "{}";'
               .format(user), database)
