@@ -3,7 +3,7 @@ from __future__ import print_function
 import functools
 import contextlib
 
-from fabric.api import env, sudo, run, quiet
+from fabric.api import env, sudo, run, quiet, get, put
 
 
 def succeeds(cmd, useSudo=False):
@@ -41,9 +41,26 @@ def cacheInEnvironment(f):
 
 
 @contextlib.contextmanager
-def tempfile():
+def tempfile(uploadfrom=None, saveto=None):
+    """
+    Context manager to create and remove a temporary file during the execution
+    of its context.
+
+    If the C{uploadfrom} argumment is provided, the content of the temporary
+    file will be set to the contents of the local file prior execution.
+
+    If the saveto argument is provided, the content of the temporary file will
+    be downloaded locally upon successful execution.
+    """
     temp = run('mktemp')
     try:
+        if uploadfrom:
+            put(uploadfrom, temp)
         yield temp
+    except:
+        raise
+    else:
+        if saveto:
+            get(temp, saveto)
     finally:
-        run('rm {}'.format(temp))
+        run('rm -f {}'.format(temp))
