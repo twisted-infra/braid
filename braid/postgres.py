@@ -74,22 +74,26 @@ def dropDb(name):
 
 
 @task
-def dump(name, localpath):
+def dump(database, localpath, user=None):
     """
     Download a dump of the specified database to localpath. This has to be
     executed
     """
-    with utils.tempfile(saveto=localpath) as temp:
-        cmd = [
-            'pg_dump',
-            '--blobs',
-            '--no-owner',
-            '--format', 'custom',
-            '--file', temp,
-            '--compress', '9',
-            name,
-        ]
-        run(' '.join(cmd))
+    if user is None:
+        user = env.user
+
+    with settings(user=user):
+        with utils.tempfile(saveto=localpath) as temp:
+            cmd = [
+                'pg_dump',
+                '--blobs',
+                '--no-owner',
+                '--format', 'custom',
+                '--file', temp,
+                '--compress', '9',
+                database,
+            ]
+            run(' '.join(cmd))
 
 
 @task
