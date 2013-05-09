@@ -1,4 +1,4 @@
-from fabric.api import sudo, quiet, get, task, env, put, run, settings
+from fabric.api import sudo, hide, get, task, env, put, run, settings
 from braid import package
 from pipes import quote
 
