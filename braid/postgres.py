@@ -120,7 +120,6 @@ def restore(dump, database, user=None, clean=False):
                 'pg_restore',
                 '--dbname', database,
                 '--schema', 'public',
-                '--clean' if clean else '',
                 temp,
             ]
             run(' '.join(cmd))
