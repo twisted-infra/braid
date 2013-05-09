@@ -78,7 +78,7 @@ def dump(name, localpath):
     """
     Download a dump of the specified database to localpath.
     """
-    temp = sudo('mktemp', user='postgres')
+    temp = run('mktemp')
     cmd = [
         'pg_dump',
         '--blobs',
@@ -88,10 +88,9 @@ def dump(name, localpath):
         '--compress', '9',
         name,
     ]
-    sudo(' '.join(cmd), user='postgres')
-    sudo('chown {}:{} {}'.format(env.user, env.user, temp))
+    run(' '.join(cmd))
     get(temp, localpath)
-    sudo('rm {}'.format(temp))
+    run('rm {}'.format(temp))
 
 
 @task
