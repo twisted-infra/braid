@@ -77,7 +77,8 @@ def dropDb(name):
 def dump(database, localpath, user=None):
     """
     Download a dump of the specified database to localpath. This has to be
-    executed
+    executed as a user with enough privileges on the selected database.
+    Alternatively a user can be manually provided.
     """
     if user is None:
         user = env.user
