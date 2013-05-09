@@ -1,4 +1,4 @@
-from fabric.api import sudo, quiet
+from fabric.api import sudo, quiet, get, task, env, put, run, settings
 from braid import package
 from pipes import quote
 
@@ -30,3 +30,54 @@ def createUser(name):
 def createDb(name, owner):
     if not _dbExists(name):
         sudo('createdb -O {} {}'.format(owner, name), user='postgres', pty=False)
+
+
+def dropDb(name):
+    return _runQuery('drop database if exists {};'.format(quote(name)))
+
+
+@task
+def dump(name, localpath):
+    temp = sudo('mktemp', user='postgres')
+    cmd = [
+        'pg_dump',
+        '--blobs',
+        '--no-owner',
+        '--format', 'custom',
+        '--file', temp,
+        '--compress', '9',
+        name,
+    ]
+    sudo(' '.join(cmd), user='postgres')
+    sudo('chown {}:{} {}'.format(env.user, env.user, temp))
+    get(temp, localpath)
+    sudo('rm {}'.format(temp))
+
+
+@task
+def restore(dump, database, user=None, clean=False):
+    """
+    If the user is not specified, set the owner to the current active SSH user.
+    This function only works for postgres users which have a corresponding
+    system user.
+    """
+    if user is None:
+        user = env.user
+
+    if clean:
+        dropDb(database)
+
+    createDb(database, user)
+
+    with settings(user=user):
+        temp = run('mktemp')
+        put(dump, temp, mode=0600)
+        cmd = [
+            'pg_restore',
+            '--dbname', database,
+            '--schema', 'public',
+            '--clean' if clean else '',
+            temp,
+        ]
+        run(' '.join(cmd))
+        run('rm {}'.format(temp))
