@@ -1,0 +1,8 @@
+Section: misc
+Priority: optional
+Standards-Version: 3.9.2
+
+Package: {package}
+Maintainer: Braid <@twistedmatrix.com>
+Provides: {provides}
+Description: {description}
