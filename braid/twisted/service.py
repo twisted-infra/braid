@@ -1,12 +1,11 @@
 from cStringIO import StringIO
 
-from fabric.api import settings, sudo, run, put, task, abort
+from fabric.api import settings, sudo, run, put, abort
 
-from braid import pip, fails
+from braid import pip, fails, tasks
 from braid.utils import hasSudoCapabilities
 
 from twisted.python.filepath import FilePath
-from twisted.python.reflect import prefixedMethods
 
 
 TASK_PREFIX = 'task_'
@@ -19,7 +18,7 @@ def _stripPrefix(f):
     return f.__name__[len(TASK_PREFIX):]
 
 
-class Service(object):
+class Service(tasks.Service):
 
     baseServicesDirectory = '/srv'
     runDir = '~/run'
@@ -101,19 +100,3 @@ class Service(object):
         """
         with settings(user=self.serviceUser):
             run('tail -f {}/twistd.log'.format(self.logDir))
-
-    def getTasks(self):
-        """
-        Get all tasks of this L{Service} object.
-
-        Intended to be used like::
-
-            globals.updated(Service('name').getTasks())
-
-        at the module level of a fabfile.
-
-        @returns: L{dict} of L{fabric.tasks.Task}
-        """
-        tasks = [(t, _stripPrefix(t))
-                 for t in prefixedMethods(self, TASK_PREFIX)]
-        return {name: task(name=name)(t) for t, name in tasks}
