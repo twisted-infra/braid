@@ -7,6 +7,9 @@ from twisted.python.filepath import FilePath
 from braid import pypy, service, authbind, git, package, bazaar, postgres
 
 
+__all__ = ['bootstrap', 'sshConfig']
+
+
 @task
 def bootstrap():
     """
