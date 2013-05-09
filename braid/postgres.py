@@ -79,7 +79,7 @@ def dump(name, localpath):
     Download a dump of the specified database to localpath. This has to be
     executed
     """
-    with utils.tempfile() as temp:
+    with utils.tempfile(saveto=localpath) as temp:
         cmd = [
             'pg_dump',
             '--blobs',
@@ -90,7 +90,6 @@ def dump(name, localpath):
             name,
         ]
         run(' '.join(cmd))
-        get(temp, localpath)
 
 
 @task
@@ -114,8 +113,7 @@ def restore(dump, database, user=None, clean=False):
     createDb(database, user)
 
     with settings(user=user):
-        with utils.tempfile() as temp:
-            put(dump, temp, mode=0600)
+        with utils.tempfile(uploadfrom=dump) as temp:
             cmd = [
                 'pg_restore',
                 '--dbname', database,
