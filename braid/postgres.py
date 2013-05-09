@@ -98,7 +98,7 @@ def dump(database, dumpPath, user=None):
 
 
 @task
-def restore(dumpPath, database, user=None, clean=False):
+def restore(database, dumpPath, user=None, clean=False):
     """
     Upload a local dump and restore it to the named database.
 
