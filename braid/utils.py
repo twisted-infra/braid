@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import functools
+import contextlib
 
 from fabric.api import env, sudo, run, quiet
 
@@ -37,3 +38,12 @@ def cacheInEnvironment(f):
             env[f.__name__] = result
         return result
     return wrapper
+
+
+@contextlib.contextmanager
+def tempfile():
+    temp = run('mktemp')
+    try:
+        yield temp
+    finally:
+        run('rm {}'.format(temp))
