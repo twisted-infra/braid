@@ -55,7 +55,7 @@ def tempfile(uploadfrom=None, saveto=None):
     temp = run('mktemp')
     try:
         if uploadfrom:
-            put(uploadfrom, temp)
+            put(uploadfrom, temp, mode=0600)
         yield temp
     except:
         raise
