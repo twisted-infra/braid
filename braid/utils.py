@@ -41,26 +41,26 @@ def cacheInEnvironment(f):
 
 
 @contextlib.contextmanager
-def tempfile(uploadfrom=None, saveto=None):
+def tempfile(uploadFrom=None, saveTo=None):
     """
     Context manager to create and remove a temporary file during the execution
     of its context.
 
-    If the C{uploadfrom} argumment is provided, the content of the temporary
+    If the C{uploadFrom} argumment is provided, the content of the temporary
     file will be set to the contents of the local file prior execution.
 
-    If the saveto argument is provided, the content of the temporary file will
+    If the C{saveTo} argument is provided, the content of the temporary file will
     be downloaded locally upon successful execution.
     """
     temp = run('mktemp')
     try:
-        if uploadfrom:
-            put(uploadfrom, temp, mode=0600)
+        if uploadFrom:
+            put(uploadFrom, temp, mode=0600)
         yield temp
     except:
         raise
     else:
-        if saveto:
-            get(temp, saveto)
+        if saveTo:
+            get(temp, saveTo)
     finally:
         run('rm -f {}'.format(temp))

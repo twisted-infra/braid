@@ -74,9 +74,9 @@ def dropDb(name):
 
 
 @task
-def dump(database, localpath, user=None):
+def dump(database, dumpPath, user=None):
     """
-    Download a dump of the specified database to localpath. This has to be
+    Download a dump of the specified database to C{dumpPath}. This has to be
     executed as a user with enough privileges on the selected database.
     Alternatively a user can be manually provided.
     """
@@ -84,7 +84,7 @@ def dump(database, localpath, user=None):
         user = env.user
 
     with settings(user=user):
-        with utils.tempfile(saveto=localpath) as temp:
+        with utils.tempfile(saveTo=dumpPath) as temp:
             cmd = [
                 'pg_dump',
                 '--blobs',
@@ -98,7 +98,7 @@ def dump(database, localpath, user=None):
 
 
 @task
-def restore(dump, database, user=None, clean=False):
+def restore(dumpPath, database, user=None, clean=False):
     """
     Upload a local dump and restore it to the named database.
 
@@ -118,7 +118,7 @@ def restore(dump, database, user=None, clean=False):
     createDb(database, user)
 
     with settings(user=user):
-        with utils.tempfile(uploadfrom=dump) as temp:
+        with utils.tempfile(uploadFrom=dumpPath) as temp:
             cmd = [
                 'pg_restore',
                 '--dbname', database,
