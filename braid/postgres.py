@@ -1,5 +1,5 @@
 from fabric.api import sudo, hide, get, task, env, put, run, settings
-from braid import package
+from braid import package, utils
 from pipes import quote
 
 
@@ -76,21 +76,21 @@ def dropDb(name):
 @task
 def dump(name, localpath):
     """
-    Download a dump of the specified database to localpath.
+    Download a dump of the specified database to localpath. This has to be
+    executed
     """
-    temp = run('mktemp')
-    cmd = [
-        'pg_dump',
-        '--blobs',
-        '--no-owner',
-        '--format', 'custom',
-        '--file', temp,
-        '--compress', '9',
-        name,
-    ]
-    run(' '.join(cmd))
-    get(temp, localpath)
-    run('rm {}'.format(temp))
+    with utils.tempfile() as temp:
+        cmd = [
+            'pg_dump',
+            '--blobs',
+            '--no-owner',
+            '--format', 'custom',
+            '--file', temp,
+            '--compress', '9',
+            name,
+        ]
+        run(' '.join(cmd))
+        get(temp, localpath)
 
 
 @task
@@ -114,14 +114,13 @@ def restore(dump, database, user=None, clean=False):
     createDb(database, user)
 
     with settings(user=user):
-        temp = run('mktemp')
-        put(dump, temp, mode=0600)
-        cmd = [
-            'pg_restore',
-            '--dbname', database,
-            '--schema', 'public',
-            '--clean' if clean else '',
-            temp,
-        ]
-        run(' '.join(cmd))
-        run('rm {}'.format(temp))
+        with utils.tempfile() as temp:
+            put(dump, temp, mode=0600)
+            cmd = [
+                'pg_restore',
+                '--dbname', database,
+                '--schema', 'public',
+                '--clean' if clean else '',
+                temp,
+            ]
+            run(' '.join(cmd))
