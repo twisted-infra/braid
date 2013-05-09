@@ -52,7 +52,7 @@ def tempfile(uploadFrom=None, saveTo=None):
     If the C{saveTo} argument is provided, the content of the temporary file will
     be downloaded locally upon successful execution.
     """
-    temp = run('mktemp')
+    temp = run('mktemp -t braid-tmp-XXXXXXXX')
     try:
         if uploadFrom:
             put(uploadFrom, temp, mode=0600)
