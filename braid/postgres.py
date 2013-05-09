@@ -75,6 +75,9 @@ def dropDb(name):
 
 @task
 def dump(name, localpath):
+    """
+    Download a dump of the specified database to localpath.
+    """
     temp = sudo('mktemp', user='postgres')
     cmd = [
         'pg_dump',
@@ -94,9 +97,14 @@ def dump(name, localpath):
 @task
 def restore(dump, database, user=None, clean=False):
     """
-    If the user is not specified, set the owner to the current active SSH user.
+    Upload a local dump and restore it to the named database.
+
+    If no user is specified, set the owner to the current active SSH user.
     This function only works for postgres users which have a corresponding
     system user.
+
+    If clean is specified, the database will be dropped and recreated. The
+    database will always be created if it does not exits.
     """
     if user is None:
         user = env.user
