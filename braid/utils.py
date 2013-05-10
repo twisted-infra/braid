@@ -64,3 +64,14 @@ def tempfile(uploadFrom=None, saveTo=None):
             get(temp, saveTo)
     finally:
         run('rm -f {}'.format(temp))
+
+
+@contextlib.contextmanager
+def tempdir():
+    temp = run('mktemp -d -t braid-tmp-XXXXXXXX')
+    try:
+        yield temp
+    except:
+        raise
+    finally:
+        run('rm -rf {}'.format(temp))
