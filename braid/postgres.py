@@ -85,16 +85,21 @@ def dump(database, dumpPath, user=None):
 
     with settings(user=user):
         with utils.tempfile(saveTo=dumpPath) as temp:
-            cmd = [
-                'pg_dump',
-                '--blobs',
-                '--no-owner',
-                '--format', 'custom',
-                '--file', temp,
-                '--compress', '9',
-                database,
-            ]
-            run(' '.join(cmd))
+            dumpLocal(database, temp)
+
+
+def dumpLocal(database, path):
+    cmd = [
+        'pg_dump',
+        '--blobs',
+        '--no-owner',
+        '--format', 'custom',
+        '--file', path,
+        '--compress', '9',
+        database,
+    ]
+    run(' '.join(cmd))
+
 
 
 @task
