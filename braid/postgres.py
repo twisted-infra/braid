@@ -85,16 +85,20 @@ def dump(database, dumpPath, user=None):
 
     with settings(user=user):
         with utils.tempfile(saveTo=dumpPath) as temp:
-            cmd = [
-                'pg_dump',
-                '--blobs',
-                '--no-owner',
-                '--format', 'custom',
-                '--file', temp,
-                '--compress', '9',
-                database,
-            ]
-            run(' '.join(cmd))
+            dumpToPath(database, temp)
+
+
+def dumpToPath(database, dumpPath):
+    cmd = [
+        'pg_dump',
+        '--blobs',
+        '--no-owner',
+        '--format', 'custom',
+        '--file', dumpPath,
+        '--compress', '9',
+        database,
+    ]
+    run(' '.join(cmd))
 
 
 @task
@@ -119,10 +123,14 @@ def restore(database, dumpPath, user=None, clean=False):
 
     with settings(user=user):
         with utils.tempfile(uploadFrom=dumpPath) as temp:
-            cmd = [
-                'pg_restore',
-                '--dbname', database,
-                '--schema', 'public',
-                temp,
-            ]
-            run(' '.join(cmd))
+            restoreFromPath(database, temp)
+
+
+def restoreFromPath(database, dumpPath):
+    cmd = [
+        'pg_restore',
+        '--dbname', database,
+        '--schema', 'public',
+        dumpPath,
+    ]
+    run(' '.join(cmd))
