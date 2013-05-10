@@ -1,6 +1,6 @@
 import os
 
-from fabric.api import run, get
+from fabric.api import run, get, hide
 
 from braid import utils
 from pipes import quote
@@ -38,3 +38,31 @@ def dump(spec, localfile):
 
         run(' '.join(cmd))
         get(temp, localfile)
+
+
+def restore(spec, localfile):
+    with utils.tempfile(uploadFrom=localfile) as tar:
+        cmd = [
+            'tar',
+            '--extract',
+            '--file={}'.format(tar),
+            '--verbose',
+            '--show-transformed-names',
+        ]
+
+        with hide('output'):
+            pwd = run('pwd')
+
+        for source, destination in spec.iteritems():
+            dirname, basename = os.path.split(destination)
+            # Each dirname has to be absolute, otherwise it refers to the
+            # previously set --directory.
+            dirname = os.path.join(pwd, dirname)
+            cmd.extend([
+                '\\\n',
+                '   --directory {:20s}'.format(dirname),
+                '{:15s}'.format(source),
+                '--transform',
+                quote('s!^{}!{}!'.format(source, basename)),
+            ])
+        run(' '.join(cmd))
