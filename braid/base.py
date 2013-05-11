@@ -18,7 +18,7 @@ def bootstrap():
     """
 
     # Each service specific system user shall be added to the 'service' group
-    sudo('groupadd -f --system service')
+    sudo('/usr/sbin/groupadd -f --system service')
 
     package.install(['python2.7', 'python2.7-dev'])
     # gcc is needed for 'pip install'
@@ -42,7 +42,7 @@ def sshConfig():
     configFile = FilePath(__file__).sibling('sshd_config')
     put(configFile.path, '/etc/ssh/sshd_config', use_sudo=True)
 
-    sudo('chgrp service /root/.ssh/authorized_keys')
-    sudo('chmod go+X /root /root/.ssh')
-    sudo('chmod g+r /root/.ssh/authorized_keys')
+    sudo('/bin/chgrp service /root/.ssh/authorized_keys')
+    sudo('/bin/chmod go+X /root /root/.ssh')
+    sudo('/bin/chmod g+r /root/.ssh/authorized_keys')
     service.restart('ssh')

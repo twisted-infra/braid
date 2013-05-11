@@ -13,7 +13,7 @@ def create(username, homeBase='/home'):
     """
     Creates a new user for everyday use.
     """
-    return sudo('useradd --base-dir {} --user-group --create-home '
+    return sudo('/usr/sbin/useradd --base-dir {} --user-group --create-home '
                 '--shell /bin/bash {}'.format(homeBase, username))
 
 
@@ -21,7 +21,7 @@ def uploadKeys(user, keys):
     """
     Uplaod a list of keys to a user's autorized_keys file.
     """
-    sudo('mkdir -p ~{}/.ssh'.format(user))
+    sudo('/bin/mkdir -p ~{}/.ssh'.format(user))
     files.append('~{}/.ssh/authorized_keys'.format(user), keys, use_sudo=True)
 
 

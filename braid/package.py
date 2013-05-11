@@ -5,4 +5,4 @@ def install(packages):
     """
     Install a list of packages.
     """
-    sudo('apt-get --yes --quiet install {}'.format(" ".join(packages)))
+    sudo('/usr/bin/apt-get --yes --quiet install {}'.format(" ".join(packages)))

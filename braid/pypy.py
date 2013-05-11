@@ -11,18 +11,18 @@ pypyDir = '/opt/pypy-2.0'
 
 @task
 def install():
-    sudo('mkdir -p /opt')
-    if fails('id {}'.format('pypy')):
-        sudo('useradd --home-dir {} --gid bin '
+    sudo('/bin/mkdir -p /opt')
+    if fails('/usr/bin/id {}'.format('pypy')):
+        sudo('/usr/sbin/useradd --home-dir {} --gid bin '
              '-M --system --shell /bin/false '
              'pypy'.format(pypyDir))
     else:
-        sudo('usermod --home-dir {} pypy'.format(pypyDir))
+        sudo('/usr/sbin/usermod --home-dir {} pypy'.format(pypyDir))
 
     with cd('/opt'):
         for url in pypyURL, setuptoolsURL, pipURL:
-            sudo('wget -nc {}'.format(url))
-        sudo('tar xf {}'.format(path.basename(pypyURL)))
+            sudo('/usr/bin/wget -nc {}'.format(url))
+        sudo('/bin/tar xf {}'.format(path.basename(pypyURL)))
         for url in setuptoolsURL, pipURL:
             sudo('~pypy/bin/pypy {}'.format(path.basename(url)))
         sudo('~pypy/bin/pip install twisted')

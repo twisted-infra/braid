@@ -20,5 +20,5 @@ def _generateControlFile(package, provides, description=None):
 def installEquiv(package, provides, description=None):
     control = _generateControlFile(package, provides, description)
     with tempfile(control) as controlFile, cd('/root'):
-        sudo('equivs-build {}'.format(controlFile))
-        sudo('dpkg -i {}_1.0_all.deb'.format(package))
+        sudo('/usr/bin/equivs-build {}'.format(controlFile))
+        sudo('/usr/bin/dpkg -i {}_1.0_all.deb'.format(package))

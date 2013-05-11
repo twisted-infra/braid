@@ -7,7 +7,7 @@ def distroName():
     Get the name of the distro.
     """
     with quiet():
-        lsb = run('lsb_release --id --short', warn_only=True)
+        lsb = run('/usr/bin/lsb_release --id --short', warn_only=True)
         if lsb.succeeded:
             return lsb.lower()
 
@@ -16,7 +16,7 @@ def distroName():
                 ('fedora', '/etc/fedora-release'),
                 ]
         for distro, sentinel in distros:
-            if succeeds('test -f {}'.format(sentinel)):
+            if succeeds('/usr/bin/test -f {}'.format(sentinel)):
                 return distro
 
 def distroFamily():

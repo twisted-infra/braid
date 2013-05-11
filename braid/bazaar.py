@@ -10,8 +10,8 @@ def install():
 
 
 def branch(branch, location):
-    if fails('[ -d {}/.bzr ]'.format(location)):
-        run('mkdir -p {}'.format(os.path.dirname(location)))
-        run('bzr branch {} {}'.format(branch, location))
+    if fails('/usr/bin/test -d {}/.bzr'.format(location)):
+        run('/bin/mkdir -p {}'.format(os.path.dirname(location)))
+        run('/usr/bin/bzr branch {} {}'.format(branch, location))
     else:
-        run('bzr pull --verbose --overwrite -d {} {}'.format(location, branch), pty=False)
+        run('/usr/bin/bzr pull --verbose --overwrite -d {} {}'.format(location, branch), pty=False)
