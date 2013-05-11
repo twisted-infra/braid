@@ -48,11 +48,11 @@ class Service(tasks.Service):
 
     def bootstrap(self, python='pypy'):
         # Create the user only if it does not already exist
-        if fails('id {}'.format(self.serviceUser)):
+        if fails('/usr/bin/id {}'.format(self.serviceUser)):
             if not hasSudoCapabilities():
                 abort("User {} doesn't exist and we can't create it."
                       .format(self.serviceUser))
-            sudo('useradd --base-dir {} --groups service --user-group '
+            sudo('/usr/sbin/useradd --base-dir {} --groups service --user-group '
                  '--create-home --system --shell /bin/bash '
                  '{}'.format(self.baseServicesDirectory, self.serviceUser))
 
@@ -61,7 +61,7 @@ class Service(tasks.Service):
             pip.install('twisted')
 
             # Create base directory setup
-            run('mkdir -p {} {} {}'.format(
+            run('/bin/mkdir -p {} {} {}'.format(
                 self.runDir,
                 self.logDir,
                 self.binDir))
@@ -99,4 +99,4 @@ class Service(tasks.Service):
         Tail the log of the service.
         """
         with settings(user=self.serviceUser):
-            run('tail -f {}/twistd.log'.format(self.logDir))
+            run('/usr/bin/tail -f {}/twistd.log'.format(self.logDir))

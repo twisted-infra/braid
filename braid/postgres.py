@@ -10,7 +10,7 @@ def install():
 def _runQuery(query, database=None):
     with hide('running', 'output'):
         database = '--dbname={}'.format(database) if database else ''
-        return sudo('psql --no-align --no-readline --no-password --quiet '
+        return sudo('/usr/bin/psql --no-align --no-readline --no-password --quiet '
                     '--tuples-only {} -c {}'.format(database, quote(query)),
                     user='postgres', pty=False, combine_stderr=False)
 
@@ -29,12 +29,13 @@ def _userExists(name):
 
 def createUser(name):
     if not _userExists(name):
-        sudo('createuser -D -R -S {}'.format(name), user='postgres', pty=False)
+        sudo('/usr/bin/createuser -D -R -S {}'.format(name), user='postgres',
+             pty=False)
 
 
 def createDb(name, owner):
     if not _dbExists(name):
-        sudo('createdb -O {} {}'.format(owner, name), user='postgres',
+        sudo('/usr/bin/createdb -O {} {}'.format(owner, name), user='postgres',
              pty=False)
 
 
@@ -86,7 +87,7 @@ def dump(database, dumpPath, user=None):
     with settings(user=user):
         with utils.tempfile(saveTo=dumpPath) as temp:
             cmd = [
-                'pg_dump',
+                '/usr/bin/pg_dump',
                 '--blobs',
                 '--no-owner',
                 '--format', 'custom',
@@ -120,7 +121,7 @@ def restore(database, dumpPath, user=None, clean=False):
     with settings(user=user):
         with utils.tempfile(uploadFrom=dumpPath) as temp:
             cmd = [
-                'pg_restore',
+                '/usr/bin/pg_restore',
                 '--dbname', database,
                 '--schema', 'public',
                 temp,

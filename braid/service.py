@@ -3,7 +3,7 @@ from fabric.api import sudo, run
 
 def _service(action, service, useSudo=True):
     cmd = sudo if useSudo else run
-    cmd('service {} {}'.format(service, action))
+    cmd('/usr/bin/service {} {}'.format(service, action))
 
 
 def start(service, useSudo=True):
@@ -19,10 +19,10 @@ def restart(service, useSudo=True):
 
 
 def enable(service, useSudo=True):
-    sudo('update-rc.d {} defaults'.format(service))
+    sudo('/usr/sbin/update-rc.d {} defaults'.format(service))
     _service('start', service, useSudo)
 
 
 def disable(service, useSudo=True):
     _service('stop', service, useSudo)
-    sudo('update-rc.d -f {} remove'.format(service))
+    sudo('/usr/sbin/update-rc.d -f {} remove'.format(service))

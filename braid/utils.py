@@ -20,7 +20,8 @@ def hasSudoCapabilities():
     env.setdefault('canRoot', {})
     if env.canRoot.get(env.host_string) is None:
         with quiet():
-            env.canRoot[env.host_string] = run('sudo -n whoami').succeeded
+            env.canRoot[env.host_string] = run('/usr/bin/sudo -n '
+                                               '/usr/bin/whoami').succeeded
     return env.canRoot[env.host_string]
 
 
@@ -52,7 +53,7 @@ def tempfile(uploadFrom=None, saveTo=None):
     If the C{saveTo} argument is provided, the content of the temporary file will
     be downloaded locally upon successful execution.
     """
-    temp = run('mktemp -t braid-tmp-XXXXXXXX')
+    temp = run('/bin/mktemp -t braid-tmp-XXXXXXXX')
     try:
         if uploadFrom:
             put(uploadFrom, temp, mode=0600)
@@ -63,4 +64,4 @@ def tempfile(uploadFrom=None, saveTo=None):
         if saveTo:
             get(temp, saveTo)
     finally:
-        run('rm -f {}'.format(temp))
+        run('/bin/rm -f {}'.format(temp))
