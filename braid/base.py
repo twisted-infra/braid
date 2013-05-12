@@ -25,6 +25,8 @@ def bootstrap():
     package.install(['gcc', 'python-pip'])
     # For trac
     package.install(['python-subversion', 'enscript'])
+    # For equivs
+    package.install(['equivs'])
     pypy.install()
     authbind.install()
     git.install()
