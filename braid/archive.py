@@ -6,20 +6,23 @@ from braid import utils
 from pipes import quote
 
 
-def dump(spec, localfile):
+def dump(spec, localfile, exclude=()):
     """
     C{spec} is a dictionary of filenames/dirnames in the tarball to locations
     on the disk from where the contents have to be retrieved.
 
     Home relative (~/...) file names are not supported by the transformation
     rules as they are converted by the shell before being passed to tar.
+
+    The C{exclude} argument is a list of filename patterns to exclude from the
+    dump.
     """
 
     _, ext = os.path.splitext(localfile)
 
     with utils.tempfile(suffix=ext) as temp:
         cmd = [
-            '/usr/bin/tar',
+            '/bin/tar',
             '--create',
             '--file={}'.format(temp),
             '--auto-compress',
@@ -27,6 +30,8 @@ def dump(spec, localfile):
             '--verbose',
             '--show-transformed-names',
         ]
+
+        cmd += ['--exclude={}'.format(quote(e)) for e in exclude]
 
         for destination, source in spec.iteritems():
             cmd.extend([
@@ -43,7 +48,7 @@ def dump(spec, localfile):
 def restore(spec, localfile):
     with utils.tempfile(uploadFrom=localfile) as tar:
         cmd = [
-            '/usr/bin/tar',
+            '/bin/tar',
             '--extract',
             '--file={}'.format(tar),
             '--verbose',
