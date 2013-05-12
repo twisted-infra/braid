@@ -1,7 +1,10 @@
-from __future__ import print_function
+from __future__ import absolute_import
 
 import functools
 import contextlib
+import imp
+
+from twisted.python.filepath import FilePath
 
 from fabric.api import env, sudo, run, quiet, get, put, hide
 
@@ -80,3 +83,19 @@ def tempdir():
         raise
     finally:
         run('/bin/rm -rf {}'.format(temp))
+
+
+def loadServices(base):
+    from braid import config
+
+    services = {}
+    servicesDir = FilePath(base).sibling('services')
+    for serviceDir in servicesDir.children():
+        serviceName = serviceDir.basename()
+        fabfile = serviceDir.child('fabfile.py')
+        if fabfile.exists():
+            module = imp.load_source(serviceName, fabfile.path, fabfile.open())
+            if module.config == config:
+                del module.config
+            services[serviceName] = module
+    return services

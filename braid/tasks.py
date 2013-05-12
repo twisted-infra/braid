@@ -30,3 +30,7 @@ class Service(object):
         tasks = [(t, _stripPrefix(t))
                  for t in prefixedMethods(self, TASK_PREFIX)]
         return {name: task(name=name)(t) for t, name in tasks}
+
+def addTasks(globals, tasks):
+    globals.update(tasks)
+    globals['__all__'].extend(tasks.keys())

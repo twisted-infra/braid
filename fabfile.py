@@ -9,3 +9,8 @@ from braid import base, users, postgres, config
 
 
 __all__ = ['base', 'config', 'users', 'postgres']
+
+
+from braid.utils import loadServices
+from braid.tasks import addTasks
+addTasks(globals(), loadServices(__file__))
