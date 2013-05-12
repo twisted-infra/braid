@@ -1,4 +1,4 @@
-from fabric.api import sudo, hide, get, task, env, put, run, settings
+from fabric.api import sudo, hide, task, env, run, settings
 from braid import package, utils
 from pipes import quote
 
@@ -86,16 +86,20 @@ def dump(database, dumpPath, user=None):
 
     with settings(user=user):
         with utils.tempfile(saveTo=dumpPath) as temp:
-            cmd = [
-                '/usr/bin/pg_dump',
-                '--blobs',
-                '--no-owner',
-                '--format', 'custom',
-                '--file', temp,
-                '--compress', '9',
-                database,
-            ]
-            run(' '.join(cmd))
+            dumpToPath(database, temp)
+
+
+def dumpToPath(database, dumpPath):
+    cmd = [
+        '/usr/bin/pg_dump',
+        '--blobs',
+        '--no-owner',
+        '--format', 'custom',
+        '--file', dumpPath,
+        '--compress', '9',
+        database,
+    ]
+    run(' '.join(cmd))
 
 
 @task
@@ -120,10 +124,14 @@ def restore(database, dumpPath, user=None, clean=False):
 
     with settings(user=user):
         with utils.tempfile(uploadFrom=dumpPath) as temp:
-            cmd = [
-                '/usr/bin/pg_restore',
-                '--dbname', database,
-                '--schema', 'public',
-                temp,
-            ]
-            run(' '.join(cmd))
+            restoreFromPath(database, temp)
+
+
+def restoreFromPath(database, dumpPath):
+    cmd = [
+        '/usr/bin/pg_restore',
+        '--dbname', database,
+        '--schema', 'public',
+        dumpPath,
+    ]
+    run(' '.join(cmd))

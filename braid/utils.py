@@ -3,7 +3,7 @@ from __future__ import print_function
 import functools
 import contextlib
 
-from fabric.api import env, sudo, run, quiet, get, put
+from fabric.api import env, sudo, run, quiet, get, put, hide
 
 
 def succeeds(cmd, useSudo=False):
@@ -41,8 +41,9 @@ def cacheInEnvironment(f):
     return wrapper
 
 
+
 @contextlib.contextmanager
-def tempfile(uploadFrom=None, saveTo=None):
+def tempfile(uploadFrom=None, saveTo=None, suffix=''):
     """
     Context manager to create and remove a temporary file during the execution
     of its context.
@@ -50,10 +51,11 @@ def tempfile(uploadFrom=None, saveTo=None):
     If the C{uploadFrom} argumment is provided, the content of the temporary
     file will be set to the contents of the local file prior execution.
 
-    If the C{saveTo} argument is provided, the content of the temporary file will
-    be downloaded locally upon successful execution.
+    If the C{saveTo} argument is provided, the content of the temporary file
+    will be downloaded locally upon successful execution.
     """
-    temp = run('/bin/mktemp -t braid-tmp-XXXXXXXX')
+    with hide('output'):
+        temp = run('/bin/mktemp -t braid-tmp-XXXXXXXX --suffix={}'.format(suffix))
     try:
         if uploadFrom:
             put(uploadFrom, temp, mode=0600)
@@ -65,3 +67,16 @@ def tempfile(uploadFrom=None, saveTo=None):
             get(temp, saveTo)
     finally:
         run('/bin/rm -f {}'.format(temp))
+
+
+
+@contextlib.contextmanager
+def tempdir():
+    with hide('output'):
+        temp = run('/bin/mktemp -d -t braid-tmp-XXXXXXXX')
+    try:
+        yield temp
+    except:
+        raise
+    finally:
+        run('/bin/rm -rf {}'.format(temp))
