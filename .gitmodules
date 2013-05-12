@@ -1,0 +1,18 @@
+[submodule "services/buildbot"]
+	path = services/buildbot
+	url = https://github.com/twisted-infra/twisted-buildbot-configuration
+[submodule "services/t-names"]
+	path = services/t-names
+	url = https://github.com/twisted-infra/t-names
+[submodule "services/diffresource"]
+	path = services/diffresource
+	url = https://github.com/twisted-infra/diffresource
+[submodule "services/kenaan"]
+	path = services/kenaan
+	url = https://github.com/twisted-infra/kenaan
+[submodule "services/mailman"]
+	path = services/mailman
+	url = https://github.com/twisted-infra/mailman-config
+[submodule "services/trac"]
+	path = services/trac
+	url = https://github.com/twisted-infra/trac-config
