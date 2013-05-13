@@ -7,6 +7,7 @@ import imp
 from twisted.python.filepath import FilePath
 
 from fabric.api import env, sudo, run, quiet, get, put, hide
+from fabric.contrib import console
 
 
 def succeeds(cmd, useSudo=False):
@@ -99,3 +100,15 @@ def loadServices(base):
                 del module.config
             services[serviceName] = module
     return services
+
+
+
+def confirm(msg):
+    """
+    Ask for confirmation, if C{askConfirmation} is set in the environment.
+    """
+    if env.get('askConfirmation', True):
+        msg = "\n".join([msg, "Do you want to proceed?"])
+        return console.confirm(msg, default=False)
+    else:
+        return True
