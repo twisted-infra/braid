@@ -27,6 +27,8 @@ def bootstrap():
     package.install(['python-subversion', 'enscript'])
     # For equivs
     package.install(['equivs'])
+    # For buildbot/codespeed
+    package.install(['sqlite3'])
     pypy.install()
     authbind.install()
     git.install()
