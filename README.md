@@ -22,6 +22,36 @@ Currently Supported Services
 - [trac](https://github.com/twisted-infra/trac-config)
 - [mailman](https://github.com/twisted-infra/mailman-config)
 
+Usage Notes
+===========
+
+# Get the code
+$ git clone https://github.com/twisted-infra/braid
+# Get the configurations for each service.
+# This will clone all the repos in to service/*
+$ cd braid
+$ git submodule update --init
+
+Some notable commands:
+
+# Add keys from file to remote user
+$ fab users.uploadKeyFile:<user>,<keyfile>
+# Add keys from launchpad to remote user
+$ fab users.uploadLaunchpadKeys:<user>[,<launchpadUser>]
+
+# Install base packages, and ssh config
+$ fab base.bootstrap
+
+There are some tools to help specifying which machines to target.
+
+# Install against dornkirk
+$ fab config.production
+
+There is a sample `testing.env` that can be put in ~/.config/braid/. Any files matching *.env
+are accessible via
+$ fab config.testing
+
+
 
 style-notes
 ===========
