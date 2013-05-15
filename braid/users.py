@@ -1,6 +1,9 @@
 from __future__ import print_function, absolute_import
 
-import requests
+try:
+    import requests
+except ImportError:
+    requests = None
 
 from fabric.api import task, sudo
 from fabric.contrib import files
@@ -43,3 +46,6 @@ def uploadLaunchpadKeys(user, launchpadUser=None):
     r = requests.get('https://launchpad.net/~{}/+sshkeys'.format(launchpadUser))
     keys = r.text.splitlines()
     uploadKeys(user, keys)
+
+if requests is None:
+    del uploadLaunchpadKeys
