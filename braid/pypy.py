@@ -17,7 +17,7 @@ def install():
              '-M --system --shell /bin/false '
              'pypy'.format(pypyDir))
     else:
-        sudo('/usr/sbin/usermod --home-dir {} pypy'.format(pypyDir))
+        sudo('/usr/sbin/usermod --home {} pypy'.format(pypyDir))
 
     with cd('/opt'):
         for url in pypyURL, setuptoolsURL, pipURL:
