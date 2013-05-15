@@ -91,7 +91,8 @@ class Service(tasks.Service):
         """
         Restart the service.
         """
-        self.task_stop()
+        with settings(warn_only=True):
+            self.task_stop()
         self.task_start()
 
     def task_log(self):
