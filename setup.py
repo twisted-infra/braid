@@ -11,7 +11,7 @@ setup(
     install_requires=[
         'fabric >= 1.6.0',
         'twisted >= 12.3.0',
-        'requests',
+        'requests >= 1.2.0',
     ],
     zip_safe=False,
 )
