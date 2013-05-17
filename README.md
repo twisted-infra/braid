@@ -18,7 +18,7 @@ Currently Supported Services
 - [buildbot](https://github.com/twisted-infra/twisted-buildbot-configuration)
 - [diffresource](https://code.launchpad.net/~tom.prince/twisted-trac-integration/braided-diffresource)
 - [kenaan](https://github.com/twisted-infra/kenaan)
-- [hiscore](https://twistedmatrix.com/~tomprince/hiscore)
+- [hiscore](svn.twistedmatrix.com:infra/twisted-highscore)
 - [trac](https://github.com/twisted-infra/trac-config)
 - [mailman](https://github.com/twisted-infra/mailman-config)
 
