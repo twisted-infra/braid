@@ -29,6 +29,8 @@ def bootstrap():
     package.install(['equivs'])
     # For buildbot/codespeed
     package.install(['sqlite3'])
+    # Development and deployment
+    package.install(['python-virtualenv', 'virtualenvwrapper'])
     pypy.install()
     authbind.install()
     git.install()
