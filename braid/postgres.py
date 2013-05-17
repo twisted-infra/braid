@@ -35,7 +35,7 @@ def createUser(name):
 
 def createDb(name, owner):
     if not _dbExists(name):
-        sudo('/usr/bin/createdb -O {} {}'.format(owner, name), user='postgres',
+        sudo('/usr/bin/createdb -E utf8 -O {} {}'.format(owner, name), user='postgres',
              pty=False)
 
 
