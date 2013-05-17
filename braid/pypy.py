@@ -25,4 +25,4 @@ def install():
         sudo('/bin/tar xf {}'.format(path.basename(pypyURL)))
         for url in setuptoolsURL, pipURL:
             sudo('~pypy/bin/pypy {}'.format(path.basename(url)))
-        sudo('~pypy/bin/pip install twisted')
+        sudo('~pypy/bin/pip install twisted pyopenssl')

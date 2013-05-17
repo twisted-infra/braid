@@ -31,6 +31,7 @@ def bootstrap():
     package.install(['sqlite3'])
     # Development and deployment
     package.install(['python-virtualenv', 'virtualenvwrapper'])
+    package.install(['python-twisted', 'python-openssl'])
     pypy.install()
     authbind.install()
     git.install()
