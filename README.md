@@ -67,7 +67,7 @@ $ fab config.testing
 ```
 
 
-Server configuration conventions
+Service configuration conventions
 --------------------------------
 
 ### Directory structure ###
