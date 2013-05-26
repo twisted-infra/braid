@@ -1,13 +1,19 @@
+import re
 from os import path
-from fabric.api import cd, task, sudo
+from fabric.api import cd, task, sudo, abort
 
-from braid import fails
+from braid import info
+from braid.utils import fails
 
-pypyURL = 'https://bitbucket.org/pypy/pypy/downloads/pypy-2.0-linux64.tar.bz2'
+pypyURLs = {
+    'x86_64': 'https://bitbucket.org/pypy/pypy/downloads/pypy-2.0.2-linux64.tar.bz2',
+    'x86': 'https://bitbucket.org/pypy/pypy/downloads/pypy-2.0.2-linux.tar.bz2',
+    }
+pypyDir = '/opt/pypy-2.0'
+
 setuptoolsURL = 'http://peak.telecommunity.com/dist/ez_setup.py'
 pipURL = 'https://raw.github.com/pypa/pip/master/contrib/get-pip.py'
 
-pypyDir = '/opt/pypy-2.0'
 
 @task
 def install():
@@ -20,6 +26,13 @@ def install():
         sudo('/usr/sbin/usermod --home {} pypy'.format(pypyDir))
 
     with cd('/opt'):
+        if info.arch() == 'x86_64':
+            pypyURL = pypyURLs['x86_64']
+        elif re.match('i.86', info.arch()):
+            pypyURL = pypyURLs['x86']
+        else:
+            abort("Can't install pypy on unknown architecture.")
+
         for url in pypyURL, setuptoolsURL, pipURL:
             sudo('/usr/bin/wget -nc {}'.format(url))
         sudo('/bin/tar xf {}'.format(path.basename(pypyURL)))

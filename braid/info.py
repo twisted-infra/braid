@@ -19,6 +19,8 @@ def distroName():
             if succeeds('/usr/bin/test -f {}'.format(sentinel)):
                 return distro
 
+
+
 def distroFamily():
     """
     Get the family of the distro.
@@ -34,3 +36,14 @@ def distroFamily():
         if distro in members:
             return family
     return 'other'
+
+
+@cacheInEnvironment
+def arch():
+    """
+    Get the architechture of the machine.
+    """
+    return run('/bin/uname --machine')
+
+
+__all__ = ['distroName', 'distroFamily', 'arch']
