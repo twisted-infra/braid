@@ -21,6 +21,12 @@ Currently Supported Services
 - [trac](https://github.com/twisted-infra/trac-config)
 - [mailman](https://github.com/twisted-infra/mailman-config)
 
+Server Dependencies
+===================
+braid currently assumes that it is being run against a ubuntu server (precise).
+
+It requires that the `universe` component be enabled, as well `sudo`.
+
 Usage Notes
 ===========
 
