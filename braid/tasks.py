@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from fabric.api import task
+from fabric.api import task, roles
 from twisted.python.reflect import prefixedMethods
 
 
@@ -13,9 +13,10 @@ def _stripPrefix(f):
     """
     return f.__name__[len(TASK_PREFIX):]
 
+
 class Service(object):
 
-    def getTasks(self):
+    def getTasks(self, role=None):
         """
         Get all tasks of this L{Service} object.
 
@@ -27,9 +28,15 @@ class Service(object):
 
         @returns: L{dict} of L{fabric.tasks.Task}
         """
-        tasks = [(t, _stripPrefix(t))
-                 for t in prefixedMethods(self, TASK_PREFIX)]
-        return {name: task(name=name)(t) for t, name in tasks}
+        tasks = prefixedMethods(self, TASK_PREFIX)
+        tasks = ((_stripPrefix(t), t) for t in tasks)
+        tasks = ((name, task(name=name)(t)) for name, t in tasks)
+
+        if role:
+            tasks = ((name, roles(role)(t)) for name, t in tasks)
+
+        return dict(tasks)
+
 
 def addTasks(globals, tasks):
     globals.update(tasks)
