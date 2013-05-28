@@ -46,4 +46,14 @@ def arch():
     return run('/bin/uname --machine')
 
 
+
+@cacheInEnvironment
+def isRoot():
+    """
+    Check if the current user is root.
+    """
+    return run('id -u') == '0'
+
+
+
 __all__ = ['distroName', 'distroFamily', 'arch']
