@@ -1,11 +1,22 @@
 X11Forwarding yes
 
-# Allow client to pass locale environment variables
-AcceptEnv LANG LC_*
-
 Subsystem sftp /usr/lib/openssh/sftp-server
 
-UsePAM yes
+PasswordAuthentication no
+Protocol 2
+SyslogFacility AUTHPRIV
+ChallengeResponseAuthentication no
+UsePAM no
+UseDNS no
+
+
+# Allow client to pass locale environment variables
+AcceptEnv LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES
+AcceptEnv LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT
+AcceptEnv LC_IDENTIFICATION LC_ALL LANGUAGE
+AcceptEnv XMODIFIERS
+AcceptEnv INPUTRC
+AcceptEnv BACKGROUND
 
 Match Group service
 AuthorizedKeysFile /root/.ssh/authorized_keys .ssh/authorized_keys
