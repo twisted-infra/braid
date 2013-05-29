@@ -6,7 +6,7 @@ PasswordAuthentication no
 Protocol 2
 SyslogFacility AUTHPRIV
 ChallengeResponseAuthentication no
-UsePAM no
+UsePAM yes
 UseDNS no
 
 

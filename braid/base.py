@@ -41,6 +41,7 @@ def bootstrap():
     sshConfig()
 
 
+@task
 def sshConfig():
     """
     Install ssh config that allows anyone who can login as root
