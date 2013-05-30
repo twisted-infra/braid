@@ -8,6 +8,7 @@ SyslogFacility AUTHPRIV
 ChallengeResponseAuthentication no
 UsePAM yes
 UseDNS no
+PrintMotd no
 
 
 # Allow client to pass locale environment variables
