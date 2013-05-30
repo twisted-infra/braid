@@ -1,9 +1,8 @@
 from cStringIO import StringIO
 
-from fabric.api import settings, sudo, run, put, abort
+from fabric.api import settings, run, put
 
-from braid import pip, fails, tasks
-from braid.utils import hasSudoCapabilities
+from braid import pip, tasks, users
 
 from twisted.python.filepath import FilePath
 
@@ -20,7 +19,6 @@ def _stripPrefix(f):
 
 class Service(tasks.Service):
 
-    baseServicesDirectory = '/srv'
     runDir = '~/run'
     logDir = '~/log'
     configDir = '~/config'
@@ -29,6 +27,7 @@ class Service(tasks.Service):
     def __init__(self, serviceName):
         self.serviceName = serviceName
         self.serviceUser = serviceName
+
 
     def _generateReadme(self):
         """
@@ -48,13 +47,7 @@ class Service(tasks.Service):
 
     def bootstrap(self, python='pypy'):
         # Create the user only if it does not already exist
-        if fails('/usr/bin/id {}'.format(self.serviceUser)):
-            if not hasSudoCapabilities():
-                abort("User {} doesn't exist and we can't create it."
-                      .format(self.serviceUser))
-            sudo('/usr/sbin/useradd --base-dir {} --groups service --user-group '
-                 '--create-home --system --shell /bin/bash '
-                 '{}'.format(self.baseServicesDirectory, self.serviceUser))
+        users.createService(self.serviceUser)
 
         with settings(user=self.serviceUser):
             # Install twisted

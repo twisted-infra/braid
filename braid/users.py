@@ -5,7 +5,8 @@ try:
 except ImportError:
     requests = None
 
-from fabric.api import task, sudo
+from braid.api import task, sudo
+from braid.utils import fails
 from fabric.contrib import files
 
 from twisted.python.filepath import FilePath
@@ -18,6 +19,18 @@ def create(username, homeBase='/home'):
     """
     return sudo('/usr/sbin/useradd --base-dir {} --user-group --create-home '
                 '--shell /bin/bash {}'.format(homeBase, username))
+
+
+
+def createService(username, base='/srv'):
+    """
+    Create a service user.
+    """
+    if fails('/usr/bin/id {}'.format(username)):
+        sudo('/usr/sbin/useradd --base-dir {} --groups service --user-group '
+             '--create-home --system --shell /bin/bash '
+             '{}'.format(base, username))
+
 
 
 def uploadKeys(user, keys):
