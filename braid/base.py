@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from fabric.api import sudo, task, put
+from braid.api import sudo, task, put
 
 from twisted.python.filepath import FilePath
 
@@ -16,6 +16,8 @@ def bootstrap():
     Prepare the machine to be able to correctly install, configure and execute
     twisted services.
     """
+
+    package.install(['sudo'])
 
     # Each service specific system user shall be added to the 'service' group
     sudo('/usr/sbin/groupadd -f --system service')
