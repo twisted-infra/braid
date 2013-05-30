@@ -7,12 +7,12 @@ def install():
     package.install(['git'])
 
 
-def branch(branch, location):
-    if fails('/usr/bin/test -d {}/.git'.format(location)):
-        run('/usr/bin/git clone {} {}'.format(branch, location))
+def branch(url, destination):
+    if fails('/usr/bin/test -d {}/.git'.format(destination)):
+        run('/usr/bin/git clone {} {}'.format(url, destination))
     else:
         # FIXME: We currently don't check that this the correct branch
         # https://github.com/twisted-infra/braid/issues/5
-        with cd(location):
+        with cd(destination):
             run('/usr/bin/git fetch origin')
             run('/usr/bin/git reset --hard origin')
