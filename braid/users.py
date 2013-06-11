@@ -22,14 +22,22 @@ def create(username, homeBase='/home'):
 
 
 
-def createService(username, base='/srv'):
+def createService(username, base='/srv', groups=['service']):
     """
     Create a service user.
     """
     if fails('/usr/bin/id {}'.format(username)):
-        sudo('/usr/sbin/useradd --base-dir {} --groups service --user-group '
+        if groups:
+            groupOpt = '--group ' + ','.join(groups)
+        else:
+            groupOpt = ''
+        if base is not None:
+            baseOpt = '--base-dir {}'.format(base)
+        else:
+            baseOpt = ''
+        sudo('/usr/sbin/useradd {} {} --user-group '
              '--create-home --system --shell /bin/bash '
-             '{}'.format(base, username))
+             '{}'.format(baseOpt, groupOpt, username))
 
 
 
