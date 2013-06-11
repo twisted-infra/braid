@@ -47,6 +47,7 @@ def uploadKeys(user, keys):
     """
     sudo('/bin/mkdir -p ~{}/.ssh'.format(user))
     files.append('~{}/.ssh/authorized_keys'.format(user), keys, use_sudo=True)
+    sudo('/bin/chown {0} ~{0}/.ssh ~{0}/.ssh/authorized_keys'.format(user))
 
 
 @task
