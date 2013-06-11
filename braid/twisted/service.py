@@ -51,7 +51,7 @@ class Service(tasks.Service):
 
         with settings(user=self.serviceUser):
             # Install twisted
-            pip.install('twisted')
+            pip.install('twisted', python=python)
 
             # Create base directory setup
             run('/bin/mkdir -p {} {} {}'.format(
