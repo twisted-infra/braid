@@ -22,6 +22,11 @@ def bootstrap():
     # Each service specific system user shall be added to the 'service' group
     sudo('/usr/sbin/groupadd -f --system service')
 
+    # pypy is installed with a tarball downloaded with wget.
+    package.install(['wget'])
+    # libssl-dev is needed for installing pyOpenSSL for PyPy.
+    package.install(['libssl-dev'])
+
     package.install(['python2.7', 'python2.7-dev'])
     # gcc is needed for 'pip install'
     package.install(['gcc', 'python-pip'])
