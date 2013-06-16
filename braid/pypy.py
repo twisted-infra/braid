@@ -9,7 +9,7 @@ pypyURLs = {
     'x86_64': 'https://bitbucket.org/pypy/pypy/downloads/pypy-2.0.2-linux64.tar.bz2',
     'x86': 'https://bitbucket.org/pypy/pypy/downloads/pypy-2.0.2-linux.tar.bz2',
     }
-pypyDir = '/opt/pypy-2.0'
+pypyDir = '/opt/pypy-2.0.2'
 
 setuptoolsURL = 'http://peak.telecommunity.com/dist/ez_setup.py'
 pipURL = 'https://raw.github.com/pypa/pip/master/contrib/get-pip.py'
