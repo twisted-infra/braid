@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from braid.api import run, settings, task, put
 from twisted.python.util import sibpath
 
