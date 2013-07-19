@@ -14,6 +14,8 @@ def distroName():
         distros = [
                 ('centos', '/etc/centos-release'),
                 ('fedora', '/etc/fedora-release'),
+                ('rhel', '/etc/redhat-release'),
+                ('debian', '/etc/debian_version'),
                 ]
         for distro, sentinel in distros:
             if succeeds('/usr/bin/test -f {}'.format(sentinel)):
