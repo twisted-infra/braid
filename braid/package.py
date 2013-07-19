@@ -2,6 +2,19 @@ from braid.api import sudo, abort
 
 from braid.info import distroFamily
 
+def update():
+    """
+    Update package list.
+    """
+    if distroFamily() == 'debian':
+        sudo('/usr/bin/apt-get update')
+    elif distroFamily() == 'fedora':
+        # Automatic
+        pass
+    else:
+        abort('Unknown distro.')
+
+
 def install(packages):
     """
     Install a list of packages.
