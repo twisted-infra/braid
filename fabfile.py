@@ -5,10 +5,10 @@ services running on twistedmatrix.com.
 """
 
 
-from braid import base, users, postgres, config
+from braid import base, users, postgres, config, pypy
 
 
-__all__ = ['base', 'config', 'users', 'postgres']
+__all__ = ['base', 'config', 'users', 'postgres', 'pypy']
 
 
 from braid.utils import loadServices

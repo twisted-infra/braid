@@ -6,10 +6,13 @@ from braid import info
 from braid.utils import fails
 
 pypyURLs = {
-    'x86_64': 'https://bitbucket.org/pypy/pypy/downloads/pypy-2.0.2-linux64.tar.bz2',
-    'x86': 'https://bitbucket.org/pypy/pypy/downloads/pypy-2.0.2-linux.tar.bz2',
+    'x86_64': 'https://bitbucket.org/pypy/pypy/downloads/pypy-2.2-linux64.tar.bz2',
+    'x86': 'https://bitbucket.org/pypy/pypy/downloads/pypy-2.2-linux.tar.bz2',
     }
-pypyDir = '/opt/pypy-2.0.2'
+pypyDirs = {
+    'x86_64': '/opt/pypy-2.2-linux64',
+    'x86': '/opt/pypy-2.2-linux',
+    }
 
 setuptoolsURL = 'http://peak.telecommunity.com/dist/ez_setup.py'
 pipURL = 'https://raw.github.com/pypa/pip/master/contrib/get-pip.py'
@@ -17,6 +20,14 @@ pipURL = 'https://raw.github.com/pypa/pip/master/contrib/get-pip.py'
 
 @task
 def install():
+    arch = info.arch()
+    if re.match('i?86', arch):
+        arch = 'x86'
+    pypyURL = pypyURLs.get(arch)
+    pypyDir = pypyDirs.get(arch)
+    if pypyURL is None or pypyDir is None:
+        abort("Can't install pypy on unknown architecture.")
+
     sudo('/bin/mkdir -p /opt')
     if fails('/usr/bin/id {}'.format('pypy')):
         sudo('/usr/sbin/useradd --home-dir {} --gid bin '
@@ -26,12 +37,6 @@ def install():
         sudo('/usr/sbin/usermod --home {} pypy'.format(pypyDir))
 
     with cd('/opt'):
-        if info.arch() == 'x86_64':
-            pypyURL = pypyURLs['x86_64']
-        elif re.match('i.86', info.arch()):
-            pypyURL = pypyURLs['x86']
-        else:
-            abort("Can't install pypy on unknown architecture.")
 
         for url in pypyURL, setuptoolsURL, pipURL:
             sudo('/usr/bin/wget -nc {}'.format(url))
