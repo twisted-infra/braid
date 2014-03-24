@@ -14,7 +14,6 @@ pypyDirs = {
     'x86': '/opt/pypy-2.2-linux',
     }
 
-setuptoolsURL = 'https://bitbucket.org/pypa/setuptools/raw/default/ez_setup.py'
 pipURL = 'https://raw.github.com/pypa/pip/master/contrib/get-pip.py'
 
 
@@ -38,10 +37,9 @@ def install():
 
     with cd('/opt'):
 
-        for url in pypyURL, setuptoolsURL, pipURL:
+        for url in pypyURL, pipURL:
             sudo('/usr/bin/wget -nc {}'.format(url))
         sudo('/bin/tar xf {}'.format(path.basename(pypyURL)))
-        for url, args in (setuptoolsURL, '-U setuptools'), (pipURL, ''):
-            sudo('~pypy/bin/pypy {} {}'.format(path.basename(url), args))
+        sudo('~pypy/bin/pypy {}'.format(path.basename(pipURL)))
         sudo('~pypy/bin/pip install pyopenssl')
         sudo('~pypy/bin/pip install svn+svn://svn.twistedmatrix.com/svn/Twisted/trunk/')
