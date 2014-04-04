@@ -16,6 +16,8 @@ def bootstrap():
     Prepare the machine to be able to correctly install, configure and execute
     twisted services.
     """
+    # Update the apt index before attempting to install any packages
+    package.update()
 
     package.install(['sudo'])
 
