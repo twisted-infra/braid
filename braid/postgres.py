@@ -135,3 +135,16 @@ def restoreFromPath(database, dumpPath):
         dumpPath,
     ]
     run(' '.join(cmd))
+
+
+def newCluster():
+    """
+    Drop and recreate the current PostgreSQL cluster.
+
+    Useful for removing the default ascii encoded postgresql database cluster in
+    Ubuntu, which prevents creation of new UTF-8  databases.
+
+    http://jacobian.org/writing/pg-encoding-ubuntu/
+    """
+    sudo('pg_dropcluster --stop 9.1 main')
+    sudo('pg_createcluster --start -e UTF-8 9.1 main')
