@@ -11,6 +11,8 @@ def update():
     elif distroFamily() == 'fedora':
         # Automatic
         pass
+    elif distroFamily() == 'freebsd':
+        sudo('/usr/sbin/pkg update')
     else:
         abort('Unknown distro.')
 
@@ -23,5 +25,7 @@ def install(packages):
         sudo('/usr/bin/apt-get --yes --quiet install {}'.format(" ".join(packages)))
     elif distroFamily() == 'fedora':
         sudo('/usr/bin/yum install -y {}'.format(" ".join(packages)))
+    elif distroFamily() == 'freebsd':
+        sudo('/usr/sbin/pkg install -y {}'.format(" ".join(packages)))
     else:
         abort('Unknown distro.')
