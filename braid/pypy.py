@@ -6,15 +6,14 @@ from braid import info
 from braid.utils import fails
 
 pypyURLs = {
-    'x86_64': 'https://bitbucket.org/pypy/pypy/downloads/pypy-2.2-linux64.tar.bz2',
-    'x86': 'https://bitbucket.org/pypy/pypy/downloads/pypy-2.2-linux.tar.bz2',
+    'x86_64': 'https://bitbucket.org/pypy/pypy/downloads/pypy-2.2.1-linux64.tar.bz2',
+    'x86': 'https://bitbucket.org/pypy/pypy/downloads/pypy-2.2.1-linux.tar.bz2',
     }
 pypyDirs = {
-    'x86_64': '/opt/pypy-2.2-linux64',
-    'x86': '/opt/pypy-2.2-linux',
+    'x86_64': '/opt/pypy-2.2.1-linux64',
+    'x86': '/opt/pypy-2.2.1-linux',
     }
 
-setuptoolsURL = 'https://bitbucket.org/pypa/setuptools/raw/default/ez_setup.py'
 pipURL = 'https://raw.github.com/pypa/pip/master/contrib/get-pip.py'
 
 
@@ -38,10 +37,9 @@ def install():
 
     with cd('/opt'):
 
-        for url in pypyURL, setuptoolsURL, pipURL:
+        for url in pypyURL, pipURL:
             sudo('/usr/bin/wget -nc {}'.format(url))
         sudo('/bin/tar xf {}'.format(path.basename(pypyURL)))
-        for url, args in (setuptoolsURL, '-U setuptools'), (pipURL, ''):
-            sudo('~pypy/bin/pypy {} {}'.format(path.basename(url), args))
+        sudo('~pypy/bin/pypy {}'.format(path.join('/opt/', path.basename(pipURL))), pty=False)
         sudo('~pypy/bin/pip install pyopenssl')
         sudo('~pypy/bin/pip install svn+svn://svn.twistedmatrix.com/svn/Twisted/trunk/')
