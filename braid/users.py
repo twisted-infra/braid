@@ -5,7 +5,8 @@ try:
 except ImportError:
     requests = None
 
-from braid.api import task, sudo
+from braid.api import task, sudo, abort
+from braid.info import distroFamily
 from braid.utils import fails
 from fabric.contrib import files
 
@@ -27,17 +28,26 @@ def createService(username, base='/srv', groups=['service']):
     Create a service user.
     """
     if fails('/usr/bin/id {}'.format(username)):
-        if groups:
-            groupOpt = '--group ' + ','.join(groups)
+        if distroFamily() in ['debian', 'fedora']:
+            if groups:
+                groupOpt = '--group ' + ','.join(groups)
+            else:
+                groupOpt = ''
+            if base is not None:
+                baseOpt = '--base-dir {}'.format(base)
+            else:
+                baseOpt = ''
+            sudo('/usr/sbin/useradd {} {} --user-group '
+                 '--create-home --system --shell /bin/bash '
+                 '{}'.format(baseOpt, groupOpt, username))
+        elif distroFamily() == 'freebsd':
+            if groups:
+                abort("Groups not supported")
+            if base:
+                abort("Basedir not supported")
+            return sudo('/usr/sbin/pw useradd -m -s /usr/local/bin/bash -h - -n {}'.format(username))
         else:
-            groupOpt = ''
-        if base is not None:
-            baseOpt = '--base-dir {}'.format(base)
-        else:
-            baseOpt = ''
-        sudo('/usr/sbin/useradd {} {} --user-group '
-             '--create-home --system --shell /bin/bash '
-             '{}'.format(baseOpt, groupOpt, username))
+            abort('Unknown distro')
 
 
 
@@ -47,7 +57,7 @@ def uploadKeys(user, keys):
     """
     sudo('/bin/mkdir -p ~{}/.ssh'.format(user))
     files.append('~{}/.ssh/authorized_keys'.format(user), keys, use_sudo=True)
-    sudo('/bin/chown {0} ~{0}/.ssh ~{0}/.ssh/authorized_keys'.format(user))
+    sudo('chown {0} ~{0}/.ssh ~{0}/.ssh/authorized_keys'.format(user))
 
 
 @task

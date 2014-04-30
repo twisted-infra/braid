@@ -1,4 +1,4 @@
-from fabric.api import run, quiet
+from braid.api import run, quiet
 from braid import succeeds, cacheInEnvironment
 
 @cacheInEnvironment
@@ -21,6 +21,9 @@ def distroName():
             if succeeds('/usr/bin/test -f {}'.format(sentinel)):
                 return distro
 
+        os = run('/usr/bin/uname -s', warn_only=True)
+        return os.lower()
+
 
 
 def distroFamily():
@@ -32,6 +35,7 @@ def distroFamily():
     families = {
             'debian': ['debian', 'ubuntu'],
             'fedora': ['fedora', 'centos', 'rhel'],
+            'freebsd': ['freebsd']
             }
     distro = distroName()
     for family, members in families.iteritems():
