@@ -26,6 +26,9 @@ def push(source, destination):
     with lcd(source):
         with cd(destination):
             run('/usr/bin/git checkout --detach')
-            local("git push ssh://{user}@:{host} HEAD:master"
-                  .format(user=env.user, host=env.host,))
+            local(
+                "git push ssh://{user}@{host}:{port}/{destination} HEAD:master"
+                .format(user=env.user, host=env.host, port=env.port,
+                        destination=destination)
+            )
             run('/usr/bin/git reset --hard master')
