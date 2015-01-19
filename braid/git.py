@@ -1,4 +1,4 @@
-from fabric.api import run, cd
+from fabric.api import run, cd, local, lcd, env
 
 from braid import package, fails
 
@@ -16,3 +16,16 @@ def branch(url, destination):
         with cd(destination):
             run('/usr/bin/git fetch origin')
             run('/usr/bin/git reset --hard origin')
+
+
+def push(source, destination):
+    """
+    Push the given local source directory to the given remote directory,
+    detaching the remote directory first so it will accept patches to master.
+    """
+    with lcd(source):
+        with cd(destination):
+            run('/usr/bin/git checkout --detach')
+            local("git push ssh://{user}@:{host} HEAD:master"
+                  .format(user=env.user, host=env.host,))
+            run('/usr/bin/git reset --hard master')
