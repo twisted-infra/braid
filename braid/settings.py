@@ -20,7 +20,7 @@ ENVIRONMENTS = {
         'roledefs': {
             'nameserver': [vagrant_address],
         },
-        'user': 'vagrant',
+        'user': 'root',
         'installPrivateData': False,
     }
 }
