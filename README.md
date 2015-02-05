@@ -129,3 +129,16 @@ Things that want to root want to be run with `sudo`, and files `put` with `use_s
 When dealing with things that want to be run as other users, `run` should be
 used, and a ssh connection as that user (with `settings(user='user')` or the like.
 `braid.base.sshConfig` sets things up so anybody with root keys can log-in as any user in the `service` group.
+
+
+Vagrant
+=======
+
+There is `Vagrantfile` provided with braid, that will setup a staging sever.
+It uses the address `172.16.255.140`, and there is a brain config named `vagrant` that connects to it by default.
+
+```shell
+vagrant up
+ssh-add ~/.vagrant.d/insecure_private_key
+fab config.vagrant base.bootstrap
+```
