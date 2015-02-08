@@ -1,1 +1,2 @@
 /braidrc.local/*.py
+.vagrant/

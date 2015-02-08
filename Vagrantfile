@@ -4,6 +4,13 @@
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
+# Provision root account with the insecure Vagrant ssh key.
+$root_ssh_authorized_keys = <<ENDMARKER
+mkdir /root/.ssh
+chmod 700 /root/.ssh
+cp ~vagrant/.ssh/authorized_keys /root/.ssh
+ENDMARKER
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "ubuntu/precise64"
@@ -11,5 +18,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.synced_folder ".", "/vagrant", disabled: true
 
   config.vm.provision "shell",
-    inline: "cp ~vagrant/.ssh/authorized_keys /root/.ssh"
+    inline: $root_ssh_authorized_keys, privileged: true
+
 end
