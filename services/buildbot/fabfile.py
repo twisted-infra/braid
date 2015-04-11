@@ -25,10 +25,6 @@ class Buildbot(service.Service):
             run('/bin/mkdir -p ~/data')
             run('/bin/mkdir -p ~/data/build_products')
             run('/bin/ln -nsf ~/data/build_products {}/master/public_html/builds'.format(self.configDir))
-
-            if not env.get('installPrivateData'):
-                execute(self.task_installTestData)
-
             cron.install(self.serviceUser, '{}/crontab'.format(self.configDir))
 
     def task_installTestData(self):
@@ -74,6 +70,8 @@ class Buildbot(service.Service):
 
             if env.get('installPrivateData'):
                 self.task_updatePrivateData()
+            else:
+                execute(self.task_installTestData)
 
     def task_update(self):
         """
