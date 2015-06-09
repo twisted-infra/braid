@@ -14,7 +14,7 @@ pypyDirs = {
     'x86': '/opt/pypy-2.6.0-linux',
     }
 
-pipURL = 'https://raw.github.com/pypa/pip/master/contrib/get-pip.py'
+pipURL = 'https://bootstrap.pypa.io/get-pip.py'
 
 
 @task
