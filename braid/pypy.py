@@ -41,5 +41,4 @@ def install():
             sudo('/usr/bin/wget -nc {}'.format(url))
         sudo('/bin/tar xf {}'.format(path.basename(pypyURL)))
         sudo('~pypy/bin/pypy {}'.format(path.join('/opt/', path.basename(pipURL))), pty=False)
-        sudo('~pypy/bin/pip install pyopenssl service_identity')
-        sudo('~pypy/bin/pip install Twisted==15.2.1')
+        sudo('~pypy/bin/pip install Twisted[tls]==15.2.1')
