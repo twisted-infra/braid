@@ -6,12 +6,12 @@ from braid import info
 from braid.utils import fails
 
 pypyURLs = {
-    'x86_64': 'https://bitbucket.org/pypy/pypy/downloads/pypy-2.2.1-linux64.tar.bz2',
-    'x86': 'https://bitbucket.org/pypy/pypy/downloads/pypy-2.2.1-linux.tar.bz2',
+    'x86_64': 'https://bitbucket.org/pypy/pypy/downloads/pypy-2.6.0-linux64.tar.bz2',
+    'x86': 'https://bitbucket.org/pypy/pypy/downloads/pypy-2.6.0-linux.tar.bz2',
     }
 pypyDirs = {
-    'x86_64': '/opt/pypy-2.2.1-linux64',
-    'x86': '/opt/pypy-2.2.1-linux',
+    'x86_64': '/opt/pypy-2.6.0-linux64',
+    'x86': '/opt/pypy-2.6.0-linux',
     }
 
 pipURL = 'https://raw.github.com/pypa/pip/master/contrib/get-pip.py'
