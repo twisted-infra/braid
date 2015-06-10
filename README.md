@@ -14,7 +14,7 @@ Currently Supported Services
 
 - [t-names](https://github.com/twisted-infra/t-names)
 - [t-web](https://github.com/twisted-infra/t-web)
-- [buildbot](https://github.com/twisted-infra/twisted-buildbot-configuration)
+- buildbot
 - [diffresource](https://github.com/twisted-infra/diffresource)
 - [kenaan](https://github.com/twisted-infra/kenaan)
 - [hiscore](svn.twistedmatrix.com:infra/twisted-highscore)
@@ -29,6 +29,8 @@ It requires that the `universe` component be enabled, as well `sudo`.
 
 Usage Notes
 ===========
+
+Fabric configuration is located at `braid/settings.py`.
 
 ```shell
 # Get the code
