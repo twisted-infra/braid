@@ -1,0 +1,8 @@
+- name: Install locales
+  action: apt pkg=locales
+
+- name: Set up locale
+  action: locale_gen name=en_US.UTF-8
+
+- name: Install build requirements
+  action: apt pkg=python-dev,libffi-dev,libssl-dev

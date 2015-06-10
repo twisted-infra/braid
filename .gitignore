@@ -1,3 +1,4 @@
 /braidrc.local/*.py
 .vagrant/
 *.pyc
+*~

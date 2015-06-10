@@ -1,0 +1,5 @@
+- hosts: dornkirk-staging
+  sudo: yes
+  roles:
+    - systemupdate
+    - requirements-debian
