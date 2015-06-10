@@ -20,7 +20,7 @@ The following fabric commands are available:
 
 install - Create user and install configuration.
 installTestData - install fake private configuration and db
-  - This happens automatically if `installPrivateData` is set to False
+  - This happens automatically if `installTestData` is set
     in the fabric environment.
 update - Updates the configuration and restart server
 updatePrivateData - Updates `~/private`.
