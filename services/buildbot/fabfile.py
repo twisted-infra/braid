@@ -1,6 +1,6 @@
 import os
 
-from fabric.api import settings, run, env, cd, puts, abort
+from fabric.api import settings, run, env, cd, put, puts, abort
 from fabric.contrib import files
 
 from braid import git, cron, pip, archive, config
@@ -60,7 +60,10 @@ class Buildbot(service.Service):
         Update
         """
         with settings(user=self.serviceUser):
-            git.branch('https://github.com/twisted-infra/twisted-buildbot-configuration', self.configDir)
+            run('mkdir -p ' + self.configDir)
+            put(
+                os.path.dirname(__file__) + '/*', self.configDir,
+                mirror_local_mode=True)
             buildbotSource = os.path.join(self.configDir, 'buildbot-source')
             git.branch('https://github.com/twisted-infra/buildbot', buildbotSource)
             if _installDeps:
