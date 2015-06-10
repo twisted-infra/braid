@@ -41,6 +41,7 @@ class Buildbot(service.Service):
             puts('Migrating SQLite db.')
             run('~/.local/bin/buildbot upgrade-master')
             puts('Copying migrated state.sqlite db to ~/data')
+            run('/bin/mkdir -p ~/data')
             run('/bin/cp state.sqlite ~/data')
 
     def task_updatePrivateData(self):
