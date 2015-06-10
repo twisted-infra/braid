@@ -15,7 +15,7 @@ class LintStep(ShellCommand):
     """
     A L{ShellCommand} that generates summary information of errors generated
     during a build, and new errors generated vs. the most recent trunk build.
-    
+
     @ivar worse: a L{bool} indicating whether this build is worse with respect
         to reported errors than the most recent trunk build.
     """
@@ -74,7 +74,7 @@ class LintStep(ShellCommand):
         new = {}
         for errorType in current:
             errors = (
-                current[errorType] - 
+                current[errorType] -
                 previous.get(errorType, set()))
             log.msg("Found %d new errors of type %s" % (len(errors), errorType))
             if errors:
@@ -269,6 +269,22 @@ class CheckCodesByTwistedChecker(LintStep):
     lintChecker = 'twistedchecker'
 
 
+    def evaluateCommand(self, cmd):
+        """
+        Called when command final status is required.
+        """
+        # twistedchecker will exit with non-zero on errors, but Twisted
+        # code is not yet clean so there will always be errors.
+        if self.worse:
+            return WARNINGS
+        if self.currentErrors:
+            return SUCCESS
+        else:
+            # If no errors were reported then fallback to command status
+            # code as the whole command might have fail to run.
+            return ShellCommand.evaluateCommand(self, cmd)
+
+
     @classmethod
     def computeErrors(cls, logText):
         warnings = {}
@@ -307,19 +323,19 @@ class CheckCodesByTwistedChecker(LintStep):
         return map(str, allNewErrors)
 
     def processLogs(self, oldText, newText):
-        currentErrors = self.computeErrors(newText)
+        self.currentErrors = self.computeErrors(newText)
         previousErrors = self.computeErrors(oldText)
 
-        newErrors = self.computeDifference(currentErrors, previousErrors)
+        newErrors = self.computeDifference(self.currentErrors, previousErrors)
 
         if newErrors:
             allNewErrors = self.formatErrors(newErrors)
             self.addCompleteLog('new %s errors' % self.lintChecker, '\n'.join(allNewErrors))
 
-        for toplevel, modules in itertools.groupby(sorted(currentErrors.keys()), lambda k: ".".join(k.split(".")[0:2])):
+        for toplevel, modules in itertools.groupby(sorted(self.currentErrors.keys()), lambda k: ".".join(k.split(".")[0:2])):
             modules = list(modules)
             self.addCompleteLog("%s %s errors" % (self.lintChecker, toplevel),
-                    '\n'.join(self.formatErrors(dict([(module, currentErrors[module]) for module in modules]))))
+                    '\n'.join(self.formatErrors(dict([(module, self.currentErrors[module]) for module in modules]))))
 
         return bool(newErrors)
 

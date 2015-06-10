@@ -25,8 +25,18 @@ slaves = [
     'bot-tobias-1',
     'canonical-ubuntu-12.10',
     'canonical-ubuntu-13.04',
+
+    'egh-osx-1',
+
+    'hawkowl-debian7-py27',
+    'hawkowl-debian7-py34',
+    'hawkowl-debian8-py27',
+
     'hybridlogic-freebsd-9.1-amd64',
+
     'tavendo-freebsd-9.2-amd64',
+    'tavendo-freebsd-10.1-amd64',
+
     'jv-solaris11-x86',
     'snakebite-osx10.8',
     'osuosl-osx10.6',

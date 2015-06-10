@@ -17,73 +17,6 @@ import re
 
 # BuildSteps that are specific to the Twisted source tree
 
-class HLint(ShellCommand):
-    """I run a 'lint' checker over a set of .xhtml files. Any deviations
-    from recommended style is flagged and put in the output log.
-
-    This step looks at .changes in the parent Build to extract a list of
-    Lore XHTML files to check."""
-
-    name = "hlint"
-    description = ["running", "hlint"]
-    descriptionDone = ["hlint"]
-    warnOnWarnings = True
-    warnOnFailure = True
-    # TODO: track time, but not output
-    warnings = 0
-
-    def __init__(self, python=None, **kwargs):
-        ShellCommand.__init__(self, **kwargs)
-        self.python = python
-
-    def start(self):
-        # create the command
-        htmlFiles = {}
-        for f in self.build.allFiles():
-            if f.endswith(".xhtml") and not f.startswith("sandbox/"):
-                htmlFiles[f] = 1
-        # remove duplicates
-        hlintTargets = htmlFiles.keys()
-        hlintTargets.sort()
-        if not hlintTargets:
-            return SKIPPED
-        self.hlintFiles = hlintTargets
-        c = []
-        if self.python:
-            c.append(self.python)
-        c += ["bin/lore", "-p", "--output", "lint"] + self.hlintFiles
-        self.setCommand(c)
-
-        # add an extra log file to show the .html files we're checking
-        self.addCompleteLog("files", "\n".join(self.hlintFiles)+"\n")
-
-        ShellCommand.start(self)
-
-    def commandComplete(self, cmd):
-        # TODO: remove the 'files' file (a list of .xhtml files that were
-        # submitted to hlint) because it is available in the logfile and
-        # mostly exists to give the user an idea of how long the step will
-        # take anyway).
-        lines = cmd.logs['stdio'].getText().split("\n")
-        warningLines = filter(lambda line:':' in line, lines)
-        if warningLines:
-            self.addCompleteLog("warnings", "".join(warningLines))
-        warnings = len(warningLines)
-        self.warnings = warnings
-
-    def evaluateCommand(self, cmd):
-        # warnings are in stdout, rc is always 0, unless the tools break
-        if cmd.rc != 0:
-            return FAILURE
-        if self.warnings:
-            return WARNINGS
-        return SUCCESS
-
-    def getText2(self, cmd, results):
-        if cmd.rc != 0:
-            return ["hlint"]
-        return ["%d hlin%s" % (self.warnings,
-                               self.warnings == 1 and 't' or 'ts')]
 
 def countFailedTests(output):
     # start scanning 10kb from the end, because there might be a few kb of
@@ -659,7 +592,7 @@ class Trial(ShellCommand):
     def getText2(self, cmd, results):
         return self.text2
 
-    
+
 class ProcessDocs(ShellCommand):
     """
     I build all docs. This requires some LaTeX packages to be
@@ -671,7 +604,7 @@ class ProcessDocs(ShellCommand):
     warnOnWarnings = 1
     command = [
         "python",
-        "bin/admin/build-docs", ".", "doc/core/howto/template.tpl"]
+        "bin/admin/build-docs", "."]
     description = ["processing", "docs"]
     descriptionDone = ["docs"]
     # TODO: track output and time
@@ -801,10 +734,10 @@ class ReportPythonModuleVersions(ShellCommand):
             return FAILURE
         return SUCCESS
 
-    
+
 class BuildDebs(ShellCommand):
     """I build the .deb packages."""
- 
+
     name = "debuild"
     flunkOnFailure = 1
     command = ["debuild", "-uc", "-us"]
