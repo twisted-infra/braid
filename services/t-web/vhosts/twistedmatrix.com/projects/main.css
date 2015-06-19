@@ -1,0 +1,21 @@
+table.projects td, th {
+  border-top: 1px dotted #ababab;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}
+
+table.projects {
+  border-bottom: 1px dotted #ababab;
+}
+
+table.projects th {
+  padding-right: 1.5em;
+}
+
+body {
+  font-family: sans-serif;
+}
+
+h3 {
+  padding-top: 1em;
+}

@@ -1,0 +1,12 @@
+/* MSIE/Win is so broken it's funny */
+
+div.prod ul li a, 
+div.serv ul li a, 
+div.dev  ul li a {
+  line-height: 2.5ex;
+  width: 100%;
+}
+
+#leftcontent {
+  width: 95%;
+}

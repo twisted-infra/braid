@@ -1,0 +1,202 @@
+# For more information and general comments on editing this file
+# please refer to README.Debian
+#
+
+from twisted.internet import reactor
+from twisted.web import script, static, server, distrib, twcgi, vhost, rewrite
+from twisted.web import util as twutil, proxy
+from twisted.application import service
+from twisted.application.internet import StreamServerEndpointService
+from twisted.internet.endpoints import serverFromString
+
+from twisted.python import filepath
+
+import sys, os
+sys.path.append(os.path.dirname(__file__))
+
+from moved import Moved
+from frackresource import getFrackResource
+
+class BugsRedirect(twutil.Redirect):
+    isLeaf = False
+    def __init__(self):
+        twutil.Redirect.__init__(self, '/trac/report')
+
+    def getChild(self, name, request):
+        if name.startswith('issue'):
+            return twutil.Redirect('/trac/ticket/%s' % (name[5:],))
+
+        return twutil.Redirect.getChild(self, name, request)
+
+# Add useful extra extension -> content-type mapping entries
+static.File.contentTypes['.tac'] = 'text/plain'
+static.File.contentTypes['.mbox'] = 'application/octet-stream'
+
+root = vhost.NameVirtualHost()
+
+websiteRoot = filepath.FilePath(__file__).parent().parent()
+vhostDir = websiteRoot.child('vhosts')
+
+# The default processors in Twisted, by file extension.
+processors = {
+    '.epy': script.PythonScript,
+    '.rpy': script.ResourceScript,
+}
+
+
+indexNames = ['index', 'index.html', 'index.xhtml', 'index.rpy','index.cgi']
+
+for file in vhostDir.children():
+    r = static.File(file.path)
+    r.processors = processors
+    r.indexNames = indexNames
+    r.ignoreExt('.rpy')
+    root.addHost(file.basename(), r)
+    root.addHost('www.' + file.basename(), r)
+
+root.default = root.hosts['twistedmatrix.com']
+root.hosts['www.twistedmatrix.com'] = twutil.ChildRedirector('https://twistedmatrix.com/')
+tm = root.default
+
+tm.putChild('', twutil.Redirect('https://twistedmatrix.com/trac/'))
+
+# These are children no matter what domain you use
+root.putChild('mailman', twcgi.CGIDirectory('/usr/lib/cgi-bin'))
+root.putChild('pipermail', static.File('/var/lib/mailman/archives/public/'))
+
+users = distrib.UserDirectory()
+root.putChild('users', users)
+root.putChild('cgi-bin', twcgi.CGIDirectory('/usr/lib/cgi-bin'))
+
+
+###
+### BuildBot
+###
+
+root.addHost('buildbot.twistedmatrix.com', proxy.ReverseProxyResource('localhost', 8080, ''))
+
+# These old names shouldn't be used anymore.  Just redirect to the new locations for a while.
+tm.putChild('buildbot', twutil.Redirect('http://buildbot.twistedmatrix.com/waterfall'))
+tm.putChild('buildbot-supported', twutil.Redirect('http://buildbot.twistedmatrix.com/supported?branch=trunk'))
+
+###
+### Codespeed Speedcenter
+###
+
+root.addHost('speed.twistedmatrix.com', proxy.ReverseProxyResource('localhost', 8123, '/http/speed.twistedmatrix.com'))
+
+###
+### Other stuff
+###
+
+root.addHost('staging.twistedmatrix.com', proxy.ReverseProxyResource('127.0.0.1', 9882, ''))
+
+trac = proxy.ReverseProxyResource('127.0.0.1', 9881, '/trac')
+trac.putChild('chrome', static.File(websiteRoot.child('trac-files').path))
+tm.putChild('trac', trac)
+
+
+projects = Moved('https://twistedmatrix.com/trac/wiki/TwistedProjects')
+projects.putChild("", Moved('https://twistedmatrix.com/trac/wiki/TwistedProjects'))
+projects.putChild("index.html", Moved('https://twistedmatrix.com/trac/wiki/TwistedProjects'))
+
+for project in "conch", "core", "flow", "lore", "mail", "names", "news", "pair", "runner", "web", "web2", "words":
+    projects.putChild(project, Moved('https://twistedmatrix.com/trac/wiki/Twisted' + project.title()))
+
+# Frack is the future.
+tm.putChild('frack', getFrackResource(reactor))
+
+# projects.processors = processors
+# projects.ignoreExt('.rpy')
+# tm.putChild('projects', projects)
+
+#user subdomains!
+root.addHost('radix.twistedmatrix.com', distrib.ResourceSubscription('unix', '/home/radix/.radix-web-server'))
+root.addHost('saph.twistedmatrix.com', distrib.ResourceSubscription('unix', '/home/saph/.twistd-web-pb'))
+
+#backwards compatibility:
+root.addHost('projects.twistedmatrix.com', twutil.ChildRedirector('https://twistedmatrix.com/trac/wiki/TwistedProjects'))
+
+
+# dancingsausage.net
+dsroot = static.File("/home/gus/public_html/dswj/")
+root.addHost("www.dancingsausage.net", dsroot)
+root.addHost("dancingsausage.net", dsroot)
+
+
+# Change this if you want default mime-type to be different:
+# default.defaultType = 'text/html'
+
+# Ignore all extensions -- Allow /foo/bar.ext to be served for /foo/bar
+# Uncomment to enable
+# default.ignoreExt('*')
+
+# Ignore a partial list of extensions
+# default.ignoreExt('html') # Allow /foo.html to be served for /foo
+# default.ignoreExt('jpg')
+# Useful to make ResourceScripts which look like directories.
+# default.ignoreExt('rpy')
+
+
+# set logfile name.
+# This is the *Apache compatible* log file, not the twisted-style logfile.
+# Leaving this as None will have no Apache compatible log file. Apache
+# compatible logfiles are useful because there are quite a few programs
+# which analyse them and display statistics.
+
+# This absolute path is extremely obnoxious.  Why can't I just say
+# "httpd.log"?  The working directory when it is interpreted seems to be
+# wrong. -exarkun
+logPath = os.path.expanduser('~/log/httpd.log')
+
+
+# Add a rule to rewrite /~foo/bar.html to /usrs/foo/bar.html
+# so that the classical user URLs will work.
+
+top = rewrite.RewriterResource(root, rewrite.tildeToUsers, rewrite.alias("highscores", "users/highscore.twistd"))
+
+# Generate the Site factory. You will not normally
+# want to modify this line.
+site = server.Site(top, logPath=logPath)
+
+# Generate the Application. You will not normally
+# want to modify this line.
+application = service.Application("web")
+
+# Limit the number of logfiles which will be kept when rotation is done.
+from twisted.python.log import ILogObserver, FileLogObserver
+from twisted.python.logfile import LogFile
+application.setComponent(
+    ILogObserver,
+    FileLogObserver(LogFile("twistd.log", os.path.expanduser("~/log"), maxRotatedFiles=10)).emit)
+
+# Listen on all ports specified:
+if websiteRoot.child('production').exists():
+    portPath = websiteRoot.child('twisted-web').child('ports')
+else:
+    portPath = websiteRoot.child('twisted-web').child('ports.testing')
+ports = [serverFromString(reactor, s)
+         for s in portPath.getContent().splitlines()]
+del s, portPath
+
+for port in ports:
+    svc = StreamServerEndpointService(port, site)
+    svc.setServiceParent(application)
+del svc, port, ports
+
+# If you do not want to modify this file directly, most modifications
+# can be done via putting a Python file in /etc/twisted-web/local.d
+# This file will have access to root, default, site and application and
+# can call any method or change any attribute on them.
+#
+# If you want to change the root itself, "root=something" will not
+# have the desired effect. Instead, use site.resource=something
+#
+
+default = None
+dictionary = {'root': root, 'site': site, 'application': application,
+              'default': default}
+files = filepath.FilePath(__file__).sibling('local.d').globChildren('*.py')
+files.sort()
+for file in files:
+    execfile(file.path, dictionary)

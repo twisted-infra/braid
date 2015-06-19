@@ -1,0 +1,19 @@
+name: Twisted Words
+description: Chat and Instant Messaging
+url: words
+licence: MIT
+releases: Words bz2|0.3.0|2005-10-21|8fdb18c85bde467baddc1c7f3febb82e|http://tmrc.mit.edu/mirror/twisted/Words/0.3/TwistedWords-0.3.0.tar.bz2|NEWS.txt
+maintainers: Jp Calderone|mailto:exarkun@twistedmatrix.com
+maintainers: Glyph Lefkowitz|mailto:glyph@twistedmatrix.com
+maintainers: Ralph Meijer|mailto:twisted@ralphm.ik.nu
+help: The twisted-python mailing list|http://twistedmatrix.com/cgi-bin/mailman/listinfo/twisted-python
+help: The #twisted IRC channel on freenode.net|irc:irc.freenode.net/twisted
+bugs: http://twistedmatrix.com/bugs/
+
+<p>Twisted Words includes:</p>
+
+<ul>
+  <li>Low-level protocol implementations of OSCAR (AIM and ICQ), IRC, MSN, TOC (AIM).</li>
+  <li>Jabber libraries.</li>
+  <li>Prototypes of chat server and client frameworks built on top of the protocols.</li>
+</ul>

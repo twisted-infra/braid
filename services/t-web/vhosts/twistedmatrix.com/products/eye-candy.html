@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html> <head>
+<title>Twisted Matrix Eye Candy</title>
+<style type="text/css"><!--
+#twistd { width: 672px; height:392px; }
+#imSelAcct { width: 300px; height: 258px; }
+#imNewWords { width: 328px; height: 476px; }
+#imNewIRC { width: 281px; height: 291px; }
+#imNewAOL { width: 281px; height: 270px; }
+#imContacts { width: 335px; height: 369px; }
+#imChat { width: 507px; height: 305px; }
+#imGroup { width: 591px; height: 353px; }
+#faucet { width: 666px; height: 505px; }
+--></style>
+</head>
+<body>
+<h1>Eye Candy</h1>
+
+<h2>Screenshots</h2>
+<p>
+Every project's gotta have 'em.  Twisted is particularly difficult to take a
+real <q>screenshot</q> of, since it usually lives under the hood.  I've taken
+some screenshots of various Twisted applications in order to give you a feel
+for what it makes possible.
+</p>
+
+<div align="center"><img id="twistd" src="../images/screenshots/basic-twistd.png" /></div>
+
+<p> Here's my personal web server starting up, handling one request, and
+shutting down in a terminal.  You can see a few things here.
+
+<ol>
+  
+  <li>It's really easy to start up - no special installation procedure, just
+  run <q>twistd</q> from wherever it's located on a pickled application
+  object. </li>
+
+  <li>Twisted automatically handles daemonization and logging for you; you can
+  see it sheds root privileges immediately and automatically when it does not
+  absolutely require them.</li>
+
+  <li>Signal handling is automatic; your objects get startup/shutdown messages
+  at the appropriate times.</li>
+
+  <li>Configuration is automatically saved upon shutdown, in case it
+  changed while you were running and you want to keep the changes.</li>
+  
+</ol>
+
+That's all rather dry, though.  If you're looking for something snazzier, here
+are some screenshots of Instance Messenger.
+</p>
+
+<div align="center"><img id="imSelAcct" src="../images/screenshots/im-accountselect.png"
+/></div>
+
+<p>Here you can see selection of different accounts.</p>
+<div align="center">
+<table>
+  <tr>
+    <td rowspan="2">
+      <img im="imNewWords" src="../images/screenshots/im-newaccount-twisted.png" />
+    </td>
+    <td>
+      <img im="imNewIRC" src="../images/screenshots/im-newaccount-irc.png" />
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img im="imNewAOL" src="../images/screenshots/im-newaccount-aol.png" />
+    </td>
+  </tr>
+</table>
+
+</div>
+
+<p>... and dialogs for creating all the different kinds of accounts that
+Twisted can access.</p>
+
+
+<div align="center"><img id="imContacts" src="../images/screenshots/im-personselect.png" />
+</div>
+
+<p>Once we're logged in, we can see who's online, and choose who to talk
+to. </p>
+
+<div align="center"><img id="imChat" src="../images/screenshots/im-conversation.png" />
+</div>
+
+<p>If time permits, we can talk to them.</p>
+
+
+<div align="center"><img id="imGroup" src="../images/screenshots/im-groupconversation.png"
+/> </div>
+
+<p>IM doesn't skimp on group conversation features: we can chat with groups
+just as easily as with individuals.  (The buttons on the right might indicate
+to the observant reader that some functionality is still a bit raw... but we're
+working on it.)</p>
+
+<h2>Haberdashery</h2>
+
+<p>We also have an official <a
+href="../images/propaganda/twistedgrid-green-1280x1024.png">background
+pattern</a>.  For T-Shirts and such, you can look at the <a
+href="http://www.cafeshops.com/cp/store.aspx?s=twistedlabs">Twisted CafePress
+store</a>. </p>
+
+</body> </html>

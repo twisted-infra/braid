@@ -1,0 +1,6 @@
+*.pyc
+*.pem
+twistedmatrix.com.crt
+twistedmatrix.com.key
+*.dump
+*.dump.bz2

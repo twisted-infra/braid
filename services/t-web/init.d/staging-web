@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Set up the real, live website.
+export WEBSITE_ROOT="set me to something"
+export WEBSITE_NAME=staging-web
+
+# Run the real init script.
+. $WEBSITE_ROOT/init.d/_real_twisted-web

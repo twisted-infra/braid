@@ -1,0 +1,28 @@
+This is the configuration for twistedmatrix.com's web server
+
+It is adminstered using braid[1]. It is installed in `/srv/t-web` as user t-web.
+It uses the following directories
+
+~/config - This repository.
+  init.d - init scripts
+  twisted-web - website configuration
+  vhosts - static content
+  trac-files - static trac content
+~/bin - commands to start and stop the server
+~/log - log files
+~/run - pid files
+~/data - releases and documentation
+~/ssl - ssl keys
+
+The following fabric commands are available:
+
+install - Create user and install configuration.
+installSSLKeys - Install SSL keys
+dump:<dump> - Dump non-versioned data.
+restore:<restore> - Restore non-versioned data.
+update - Updates the configuration and restarts the server.
+start - Start server.
+stop - Stop server.
+restart - Restart the server.
+
+[1] https://github.com/twisted-infra/braid

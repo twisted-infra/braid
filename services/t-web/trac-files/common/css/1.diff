@@ -1,0 +1,260 @@
+--- ticket.css.save	2010-03-22 18:30:48.000000000 -0400
++++ ticket.css	2010-03-22 18:31:08.000000000 -0400
+@@ -1,187 +1,43 @@
+-/* BEGIN inline of code.css */
+-/*
+-div.code {
+- background: #f7f7f7;
+- border: 1px solid #d7d7d7;
+- margin: 1em 1.75em;
+- padding: .25em;
+- overflow: auto
+-}
+-*/
+-div.code pre { margin: 0; }
+-
+-table.code {
+- border: 1px solid #ddd;
+- border-spacing: 0;
+- border-top: 0;
+- empty-cells: show;
+- font-size: 12px;
+- line-height: 130%;
+- padding: 0;
+- margin: 0 auto;
+- table-layout: fixed;
+- width: 100%;
+-}
+-table.code th {
+- border-right: 1px solid #d7d7d7;
+- border-bottom: 1px solid #998;
+- font-size: 11px;
+-}
+-table.code th.lineno { width: 4em }
+-table.code thead th {
+- background: #eee;
+- border-top: 1px solid #d7d7d7;
+- color: #999;
+- padding: 0 .25em;
+- text-align: center;
+- white-space: nowrap;
+-}
+-table.code tbody th {
+- background: #eed;
+- color: #886;
+- font-weight: normal;
+- padding: 0 .5em;
+- text-align: right;
+- vertical-align: top;
+-}
+-table.code tbody th :link, table.code tbody th :visited {
+- border: none;
+- color: #886;
+- text-decoration: none;
+-}
+-table.code tbody th :link:hover, table.code tbody th :visited:hover {
+- color: #000;
+-}
+-table.code tbody td {
+- background: #fff;
+- font: normal 11px monospace;
+- overflow: hidden;
+- padding: 1px 2px;
+- vertical-align: top;
+-}
++@import url(code.css);
+ 
+-.image-file { background: #eee; padding: .3em }
+-.image-file img { background: url(../imggrid.png) }
++#content.ticket { width: 700px; max-width: 100% }
+ 
+-/* Default */
+-.code-block span {
+- font-family: monospace;
+-}
++#newticket #field-description { width: 100% }
++#newticket #properties { width: 100% }
+ 
+-/* Comments */
+-.code-comment, .css_comment, .c_comment, .c_commentdoc, .c_commentline,
+-.c_commentlinedoc, .h_comment,.pl_commentline, .p_commentblock,
+-.p_commentline, .hphp_comment, .hphp_commentblock, .hphp_commentline,
+-.yaml_comment {
+- color: #998; 
+- font-style: italic;
++#ticket {
++ background: #ffd;
++ border: 1px outset #996;
++ margin-top: 1em;
++ padding: .5em 1em;
++ position: relative;
+ }
+ 
+-/* Language keyword */
+-.code-keyword, .pl_word  { color: #789; font-weight: bold }
+-
+-/* Type */
+-.code-type, .c_word, .c_word2, .p_classname, .hphp_classname{
+- color: #468;
+- font-weight: bold;
++div#ticket.ticketdraft {
++ background: #f4f4f4 url(../draft.png);
+ }
+-
+-/* Function */
+-.code-func, .p_defname {
+- color: #900;
+- font-weight: bold;
+- border-bottom: none;
++div#ticketchange.ticketdraft {
++ padding: 0 1em;
++ margin: 1em 0;
+ }
+-
+-/* Pre-processor */
+-.code-prep, .c_preprocessor, .pl_preprocessor, .yaml_identifier {
+- color: #999;
+- font-weight: bold;
++div#ticketchange.ticketdraft h3 {
++ margin-top: .5em;
+ }
++.preview-notice { font-weight: bold; }
+ 
+-/* Language construct */
+-.code-lang, .p_word { color: #000; font-weight: bold }
+-
+-/* String */
+-.code-string, .c_string, .c_stringeol, .css_doublestring, .css_singlestring,
+-.h_singlestring, .h_doublestring, .pl_string, .pl_string_q, .pl_string_qq,
+-.pl_string_qr, .pl_string_qw, .pl_string_qx, .pl_backticks, .pl_character,
+-.p_string, .p_stringeol, .hphp_string, .hphp_stringeol, .hphp_triple,
+-.hphp_tripledouble, .p_character, .p_triple, .p_tripledouble {
+- color: #b84;
+- font-weight: normal;
++.ticketdraft {
++ background: #f4f4f4 url(../draft.png);
++ border: 1px outset #996;
++ padding: 0 .2em;
+ }
+ 
+-/* Variable name */
+-.code-var { color: #f9f }
+-
+-/* SilverCity-specific styles */
+-.css_id, .css_class, .css_pseudoclass, .css_tag { color: #900000 }
+-.css_directive { color: #009000; font-weight: bold }
+-.css_important { color: blue }
+-.css_operator { color: #000090; font-weight: bold }
+-.css_tag { font-weight: bold }
+-.css_unknown_identifier, .css_unknown_pseudoclass { color: red }
+-.css_value { color: navy }
+-.c_commentdockeyword { color: navy; font-weight: bold }
+-.c_commentdockeyworderror { color: red; font-weight: bold }
+-.c_character, .c_regex, .c_uuid, .c_verbatim { color: olive }
+-.c_number { color: #099 }
+-.h_asp { color: #ff0 }
+-.h_aspat { color: #ffdf00 }
+-.h_attribute { color: teal }
+-.h_attributeunknown { color: red }
+-.h_cdata { color: #373 }
+-.h_entity { color: purple }
+-.h_number { color: #099 }
+-.h_other { color: purple }
+-.h_script, .h_tag, .h_tagend { color: navy }
+-.h_tagunknown { color: red }
+-.h_xmlend, .h_xmlstart { color: blue }
+-.pl_datasection { color: olive }
+-.pl_error { color: red; font-weight: bold }
+-.pl_hash { color: #000 }
+-.pl_here_delim, .pl_here_q, .pl_here_qq, .pl_here_qx, .pl_longquote { color: olive }
+-.pl_number { color: #099 }
+-.pl_pod { font-style: italic }
+-.pl_regex, .pl_regsubst { color: olive }
+-.p_number { color: #099 }
+-.hphp_character { color: olive }
+-.hphp_defname { color: #099; font-weight: bold }
+-.hphp_number { color: #099 }
+-.hphp_word { color: navy; font-weight: bold }
+-.yaml_document { color: gray; font-style: italic }
+-.yaml_keyword { color: #808 }
+-.yaml_number { color: #800 }
+-.yaml_reference { color: #088 }
+-.v_comment { color: gray; font-style: italic }
+-.v_commentline, .v_commentlinebang { color: red; font-style: italic }
+-.v_number, .v_preprocessor { color: #099 }
+-.v_string, .v_stringeol { color: olive }
+-.v_user{ color: blue; font-weight: bold }
+-.v_word, .v_word3 { color: navy; font-weight: bold }
+-.v_word2 { color: green; font-weight: bold }
+-/* END OF code.css */
+-/* @import url(code.css); */
+-
+-#content { width: 700px; max-width: 100% }
+-
+-#newticket #description { width: 100% }
+-#newticket #properties { width: 100% }
+-
+-#ticket {
+- background: #fff;
+- border: 2px solid #9ac300;
+- margin-top: 1em;
+- padding: .5em 1em;
+- position: relative;
+-}
+-h1 .status { color: #444; text-transform: lowercase; }
++h1 .status { color: #444; }
+ #ticket h2.summary { margin: 0 0 .8em 0 }
+ #ticket .date { color: #996; float: right; font-size: 85%; position: relative }
+-#ticket .date p { margin: 0 }
++#ticket .date p { margin: .3em }
+ 
+ #ticket table.properties {
++ clear: both;
+  border-top: 1px solid #dd9;
+  border-collapse: collapse;
+  table-layout: fixed;
+@@ -200,9 +56,10 @@
+  width: 20%;
+ }
+ #ticket table.properties td { width: 30% }
++#ticket table.properties td p:first-child { margin-top: 0 }
++#ticket table.properties td p:last-child { margin-bottom: 0 }
+ #ticket table.properties .description { border-top: 1px solid #dd9 }
+ 
+-
+ #ticket .description h3 {
+  border-bottom: 1px solid #dd9;
+  color: #663;
+@@ -219,23 +76,23 @@
+ }
+ 
+ #changelog { border: 1px outset #996; padding: 1em }
+-#changelog h3 {
++#preview { border: 1px solid #d7d7d7; padding: 1em }
++#preview h3, #changelog h3 {
+  border-bottom: 1px solid #d7d7d7;
+  color: #999;
+  font-size: 100%;
+  font-weight: normal;
+ }
+-#changelog .threading, #changelog .inlinebuttons {
+- float: right;
+- position: relative;
+- bottom: 0.3em;
+-}
++.threading, #changelog .inlinebuttons { float: right; }
++.threading { font-size: 90%; }
+ 
+-#changelog .changes { list-style: square; margin-left: 2em; padding: 0 }
+-#changelog .comment { margin-left: 2em }
++#preview .changes, #changelog .changes { list-style: square; margin-left: 2em; padding: 0 }
++#preview .comment, #changelog .comment { margin-left: 2em }
+ 
+ form .field { margin-top: .75em; width: 100% }
+-form #comment { width: 100% }
++form .field fieldset.iefix { margin-left: 1px; margin-right: 1px }
++form .field #comment { margin-left: -1px; margin-right: -1px; padding: 0; width: 100% }
++form .field .wikitoolbar { margin-left: -1px }
+ 
+ #properties { white-space: nowrap; line-height: 160%; padding: .5em }
+ #properties table { border-spacing: 0; width: 100%; }
