@@ -1,0 +1,32 @@
+name: Twisted Web2
+description: An HTTP/1.1 Server Framework
+url: web2
+licence: MIT
+releases: Web2 bz2|0.1.0|2005-06-16|8973bd6b324534601aaa446dd0f63542|http://tmrc.mit.edu/mirror/twisted/Web2/TwistedWeb2-0.1.tar.bz2|NEWS.txt
+maintainers: James Knight|mailto:foom@fuhm.net
+maintainers: David Reid|mailto:dreid@dreid.org
+help: The twisted-web mailing list|http://twistedmatrix.com/cgi-bin/mailman/listinfo/twisted-web
+help: The #twisted.web IRC channel on freenode.net|irc:irc.freenode.net/twisted.web
+bugs: http://twistedmatrix.com/bugs/
+
+Twisted.Web2 is the next generation Web Server Framework built with Twisted.  Web2 is under active development and it's APIs should not be considered stable at this point.  It is not a version of Twisted.Web and with that in mind compatibility is not of the highest concern, though the compatibility layer does support many but not all twisted.web resources.
+
+<h3>Improvements over Twisted.Web</h3>
+<ul>
+	<li>Streaming upload data</li>
+	<li>Support for multiple headers of the same name</li>
+	<li>Separation of low level HTTP and high level request handling which allows it to run under other transports such as SCGI and CGI</li>
+	<li>IResource API improvements from Nevow</li>
+	<li>More versatile outgoing data streaming API</li>
+	<li>Correct header parsing</li>
+	<li>Full HTTP/1.1 support</li>
+	<li>Output filters (HTTP range support in a generic fashion, and gzip support)</li>
+	<li>Significantly better URI Rewriting when used behind a proxy such as Apache's mod_proxy</li>
+</ul>
+
+<h3>Things to further improve</h3>
+<ul>
+	<li>Speed, it's not very fast, depending on how the benchmarks are done it's either significantly faster than Twisted.Web or twice as slow.</li>
+	<li>Better twisted.web compatibility</li>
+	<li>More and better tests</li>
+</ul>

@@ -1,0 +1,8 @@
+If you want to update twistedmatrix.com, do this on pyramid:
+
+cd /var/www/WebSite/twistedmatrix.com
+sudo -u www-data ./generate.sh
+
+
+Assuming you have all the dependencies for generation on your
+sys.path. :-)

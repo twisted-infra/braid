@@ -1,0 +1,19 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+6c0934460fe24ffa75247cb6a324f2ee  Twisted-0.99.1rc4.tar.bz2
+e063effe8789bc3d5741c75a229d7a4a  Twisted-0.99.1rc4.tar.gz
+5d9b44a2509b0eee3e9299527f4995f6  Twisted-0.99.1rc4.zip
+0f6f036318844098e5bff153094737e8  TwistedDocs-0.99.1rc4.tar.bz2
+3107769bbac3de34ad66ad611738e902  TwistedDocs-0.99.1rc4.tar.gz
+2e66ad4f3dbbc8b19316c5187bba028c  TwistedDocs-0.99.1rc4.zip
+f0a4fe811c738b51f6ec1fff0408f0a7  Twisted_NoDocs-0.99.1rc4.tar.bz2
+41d84e73fc1890eb010d087bd12e0764  Twisted_NoDocs-0.99.1rc4.tar.gz
+a90b68e1755b92089dce6941fb3facea  Twisted_NoDocs-0.99.1rc4.zip
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQE9cEmjNp279O1/OG4RAklwAJ4tXUR0a9N6BnMPz7gsSuMFldQmLwCghFpW
++/BjfnMRsICK/Vq0MllWMJw=
+=qsAe
+-----END PGP SIGNATURE-----

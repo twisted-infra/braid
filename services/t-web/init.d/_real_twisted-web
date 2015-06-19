@@ -1,0 +1,57 @@
+#!/bin/sh
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+pidfile=$HOME/run/twistd.pid
+rundir=$HOME/run/
+file=$WEBSITE_ROOT/twisted-web/twisted-web
+logfile=$HOME/log/twistd.log
+more_args=--no_save
+
+#twistd=$HOME/.local/bin/twistd
+
+unset PYTHONPATH
+twistd=~pypy/bin/twistd
+
+[ -r $WEBSITE_ROOT/default/twisted-web ] && . $WEBSITE_ROOT/default/twisted-web
+
+test -r $file || exit 0
+test -r $WEBSITE_ROOT/twisted-web/disable && . $WEBSITE_ROOT/twisted-web/disable
+
+
+case "$1" in
+    start)
+        echo -n "Starting twisted-web: twistd"
+        start-stop-daemon --start --quiet --exec /usr/bin/authbind -- \
+                          $twistd \
+                          --reactor poll \
+                          --pidfile=$pidfile --rundir=$rundir --python=$file\
+                          --logfile=$logfile $more_args
+        echo "."	
+    ;;
+
+    stop)
+        echo -n "Stopping twisted-web: twistd"
+        start-stop-daemon --stop --quiet --pidfile $pidfile
+        while [ -f $pidfile ] && /bin/kill -0 `cat $pidfile`; do \
+                 echo -n "."; \
+        done
+        echo " done."	
+    ;;
+
+    restart)
+        $0 stop
+        $0 start
+    ;;
+
+    force-reload)
+        $0 restart
+    ;;
+
+    *)
+        echo "Usage: `basename $0` {start|stop|restart|force-reload}" >&2
+        exit 1
+    ;;
+esac
+
+exit 0
