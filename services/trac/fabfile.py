@@ -18,10 +18,6 @@ class Trac(service.Service):
         """
         self.bootstrap(python='system')
 
-        # FIXME: Make these idempotent.
-        postgres.createUser('trac')
-        postgres.createDb('trac', 'trac')
-
         with settings(user=self.serviceUser):
             pip.install('psycopg2 pygments', python='system')
             self.update(_installDeps=True)
@@ -43,6 +39,13 @@ class Trac(service.Service):
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
 
             cron.install(self.serviceUser, '{}/crontab'.format(self.configDir))
+
+            # Create an empty password file if not present.
+            run('/usr/bin/touch config/htpasswd')
+
+        # FIXME: Make these idempotent.
+        postgres.createUser('trac')
+        postgres.createDb('trac', 'trac')
 
 
     def update(self, _installDeps=False):
@@ -159,6 +162,34 @@ class Trac(service.Service):
             # Wiki pages have attachments too, so upgrade any metadata
             # associated with those.
             run(".local/bin/trac-admin {}/trac-env wiki upgrade".format(self.configDir))
+
+
+
+    def task_installTestData(self):
+        """
+        Create an empty trac database for testing.
+        """
+        if env.get('environment') == 'production':
+           abort("Don't use installTestData in production.")
+
+        if postgres.tableExists('trac', 'system'):
+           abort("Existing Trac tables found.")
+
+        with settings(user=self.serviceUser):
+            # Run trac initenv to create the postgresql database tables, but use
+            # a throwaway trac-env directory because that comes from
+            # https://github.com/twisted-infra/trac-config/tree/master/trac-env
+            temporary_trac_env = tempfile.mkdtemp()
+            try:
+                run('~/.local/bin/trac-admin '
+                    '{} initenv TempTrac postgres://@/trac svn ""'.format(
+                        temporary_trac_env))
+            finally:
+                shutil.rmtree(temporary_trac_env)
+
+            # Run an upgrade to add plugin specific database tables and columns.
+            run('~/.local/bin/trac-admin config/trac-env upgrade --no-backup')
+
 
 
 addTasks(globals(), Trac('trac').getTasks())
