@@ -1,0 +1,11 @@
+#!/bin/bash
+
+ulimit -Sm $((1024 * 256))
+ulimit -Sm $((1024 * 256))
+ulimit -Sc unlimited
+
+~pypy/bin/twistd \
+	--pidfile ~/run/twistd.pid \
+	--logfile ~/log/twistd.log \
+	--rundir ~/run \
+	--python ~/config/server.tac

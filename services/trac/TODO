@@ -1,0 +1,6 @@
+twisted-trac-integration plugins installed properly
+
+monitoring 
+
+Fix releases path in twisted_release_macro.py for ProjectVersion
+- currently points to /srv/www-data/twisted/Releases/
