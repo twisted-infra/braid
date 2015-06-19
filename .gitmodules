@@ -13,9 +13,6 @@
 [submodule "services/trac"]
 	path = services/trac
 	url = https://github.com/twisted-infra/trac-config
-[submodule "services/t-web"]
-	path = services/t-web
-	url = https://github.com/twisted-infra/t-web
 [submodule "services/codespeed"]
 	path = services/codespeed
 	url = https://github.com/twisted-infra/codespeed
