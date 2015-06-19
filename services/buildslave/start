@@ -1,0 +1,9 @@
+#!/bin/bash
+
+PATH=~/.local/bin:$PATH
+
+twistd \
+	--logfile ~/log/twistd.log \
+	--pidfile ~/run/twistd.pid \
+	--rundir ~/config \
+	--python ~/config/buildbot.tac
