@@ -2,6 +2,8 @@
 Support for www service installation and management.
 """
 
+import os
+
 from fabric.api import run, settings, env, put, sudo
 
 from os import path
@@ -71,8 +73,9 @@ class TwistedWeb(service.Service):
         """
         Update config.
         """
-        with settings(user=self.serviceUser):
-            git.branch('https://github.com/twisted-infra/t-web', self.configDir)
+        run('mkdir -p ' + self.configDir)
+        put(os.path.dirname(__file__) + '/*', self.configDir,
+            mirror_local_mode=True)
 
 
     def task_update(self):
