@@ -2,7 +2,7 @@ import shutil
 import os
 import tempfile
 
-from fabric.api import abort, env, run, settings
+from fabric.api import abort, env, run, settings, put
 
 from braid import pip, postgres, cron, git, archive, utils
 from braid.twisted import service
@@ -181,16 +181,18 @@ class Trac(service.Service):
             # Run trac initenv to create the postgresql database tables, but use
             # a throwaway trac-env directory because that comes from
             # https://github.com/twisted-infra/trac-config/tree/master/trac-env
-            temporary_trac_env = tempfile.mkdtemp()
+
             try:
                 run('~/.local/bin/trac-admin '
-                    '{} initenv TempTrac postgres://@/trac svn ""'.format(
-                        temporary_trac_env))
+                    '/tmp/trac-init initenv TempTrac postgres://@/trac svn ""')
             finally:
-                shutil.rmtree(temporary_trac_env)
+                run("rm -rf /tmp/trac-init")
 
             # Run an upgrade to add plugin specific database tables and columns.
             run('~/.local/bin/trac-admin config/trac-env upgrade --no-backup')
+
+        # Update so all the Twisted stuff is there.
+        self.update()
 
 
 
