@@ -24,7 +24,18 @@ slaves = [
     'bot-tobias-1',
     'canonical-ubuntu-12.10',
     'canonical-ubuntu-13.04',
+
+    'egh-osx-1',
+
+    'hawkowl-debian7-py27',
+    'hawkowl-debian7-py34',
+    'hawkowl-debian8-py27',
+
     'hybridlogic-freebsd-9.1-amd64',
+
+    'tavendo-freebsd-9.2-amd64',
+    'tavendo-freebsd-10.1-amd64',
+
     'jv-solaris11-x86',
     'snakebite-osx10.8',
     'osuosl-osx10.6',
@@ -43,11 +54,14 @@ debian7_slaves = ['rackspace-debian7-%d' % (i,) for i in range(1,3)]
 ubuntu12_04_slaves = ['rackspace-ubuntu-12.04-%d' % (i,) for i in range(1,3)]
 ubuntu12_10_slaves = ['rackspace-ubuntu-12.10-%d' % (i,) for i in range(1,3)]
 ubuntu13_04_slaves = ['rackspace-ubuntu-13.04-%d' % (i,) for i in range(1,3)]
+ubuntu13_10_slaves = ['rackspace-ubuntu-13.10-%d' % (i,) for i in range(1,3)]
+
+freebsd_10_0_slaves = ['rackspace-freebsd-10.0-%d' % (i,) for i in range(1,3)]
 
 slaves += fedora17_slaves + fedora18_slaves + fedora19_slaves + rhel6_slaves
-slaves += debian6_slaves + debian7_slaves + ubuntu12_04_slaves + ubuntu12_10_slaves + ubuntu13_04_slaves
+slaves += debian6_slaves + debian7_slaves + ubuntu12_04_slaves + ubuntu12_10_slaves + ubuntu13_04_slaves + ubuntu13_10_slaves + freebsd_10_0_slaves
 
-# Give each slave a default password, 
+# Give each slave a default password.
 # Dictionary of tuples of password and list of emails
 # to notify when slave goes down.
 bot_info = {}
