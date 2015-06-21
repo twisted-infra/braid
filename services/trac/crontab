@@ -1,0 +1,3 @@
+@reboot ~/bin/start
+
+5   0   *   *   0   /usr/local/bin/cronic /usr/bin/python ~/twisted-trac-integration/trac-graphs/trac-summary-email.py "" trac@twistedmatrix.com twisted-python@twistedmatrix.com
