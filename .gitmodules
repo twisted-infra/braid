@@ -7,9 +7,6 @@
 [submodule "services/kenaan"]
 	path = services/kenaan
 	url = https://github.com/twisted-infra/kenaan
-[submodule "services/mailman"]
-	path = services/mailman
-	url = https://github.com/twisted-infra/mailman-config
 [submodule "services/trac"]
 	path = services/trac
 	url = https://github.com/twisted-infra/trac-config
