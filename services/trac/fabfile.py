@@ -21,7 +21,7 @@ class Trac(service.Service):
         self.bootstrap(python='system')
 
         with settings(user=self.serviceUser):
-            pip.install('psycopg2 pygments', python='system')
+            pip.install('psycopg2', python='system')
             self.update(_installDeps=True)
 
             run('/bin/mkdir -p ~/svn')
