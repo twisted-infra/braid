@@ -1,0 +1,14 @@
+from twisted.web import vhost, rewrite
+
+# Add a rule to rewrite /~foo/bar.html to /usrs/foo/bar.html
+# so that the classical user URLs will work.
+default_root = rewrite.RewriterResource(default, rewrite.tildeToUsers)
+
+# Make sure it is easy to add new virtual hosts:
+root = vhost.NameVirtualHost()
+root.default = default_root
+
+# To add virtual hosts
+#
+# exampleRoot = static.File('/var/vhosts/example')
+# root.addHost('example.com', exampleRoot)

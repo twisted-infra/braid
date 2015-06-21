@@ -1,0 +1,67 @@
+from twisted.web import script, static, distrib, twcgi
+
+# The root of the HTTP hierarchy
+default = static.File('/var/www')
+
+# The default processors in Twisted, by file extension.
+# These make some file extensions not being sent to the user,
+# but rather evaluated in various ways.
+#
+# Do *NOT* turn any of this on if untrusted users can put files
+# in the document hierarchy.
+default.processors = {
+#    '.cgi': twcgi.CGIScript,
+#    '.php3': twcgi.PHP3Script,
+#    '.php': twcgi.PHPScript,
+#    '.epy': script.PythonScript,
+#    '.rpy': script.ResourceScript,
+#    '.trp': trp.ResourceUnpickler, # Add 'trp' to import line at top
+}
+
+# Comment this if you don't want to support a users/ directory
+# http://host/users/fred/foo/bar.html will map to
+# ~fred/public_html/foo/bar.html
+#
+default.putChild('users', distrib.UserDirectory())
+
+# Comment this out if you don't want /cgi-bin/ to execute CGI programs
+default.putChild('cgi-bin', twcgi.CGIDirectory('/usr/lib/cgi-bin'))
+
+# Comment this out if you don't want /rpy-lib/ to be executed
+default.putChild('rpy-lib', script.ResourceScriptDirectory('/usr/lib/rpy-lib'))
+
+# Comment this out if you don't want to serve the Debian /usr/share/doc
+# as part of your server
+default.putChild('doc', static.File('/usr/share/doc'))
+
+# Change this if you want default mime-type to be different:
+# default.defaultType = 'text/html'
+
+# Add more mime-types
+default.contentTypes = default.contentTypes.copy()
+# default.contentTypes['extension'] = 'mime/type'
+
+# Ignore all extensions -- Allow /foo/bar.ext to be served for /foo/bar
+# Uncomment to enable
+# default.ignoreExt('*')
+
+# Ignore a partial list of extensions
+# default.ignoreExt('html') # Allow /foo.html to be served for /foo
+# default.ignoreExt('jpg')
+# Useful to make ResourceScripts which look like directories.
+# default.ignoreExt('rpy') 
+
+
+# Add more indexes
+# http://host/foo/ will serve index.html, index.rpy or index.php,
+# the first which exists.
+# If none exist, it will generate a directory listing.
+#
+default.indexNames = [
+    'index.html',
+#     'index.rpy',
+#     'index.php',
+]
+
+# Allow the requestor to tell us which host we are
+# default.putChild('vhost', vhost.VHostMonsterResource())

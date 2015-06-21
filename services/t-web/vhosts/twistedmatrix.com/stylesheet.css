@@ -1,0 +1,308 @@
+body
+{
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  margin-left: 2em;
+  margin-right: 2em;
+  border: 0px;
+  padding: 0px;
+  background:#fff;
+  }
+  
+/* Big boys on the street */
+
+#header {
+   text-align: right;
+   border-bottom: 1px solid;
+   color: black;
+   font-variant: small-caps;
+   margin-bottom: 1em;
+}
+#header a {
+   text-decoration: none;
+}
+#header a img {
+   border: 0;
+   margin-bottom: 0.2em;
+}
+  
+#leftcontent {
+  font-size: small;
+  width: 16%;
+}
+#leftcontent a { text-decoration: none; }
+#leftcontent h2 { font-size: 13px; }
+
+#maincontent {
+  float: right;
+  width: 82%;
+/*   padding-left:2em; */
+  padding-bottom:20px;
+  }
+
+#sitemeter {
+  text-align: center;
+}
+  
+/* Left-hand navigation bar */
+
+#logo {
+   text-align: center;
+   margin: 1.5em 0;
+   z-order: -1;
+}
+  
+div.prod, div.serv, div.dev {
+  font-size: 13px;
+  border-left: 1px solid;
+  border-right: 1px solid;
+  border-bottom: 1px solid;
+}
+  
+.prod h2, .serv h2, .dev h2 {
+  font-weight: bold;
+  padding: 0.4em 0.5em;
+  margin-bottom: 0;
+}
+.prod h2:hover, .serv h2:hover, .dev h2:hover {
+  color: black;
+}
+  
+.prod, .prod a { color: darkred; }
+.prod h2 { 
+  border-top: 1px darkred solid; 
+  }
+
+.serv, .serv a { color: darkgreen; }
+.serv h2 {
+  border-top: 1px darkgreen solid; 
+  }
+
+.dev, .dev a { color: #444; }
+.dev h2 { 
+  border-top: 1px #666 solid; 
+}
+
+div.prod ul, div.serv ul, div.dev ul {
+  list-style: none;
+  margin: 0;
+  padding: 1px;
+  line-height: 1ex;
+}
+
+div.prod ul li, div.serv ul li, div.dev ul li {
+   list-style-type: none;
+   margin: 0;
+   padding: 0;
+   /*vertical-align: bottom;*/
+}
+
+div.prod ul li a, 
+div.serv ul li a, 
+div.dev  ul li a {
+   line-height: 2.5ex;
+   display: block;
+   padding: 0.25em 0.6em;
+}
+
+div.prod ul li a:hover {
+   color: black;
+   background-color: #FFEEDD;
+}
+
+div.serv ul li a:hover {
+   color: black;
+   background-color: #EEFFEE;
+}
+
+div.dev ul li a:hover {
+   color: black;
+   background-color: #F0F0F0;
+}
+
+.prod div.header-link { 
+   background-image: url(/images/header-red.png);
+   background-color: #FFEEDD;
+   border-bottom: 1px darkred solid; 
+}
+.serv div.header-link { 
+   background-image: url(/images/header-green.png);
+   background-color: #F0FFF0;
+   border-bottom: 1px darkgreen solid; 
+}
+.dev  div.header-link { 
+   background-image: url(/images/header-grey.png);
+   background-color: #F0F0F0;
+   border-bottom: 1px #666 solid; 
+}
+
+a.docs-link {
+   font-size: smaller;
+}
+
+/* Body shop */
+
+.deprecation-warning {
+    font-size: smaller;
+}
+
+.info-entry {
+   border: 1px black solid; 
+   margin-bottom: 1em;
+}
+.info-entry .info-subject,
+.newsentry .newssubject {
+   border-bottom: 1px black solid; 
+   font-weight: bold;
+   font-size: 13px;
+   padding: 0.4em 0.5em;
+}
+
+.info-entry .info-subject {
+   background-image: url(/images/header-blue.png);
+   color: white;
+}
+
+.newsentry { 
+   border: 1px black solid; 
+   margin-bottom: 1em;
+   }
+   
+.newssubject { 
+   background-image: url(/images/header-orange.png);
+   color: black;
+   }
+   
+.info-body, .newsbody { 
+   margin: 1em;
+   }
+
+#leftcontent { z-order: 1; }
+#maincontent { z-order: 2; }
+
+#maincontent a:link { color: #0000ff; }
+
+#maincontent ul
+{
+  padding: 0px;
+  margin: 0px;
+  margin-left: 1em;
+  }
+
+#maincontent li { padding: 2px; }
+
+th { font-weight: bold; }
+
+PRE, CODE
+{
+  font-family: Neep Alt, Courier New, Courier;
+  font-size: 12pt;
+  }
+
+PRE.code 
+{ 
+  color: blue;
+  margin: 1em;
+  padding: 1em;
+  background-color: #ccf;
+  border: thin blue solid;
+  }
+
+PRE.shell
+{ 
+  color: white;
+  background-color: blue;
+  margin: 1em;
+  padding: 1em;
+  border: thin black solid;
+  }
+
+H1, H2, H3, H4, H5, H6
+{
+  font-weight: normal;
+}
+
+hr { display: inline; }
+
+.warning
+{
+  font-style: normal;
+  font-weight: bolder;
+  background: white;
+  color: red;
+  }
+
+.menu
+{ 
+  display: block;
+  float: right;
+  padding: 0.5em;
+  border: thin gray solid;
+  margin: 1em;
+  }
+
+.footer 
+{ 
+  display: inline;
+  border:thin red solid;
+  margin-top:2px;
+  padding-top:2px;
+ }
+
+.content H1 { padding-top: 0px; }
+
+.python
+{
+  background-color: #dddddd;
+  padding: 1em;
+  border: thin black solid;
+}
+
+.py-src-comment
+{
+  color: #1111CC
+}
+
+.py-src-keyword
+{
+  color: #3333CC;
+  font-weight: bold;
+}
+
+.py-src-parameter
+{
+  color: #000066;
+  font-weight: bold;
+}
+
+.py-src-identifier
+{
+  color: #CC0000
+}
+
+.py-src-string
+{
+
+  color: #115511
+}
+.py-listing
+{
+  border: thin solid black;
+  background-color: #eee;
+}
+
+.py-listing .python
+{
+  margin-top: 0;
+  margin-bottom: 0;
+  border: none;
+  border-bottom: thin solid black;
+  }
+
+.happy {
+  color: green;
+}
+
+.sad {
+  color: red;
+}

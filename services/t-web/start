@@ -1,0 +1,3 @@
+#!/bin/bash
+
+~/config/init.d/twisted-web start

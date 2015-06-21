@@ -1,0 +1,16 @@
+/* CSS definitions for AccountManagerPlugin */
+/* styles for users admin page */
+
+div#accountlist { max-height:640px; overflow:auto; }
+
+
+/* styles for account details admin page */
+
+div#user_locked p span img { vertical-align:middle; }
+div#failed_attempts p.tableheader {
+    color:#999; font-size:90%; font-weight:bold;
+    margin:0pt; padding:1em 5px 0;
+    }
+table#login_attempts { width: 480px; }
+td a img { vertical-align:middle; }
+p span.buttons input { margin-top:0; vertical-align:baseline; }

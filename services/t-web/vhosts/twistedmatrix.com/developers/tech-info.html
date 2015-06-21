@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html><head><title>Technical Specifications</title></head>
+<body>
+<div class="dev-text">
+<!-- -*- HTML-Helper -*- -->
+
+<h1>Technical Specifications</h1>
+
+<h2>Basic Information</h2>
+
+<p> Twisted is an asynchronous networking framework written in Python.
+It has a pluggable main-loop which can run anywhere from <code>poll()</code>
+on Linux in CPython, to polling emulated with threads on Jython.  </p>
+
+<p> In the development of Twisted, we use <a
+href="http://www.xprogramming.com">eXtreme programming</a> (to the
+extent that one can do so without a single requirements-setting
+"customer"), so there exist <a href="../documents/current/howto/test-standard"
+>Unit Tests for much of the codebase</a>. </p>
+
+<p> It is designed to interfere as little as possible with existing
+code; if your application is already event based, then integrating
+Twisted may be only the work of one afternoon. </p>
+
+<h2>Specifications</h2>
+
+<p> Currently, we have a specification for the <a
+href="../documents/current/specifications/banana.html">Banana protocol</a> that is part
+of <a href="../products/spread">Twisted Spread</a>. Further specifications
+will be forthcoming to encourage interoperability at the protocol level
+with Twisted. </p>
+
+<h2>Call for Benchmarks</h2>
+
+<p> Twisted anecdotally benchmarks "well enough" but we need more hard
+numbers.  If you have some technical information you want to
+contribute we'd love to host it here.  We also welcome <a href="contributing"
+>contributions</a> of benchmarking test suites. </p>
+
+</div>
+</body>
+</html>
+    

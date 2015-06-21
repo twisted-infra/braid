@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+  <title>Twisted Internet</title>
+  <link type="text/css" href="/stylesheet.css" rel="stylesheet"/>
+  <link type="text/css" rel="stylesheet" href="/project.css"/>
+</head>
+<body>
+
+<!-- -*- HTML-Helper -*- -->
+
+<div id="navigation">
+<p>
+<a href="/">Twisted Matrix Labs</a> :
+<a href="/projects/">Projects</a> :
+<a href="/projects/core/">Twisted</a>:
+Twisted Internet
+</p>
+</div>
+
+<h1>Twisted.Internet</h1>
+
+<h2>Overview and Features</h2>
+
+<p> Twisted is an asynchronous networking framework.  It provides the tools
+that you need to write client and server networking applications that don't
+require a large number of threads to scale. </p>
+
+<ul>
+  <li><a href="#reactor">Reactor-based Main Loop</a></li>
+  <li><a href="#gui-integration">GUI Integration</a></li>
+  <li><a href="#async-utils">Asynchronous Programming Utilities</a></li>
+  <li><a href="#persistence">Persistent Servers</a></li>
+  <li><a href="#common-daemon">twistd - A Built-in Daemon</a></li>
+  <li><a href="#protocol-support">Wide Ranging Protocol Support</a></li>
+</ul>
+
+<h3><a name="reactor">Reactor-based Main Loop</a></h3>
+
+<p> Twisted Internet uses the <a
+href="http://www.cs.vu.nl/~eliens/online/oo/I/2/reactor.html"
+>Reactor Pattern</a> for its event architecture.  There are many pluggable
+implementations of the reactor for integrating with various toolkits
+and other event loops (more information can be found in the 
+<a href="http://twistedmatrix.com/projects/core/documentation/howto/reactor-basics.html">Reactor Basics</a>
+document). </p>
+
+<h3><a name="gui-integration">GUI Integration</a></h3>
+
+<p> GUI integration: Our Reactor design is "pluggable", allowing us
+to integrate various toolkits into Twisted. You can run servers or
+clients in a Twisted process and not have to worry about threading
+or conflicting event loops. What this means is that you can have a
+client or server running in a GUI, so implementing a user interface
+for your Twisted-based applications is easy! Currently Twisted
+integrates with PyGTK, WxPython, Tkinter, and PyQT.</p>
+
+<h3><a name="async-utils">Asynchronous Programming Utilities</a></h3>
+
+<p> Twisted provides a number of utilities for simplifying
+common asynchronous programming idioms. This includes tools for
+managing thread pools and support for 'deferred' operations which
+will execute in the future, and without blocking the main
+process. </p>
+
+<h3><a name="persistence">Persistent Servers</a></h3>
+
+<p> Servers can be persistent; there need not be configuration files, only
+pickles of the state of the server as you run it last.</p>
+
+<h3><a name="common-daemon">twistd - A Built-in Daemon</a></h3>
+
+<p> '<code>twistd</code>' is the Twisted Daemon.  It is a simple tool
+designed in a UNIX and command-line friendly way; however it is portable
+to many environments (including Win32).  It can take care
+of many common tasks for you including: </p>
+
+<ul>
+  <li> Daemonization on UNIX platforms, with support for services
+       on Windows NT/2000/XP in the future. </li>
+  <li> Logging. </li>
+  <li> Loading and execution of serialized Twisted application objects
+       in any of the serialization formats supported by Twisted. </li>
+  <li> Saving a currently running Twisted application to a serialized
+       object to be loaded by <code>twistd</code> in the future. </li>
+</ul>
+
+<h3><a name="protocol-support">Wide Ranging Protocol Support</a></h3>
+
+<p> We are replacing various UNIX daemons as we go along; all of these
+services are designed to be friendly to other Python code and the Twisted
+framework. This includes the HTTP, IRC, POP3, SMTP, and Telnet
+implementations, which are fairly good examples of where we plan to
+take this.</p>
+
+<h2>Competition</h2>
+
+<h3>Asyncore</h3>
+
+<p> <a href="http://python.org/doc/lib/module-asyncore.html">Asyncore</a>
+is a asynchronous networking library that is part of the Python standard
+library.  It is a partial solution which mainly provides low-level networking
+support, leaving out many pieces of an industrial-strength asynchronous
+framework. Asyncore is also only being minimally maintained. </p>
+
+<p> Here is a checklist of features for Twisted and Asyncore: </p>
+
+<table border="1">
+  <tr>
+    <th>Feature</th>
+    <th>Twisted</th>
+    <th>Asyncore</th>
+  </tr>
+  <tr>
+    <td>TCP</td>
+    <td class="happy">Yes</td>
+    <td class="happy">Yes</td>
+  </tr>
+  <tr>
+    <td>UDP</td>
+    <td class="happy">Yes</td>
+    <td class="happy">Yes</td>
+  </tr>
+  <tr>
+    <td>SSL</td>
+    <td class="happy">Yes</td>
+    <td class="sad">No</td>
+  </tr>
+  <tr>
+    <td>Event scheduling</td>
+    <td class="happy">Yes</td>
+    <td class="sad">No</td>
+  </tr>
+  <tr>
+    <td>Thread integration</td>
+    <td class="happy">Yes</td>
+    <td class="sad">No</td>
+  </tr>
+  <tr>
+    <td>Win32 event-loop support</td>
+    <td class="happy">Yes</td>
+    <td class="sad">No</td>
+  </tr>
+  <tr>
+    <td>GUI integration</td>
+    <td class="happy">Yes</td>
+    <td class="sad">No</td>
+  </tr>
+  <tr>
+    <td>Separation of Protocol and Transport</td>
+    <td class="happy">Yes</td>
+    <td class="sad">No</td>
+  </tr>
+  <tr>
+    <td><a href="documentation/examples/echoserv.py">"echo" server implementation</a></td>
+    <td>5 lines</td>
+    <td>20 lines</td>
+  </tr>
+</table>
+
+</body>
+</html>
+

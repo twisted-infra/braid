@@ -1,0 +1,8 @@
+#!/bin/sh -x
+
+# Set up the real, live website.
+export WEBSITE_ROOT=$HOME/config
+export WEBSITE_NAME=twisted-web
+
+# Run the real init script.
+. $WEBSITE_ROOT/init.d/_real_twisted-web

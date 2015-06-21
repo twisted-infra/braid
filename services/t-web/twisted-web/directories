@@ -1,0 +1,17 @@
+import glob
+
+# If you do not want to modify this file directly, most modifications
+# can be done via putting a Python file in /etc/twisted-web/local.d
+# This file will have access to root, default, site and application and
+# can call any method or change any attribute on them.
+#
+# If you want to change the root itself, "root=something" will not
+# have the desired effect. Instead, use site.resource=something
+#
+dictionary = {'root': root, 'site': site, 'application': application,
+              'default': default}
+for dir in ('package.d', 'local.d'):
+    files = glob.glob("/etc/twisted-web/%s/*.py" % dir)
+    files.sort()
+    for file in files:
+        execfile(file, dictionary)

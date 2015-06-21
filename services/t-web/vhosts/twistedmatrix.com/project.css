@@ -1,0 +1,49 @@
+div#main {
+    padding-right: 155px;
+    background-image:
+    url("http://twistedmatrix.com/images/TwistedLogoSmall.png");
+    background-position: bottom right;
+    background-repeat: no-repeat;
+}
+table.download {
+    border-collapse: collapse;
+}
+table.download td{
+    border: thin solid black;
+    padding: 5px;
+}
+h2 {
+    margin-top: 2em;
+    border-bottom: thin solid #666666;
+}
+thead {
+    font-weight: bold;
+}
+div#navigation {
+	font-size: small;
+}
+
+div#pagenavigation {
+    position: absolute;
+    right: 0;
+    width: 155px;
+    margin: 5px;
+    padding: 2px
+}
+
+ul#pageparts {
+    list-style-type: none;
+    border: thin solid #666666;
+}
+p.top:before {
+    content: "[";
+}
+p.top:after {
+    content: "]";
+}
+p.top {
+    font-size: small;
+    float: right;
+    padding-top: 0px;
+    margin-top:0px;
+}
