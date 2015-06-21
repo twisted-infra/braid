@@ -1,0 +1,26 @@
+
+# from twisted.copyright import version
+ns = {}
+
+from twisted.python import util
+
+execfile(util.sibpath(__file__, 'twisted-versions.txt'), ns)
+
+version = request.args.get('ver', [ns['STABLE']])[0]
+
+if version == 'unstable':
+    version = ns['UNSTABLE']
+
+from twisted.protocols import http
+ext = request.args.get("type")
+ext = ext and ext[0] or 'tar.gz'
+
+cat = request.args.get("cat", [""])[0]
+prelink = "http://twisted.sourceforge.net/Twisted%s-%s.%s"
+# prelink = "http://twistedmatrix.com/downloads/Twisted%s-%s.%s"
+link = prelink % (cat, version, ext)
+request.setHeader("location", link)
+request.setResponseCode(http.FOUND)
+request.write('<a href="%s">click here if your browser is broken</a>' % link)
+
+

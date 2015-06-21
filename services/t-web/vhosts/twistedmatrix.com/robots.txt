@@ -1,0 +1,18 @@
+User-agent: *
+Disallow: /users/gus.twistd/checkin/
+Disallow: /users/gus/checkin/
+Disallow: /~gus.twistd/checkin/
+Disallow: /~gus/checkin/
+Disallow: /trac/log
+Disallow: /trac/changeset
+Disallow: /trac/browser
+Disallow: /trac/query
+Disallow: /trac/report
+Disallow: /trac/timeline
+Disallow: /trac/newticket
+Disallow: /trac/search
+Disallow: /trac/diff
+Disallow: /projects/
+
+User-agent: AhrefsBot
+Disallow: /

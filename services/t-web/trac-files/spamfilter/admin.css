@@ -1,0 +1,53 @@
+/* Generic styles */
+form p.hint { color: #666; font-size: 85%; font-style: italic; margin: .5em 0;
+  padding-left: 1em;
+}
+
+fieldset.radio { border: none; margin: 0; padding: 0 }
+fieldset.radio legend { color: #000; float: left; font-size: 100%;
+ font-weight: normal; padding: 0 1em 0 0;
+}
+fieldset.radio label { padding-right: 1em; vertical-align: middle; }
+fieldset.radio input { vertical-align: middle; }
+
+/* Configuration panel */
+
+fieldset#karmatuning { margin-bottom: 1em; }
+
+table#karmapoints { width: 100%; }
+table#karmapoints p.hint { margin: 0; padding: 0; }
+
+/* Monitoring panel */
+
+table#spammonitor { margin-bottom: 1em; width: 100%; }
+table#spammonitor td { font-size: 90%; }
+table#spammonitor td.path :link, table#spammonitor td.path :visited {
+  color: #666;
+}
+table#spammonitor td.author { overflow: hidden; }
+table#spammonitor td.path, table#spammonitor td.ipnr,
+table#spammonitor td.time { font-size: 80%; }
+table#spammonitor td.karma { padding-right: 1em; text-align: right;
+  white-space: nowrap;
+}
+table#spammonitor tr.rejected td { background: #f4d7d7 !important; }
+table#spammonitor tr.rejected td.author { font-weight: bold; }
+table#spammonitor tr.rejected td.karma { color: #b00; font-weight: bold; }
+table#spammonitor td.details { font-size: 85%; font-weight: normal; }
+table#spammonitor td.details ul { list-style: square; margin: 0 0 .5em;
+  padding-left: 2em;
+}
+table#spammonitor td.details blockquote { color: #999; font-style: italic;
+  margin: 0;
+}
+
+/* Log entry details */
+
+form#spamentry .meta { margin: 0; }
+form#spamentry .meta th { font-weight: bold; padding-right: .5em;
+  text-align: right; vertical-align: top;
+}
+form#spamentry .meta th, form#spamentry .meta td { font-size: 90%; }
+form#spamentry pre { background: #e6e6e6; border: 1px solid #666;
+  font-size: 90%; padding: .25em; width: 90%; overflow: auto;
+}
