@@ -54,7 +54,7 @@ class Trac(service.Service):
             put(os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
 
-            run('mkdir -p ' + self.configDir)
+            run('mkdir -p ~/website/')
             put(os.path.dirname(__file__) + '/../t-web/*', "~/website/",
                 mirror_local_mode=True)
 
