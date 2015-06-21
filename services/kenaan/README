@@ -1,0 +1,24 @@
+This is the configuration for kenaan, twistedmatrix.com's irc bot.
+
+It is adminstered using braid[1]. It is installed in `/srv/kenaan` as user
+kenaan.
+It uses the following directories
+
+~/config - This repository.
+~/bin - commands to start and stop the server
+  commit - Announce a commit
+  alert - (obsolete) report a munin alert
+  message - Send a message to a channel
+  ticket - Announce a new ticket
+~/log - log files
+~/run - pid files
+
+The following fabric commands are available:
+
+install - Create user and install configuration.
+update - Updates the configuration and restarts the server.
+start - Start server.
+stop - Stop server.
+restart - Restart the server.
+
+[1] https://github.com/twisted-infra/braid
