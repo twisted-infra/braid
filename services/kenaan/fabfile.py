@@ -31,10 +31,6 @@ class Kenaan(service.Service):
                 run('/bin/ln -nsf {1}/{0} {2}/{0}'.format(bin, self.configDir, self.binDir))
             execute(self.update)
             cron.install(self.serviceUser, '{}/crontab'.format(self.configDir))
-            if env.get('installPrivateData'):
-                execute(self.task_installPrivateData)
-            else:
-                execute(self.task_installTestData)
 
 
     def task_installTestData(self, force=None):
@@ -70,6 +66,11 @@ class Kenaan(service.Service):
             put(
                 os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
+
+            if env.get('installPrivateData'):
+                execute(self.task_installPrivateData)
+            else:
+                execute(self.task_installTestData)
 
 
     def task_update(self):
