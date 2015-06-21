@@ -1,8 +1,8 @@
 """
 Support for amptrac.
 """
-
-from fabric.api import run, settings
+import os
+from fabric.api import put, run, settings
 
 from braid import cron, git, pip, postgres
 from braid.twisted import service
@@ -33,7 +33,11 @@ class AmpTrac(service.Service):
         Update config.
         """
         with settings(user=self.serviceUser):
-            git.branch('https://github.com/twisted-infra/amptrac-config', self.configDir)
+            run('mkdir -p ' + self.configDir)
+            put(
+                os.path.dirname(__file__) + '/*', self.configDir,
+                mirror_local_mode=True)
+
             amptracSource = 'git+https://github.com/twisted-infra/amptrac-server'
             if _installDeps:
                 pip.install('{}'.format(amptracSource))
