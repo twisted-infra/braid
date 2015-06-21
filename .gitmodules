@@ -10,6 +10,3 @@
 [submodule "services/codespeed"]
 	path = services/codespeed
 	url = https://github.com/twisted-infra/codespeed
-[submodule "services/amptrac"]
-	path = services/amptrac
-	url = https://github.com/twisted-infra/amptrac-config
