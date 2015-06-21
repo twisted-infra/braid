@@ -45,6 +45,7 @@ class Service(tasks.Service):
         """
         debconf.setDebconfValue('mailman', 'mailman/site_languages', 'multiselect', 'en')
         debconf.setDebconfValue('mailman', 'mailman/create_site_list', 'note', '')
+        package.update()
         package.install(['mailman'])
         put(sibpath(__file__, 'mm_cfg.py'), '/etc/mailman/mm_cfg.py', use_sudo=True)
         sudo('/usr/sbin/usermod -a -G service --home /var/lib/mailman {}'.format(self.serviceUser))
