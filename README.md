@@ -15,6 +15,7 @@ Currently Supported Services
 - [t-names](https://github.com/twisted-infra/t-names)
 - [t-web](https://github.com/twisted-infra/t-web)
 - buildbot
+- codespeed
 - [diffresource](https://github.com/twisted-infra/diffresource)
 - [kenaan](https://github.com/twisted-infra/kenaan)
 - [hiscore](svn.twistedmatrix.com:infra/twisted-highscore)

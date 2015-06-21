@@ -2,9 +2,10 @@
 Support for benchmark reporting.
 """
 from StringIO import StringIO
+import os
 import random
 
-from fabric.api import run, settings, env, put
+from fabric.api import execute, run, settings, env, put
 
 from braid import git, cron, pip, archive, utils, package
 from braid.twisted import service
@@ -25,16 +26,15 @@ class Codespeed(service.Service):
         # Bootstrap a new service environment
         self.bootstrap(python='system')
 
+        package.update()
         package.install(['python-svn'])
 
         with settings(user=self.serviceUser):
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
             run('mkdir -p ~/data')
             pip.install('Django==1.2.7', python='system')
-            self.update()
+            execute(self.update)
             cron.install(self.serviceUser, '{}/crontab'.format(self.configDir))
-            if env.get('installTestData'):
-                self.task_installTestData()
             self.task_generateSecretKey()
 
     def task_generateSecretKey(self):
@@ -60,8 +60,15 @@ class Codespeed(service.Service):
         Update config.
         """
         with settings(user=self.serviceUser):
-            git.branch('https://github.com/twisted-infra/codespeed', self.configDir)
+            run('mkdir -p ' + self.configDir)
+            put(
+                os.path.dirname(__file__) + '/*', self.configDir,
+                mirror_local_mode=True)
+
             git.branch('https://github.com/twisted-infra/codespeed-source', '~/codespeed')
+
+            if env.get('installTestData'):
+                exceute(self.task_installTestData)
 
     def djangoAdmin(self, args):
         """
