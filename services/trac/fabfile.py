@@ -83,6 +83,18 @@ class Trac(service.Service):
         self.task_restart()
 
 
+    def task_upgrade(self):
+        """
+        Run a Trac upgrade.
+        """
+        with settings(user=self.serviceUser):
+            self.update()
+            run(".local/bin/trac-admin {}/trac-env upgrade".format(self.configDir))
+            run(".local/bin/trac-admin {}/trac-env wiki upgrade".format(self.configDir))
+
+        self.task_restart()
+
+
     def task_dump(self, localfile):
         """
         Create a tarball containing all information not currently stored in
@@ -97,6 +109,7 @@ class Trac(service.Service):
                     'attachments': 'attachments',
                     'db.dump': temp,
                 }, localfile)
+
 
     def task_restore(self, localfile, restoreDb=True):
         """
@@ -169,7 +182,6 @@ class Trac(service.Service):
             run(".local/bin/trac-admin {}/trac-env wiki upgrade".format(self.configDir))
 
 
-
     def task_installTestData(self):
         """
         Create an empty trac database for testing.
@@ -184,7 +196,6 @@ class Trac(service.Service):
             # Run trac initenv to create the postgresql database tables, but use
             # a throwaway trac-env directory because that comes from
             # https://github.com/twisted-infra/trac-config/tree/master/trac-env
-
             try:
                 run('~/.local/bin/trac-admin '
                     '/tmp/trac-init initenv TempTrac postgres://@/trac svn ""')
@@ -193,6 +204,7 @@ class Trac(service.Service):
 
             # Run an upgrade to add plugin specific database tables and columns.
             run('~/.local/bin/trac-admin config/trac-env upgrade --no-backup')
+
 
 
 addTasks(globals(), Trac('trac').getTasks())
