@@ -21,4 +21,8 @@ start - Start server.
 stop - Stop server.
 restart - Restart the server.
 
+It will run a server on localhost which is proxied from t-web at
+* http://127.0.0.1:8123/http/speed.twistedmatrix.com
+* http://127.0.0.1:8123/https/speed.twistedmatrix.com
+
 [1] https://github.com/twisted-infra/braid
