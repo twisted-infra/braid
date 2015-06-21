@@ -1,8 +1,8 @@
 """
 Support for kenaan service installation and management.
 """
-
-from fabric.api import run, settings, env, cd, abort, puts, put
+import os
+from fabric.api import execute, run, settings, env, cd, abort, puts, put
 from fabric.contrib import files
 
 from twisted.python.filepath import FilePath
@@ -29,12 +29,12 @@ class Kenaan(service.Service):
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
             for bin in ['alert', 'commit', 'message', 'ticket']:
                 run('/bin/ln -nsf {1}/{0} {2}/{0}'.format(bin, self.configDir, self.binDir))
-            self.update()
+            execute(self.update)
             cron.install(self.serviceUser, '{}/crontab'.format(self.configDir))
-            if env.get('installTestData'):
-                self.task_installTestData()
-            elif env.get('installPrivateData'):
-                self.task_installPrivateData()
+            if env.get('installPrivateData'):
+                execute(self.task_installPrivateData)
+            else:
+                execute(self.task_installTestData)
 
 
     def task_installTestData(self, force=None):
@@ -66,7 +66,10 @@ class Kenaan(service.Service):
         Update config.
         """
         with settings(user=self.serviceUser):
-            git.branch('https://github.com/twisted-infra/kenaan', self.configDir)
+            run('mkdir -p ' + self.configDir)
+            put(
+                os.path.dirname(__file__) + '/*', self.configDir,
+                mirror_local_mode=True)
 
 
     def task_update(self):
