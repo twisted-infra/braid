@@ -1,0 +1,15 @@
+This is the configuration for twistedmatrix.com's mailman instalation.
+
+It is adminstered using braid[1].
+
+It isn't directly installed, rather it uses the ubuntu's stock installation of
+mailman.
+
+install - Install mailman and update configuration.
+dump:<dump-file> - Dump mailing lists and archives
+restore:<dump-file> - Restore mailing lists and archives.
+start - Start server.
+stop - Stop server
+restart - Restart server.
+
+[1] https://github.com/twisted-infra/braid
