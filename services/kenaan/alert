@@ -1,0 +1,17 @@
+#!/usr/bin/python
+
+import sys, os
+
+from twisted.python import log
+
+import config, alert
+
+if __name__ == '__main__':
+    data = sys.stdin.read()[:-1]
+    log.startLogging(
+        file(os.path.expanduser(
+            os.path.join(config.LOG_ROOT, '.alert.log')), 'a'))
+    items = [datum.split('\t') for datum in data.split('\n')]
+    log.msg(repr(data))
+    log.msg(repr(items))
+    alert.main(items)
