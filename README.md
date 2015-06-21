@@ -12,7 +12,7 @@ deploy itself on a given machine.
 Currently Supported Services
 ============================
 
-- [t-names](https://github.com/twisted-infra/t-names)
+- t-names
 - [t-web](https://github.com/twisted-infra/t-web)
 - buildbot
 - [diffresource](https://github.com/twisted-infra/diffresource)

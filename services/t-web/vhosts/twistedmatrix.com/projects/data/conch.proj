@@ -1,0 +1,22 @@
+name: Conch
+header: conch.jpeg
+description: An SSH and SFTP protocol implementation together with clients and servers
+url: conch
+licence: MIT
+releases: Conch bz2|0.6.0|2005-10-24|9630a9b95c709267b45068ff5bc8df2f|http://tmrc.mit.edu/mirror/twisted/Conch/0.6/TwistedConch-0.6.0.tar.bz2|NEWS.txt
+maintainers: Paul Swartz|mailto:z3p@twistedmatrix.com
+maintainers: Jean-Paul Calderone|mailto:exarkun@twistedmatrix.com
+help: The twisted-python mailing list|http://twistedmatrix.com/cgi-bin/mailman/listinfo/twisted-python
+help: The #twisted IRC channel on freenode.net|irc:irc.freenode.net/twisted
+bugs: http://twistedmatrix.com/bugs/
+
+Conch is an SSHv2 implementation written in Python. SSH is a protocol
+designed to allow remote access to shells and commands, but it is
+generic enough to allow everything from TCP forwarding to generic
+filesystem access. Since conch is written in Python, it interfaces
+well with other Python projects, such as Imagination.
+
+Conch also includes a implementations of the telnet and vt102 protocols, as
+well as support for rudamentary line editing behaviors.  A new
+implementation of Twisted's Manhole application is also included, featuring
+server-side input history and interactive syntax coloring.

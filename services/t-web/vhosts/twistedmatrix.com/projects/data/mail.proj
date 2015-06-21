@@ -1,0 +1,15 @@
+name: Twisted Mail
+description: An SMTP, IMAP and POP protocol implementation together with clients and servers
+url: mail
+licence: MIT
+releases: Mail bz2|0.2.0|2005-10-20|bae977d92cfcb1a3a5e884262ed444cc|http://tmrc.mit.edu/mirror/twisted/Mail/0.2/TwistedMail-0.2.0.tar.bz2|NEWS.txt
+maintainers: Jp Calderone|mailto:exarkun@twistedmatrix.com
+help: The twisted-python mailing list|http://twistedmatrix.com/cgi-bin/mailman/listinfo/twisted-python
+help: The #twisted IRC channel on freenode.net|irc:irc.freenode.net/twisted
+bugs: http://twistedmatrix.com/bugs/
+
+Twisted Mail contains high-level, efficient protocol implementations for
+both clients and servers of SMTP, POP3, and IMAP4.  Additionally, it
+contains an "out of the box" combination SMTP/POP3 virtual-hosting mail
+server.  Also included is a read/write Maildir implementation and a basic
+Mail Exchange calculator (depends on Twisted Names).

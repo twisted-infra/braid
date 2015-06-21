@@ -1,0 +1,147 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      py:strip="">
+
+    <!--! Add some tasty meta tags. -->
+    <head py:match="head">
+        <meta name="ROBOTS" content="NOODP" />
+        <meta name="Description" content="An event-driven networking engine written in Python and MIT licensed." />
+        <link rel="stylesheet" href="${chrome.htdocs_location}css/bootstrap.min.css" />
+        <script type="text/javascript" src="${chrome.htdocs_location}js/jquery-1.7.1.min.js"></script>
+        ${select('*|comment()|text()')}
+        <script type="text/javascript" src="https://www.google.com/jsapi?key=ABQIAAAAJE-f7vmwI1-jxkmwRe4lUxTAs18ELyhzmLGaHoc1qJwmpJy3zhR3LMRRdwqg5PSY4tnVO684msUklQ"></script>
+        <script type="text/javascript" src="${chrome.htdocs_location}js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="${chrome.htdocs_location}js/twisted.js"></script>
+    </head>
+
+    <!--! Add our own top-level navigation links. -->
+    <div py:match="div[@id='banner']" py:attrs="select('@*')">
+        <div id="top_grad"></div>
+        <div id="tab">
+            <a href="${href.wiki()}">HOME</a>
+            <a href="${href.wiki('FrequentlyAskedQuestions')}">FAQ</a>
+            <a href="${href.wiki('Documentation')}">DOCS</a>
+            <a href="${href.wiki('Downloads')}">DOWNLOAD</a>
+        </div>
+        ${select('*|comment()|text()')}
+    </div>
+
+    <!--! Our own custom footer -->
+    <div py:match="div[@id='footer']" py:attrs="select('@*')">
+        <div class="sitemeter">
+            <!-- Google analytics, obviously. -->
+            <script src="https://www.google-analytics.com/urchin.js" type="text/javascript" />
+            <script type="text/javascript">
+                _uacct = "UA-99018-6";
+                urchinTracker();
+            </script>
+        </div>
+        <div class="credits">
+            <p><a href="${href.wiki('SiteCredits')}">Site design credits</a></p>
+        </div>
+        <div class="right">
+            <p>${chrome.footer}</p>
+        </div>
+    </div>
+
+    <!--! A more structured form of the ticket resolution, status and type attributes -->
+    <div py:match="div[@id='content' and @class='ticket']" py:attrs="select('@*')">
+        <span class="statuses" py:match="span[@class='trac-status']">
+            <py:if test="ticket.type"><span class="type">${ticket.type}</span></py:if>
+            <py:if test="ticket.status"><span class="status">${ticket.status}</span></py:if>
+            <py:if test="ticket.resolution"><span class="resolution">${ticket.resolution}</span></py:if>
+        </span>
+        <span py:match="span[@class='trac-type']" />
+        <h1 py:match="h1">
+            <span class="title">${select('text()')}</span>
+            ${select('*|comment()')}
+        </h1>
+        ${select('*|comment()|text()')}
+    </div>
+
+    <!--! Don't allow replacing existing attachments, ever. -->
+    <py:match path="form[@id='attachment']//div[@class='options']" />
+
+    <!--! Show a reminder on the attachment page about including tests. -->
+    <py:match path="form[@id='attachment']/div[@class='buttons']">
+
+      <div>
+        <div>
+          <h4>If you are submitting a patch:</h4>
+          <ol>
+            <li>
+              <strong>Read the <a class="wiki" href="/trac/wiki/TwistedDevelopment#SubmittingaPatch">patch guidelines</a>.</strong>
+            </li>
+
+            <li>
+              <strong>Include unit tests!</strong>
+              If your patch changes code it must include unit tests.
+              <a href="/trac/wiki/ReviewProcess">See the complete acceptance criteria</a>.
+            </li>
+
+            <li>
+              <strong>Keep patches as small as possible (&lt;800 lines)</strong>.
+              This will make it easy for your change to be reviewed.
+              For larger changes please contact <a href="/trac/wiki/TwistedCommunity">Twisted developers</a> first,
+              to discuss how your contribution can be broken into a series of tickets and small patches.
+            </li>
+
+            <li>
+              <strong>Use a standard patch filename</strong>.
+              Your patch filename should be
+              all lower case,
+              with no spaces.
+              It should include the ticket number,
+              and a patch version number.
+              Use a .patch or .diff extension so that Trac can apply syntax highlighting.
+              eg agent-howto-spelling-1234-1.patch
+            </li>
+
+            <li>
+              <strong>Add the "review" keyword</strong> to the ticket after uploading your patch.
+              This will add your patch to the <a class="report" href="/trac/report/15">review queue</a>.
+            </li>
+          </ol>
+        </div>
+
+        <div>
+          <h4>If you are submitting an example or demonstration:</h4>
+          <ol>
+            <li>
+              Make it a <strong><a class="ext-link" href="http://sscce.org/">Short, Self Contained, Correct Example</a></strong>
+            </li>
+
+            <li>
+              <strong>Include instructions</strong>
+              showing how to run the example and the expected output.
+            </li>
+          </ol>
+        </div>
+
+        <div>
+          <p>
+            And after you've attached your file,
+            always <strong>add an explanatory comment to the ticket</strong>,
+            summarizing the purpose of your attachment.
+          </p>
+        </div>
+      </div>
+      <div py:attrs="select('@*')">
+        ${select('*|comment()|text()')}
+      </div>
+    </py:match>
+
+    <!--! Add links to diffresource and buildbot -->
+    <py:match path="td[@headers='h_branch']">
+      <td headers="h_branch">
+        ${ticket['branch']}
+        <py:if test="ticket['branch']">
+          <br/>
+          (<a href="/~diffresource.twistd/${ticket.id}">diff</a>,
+          <a href="https://github.com/twisted/twisted/compare/trunk...${ticket['branch'][9:]}">github</a>,
+          <a href="https://buildbot.twistedmatrix.com/boxes-supported?branch=/${ticket['branch']}">buildbot</a>,
+          <a href="/trac/log/${ticket['branch']}">log</a>)
+        </py:if>
+      </td>
+    </py:match>
+</html>
