@@ -54,7 +54,9 @@ class Trac(service.Service):
             put(os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
 
-            git.branch('https://github.com/twisted-infra/t-web', '~/website')
+            run('mkdir -p ' + self.configDir)
+            put(os.path.dirname(__file__) + '/../t-web/*', "~/website/",
+                mirror_local_mode=True)
 
             pip.install('trac==1.0.1', python='system')
 
