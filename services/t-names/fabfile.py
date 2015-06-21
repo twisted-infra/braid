@@ -1,8 +1,9 @@
 """
 Support for DNS service installation and management.
 """
+import os
 
-from fabric.api import run, settings
+from fabric.api import execute, put, run, settings
 
 from braid import authbind, git, cron
 from braid.twisted import service
@@ -25,7 +26,7 @@ class TwistedNames(service.Service):
 
         with settings(user=self.serviceUser):
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
-            self.update()
+            execute(self.update)
             cron.install(self.serviceUser, '{}/crontab'.format(self.configDir))
 
 
@@ -34,7 +35,10 @@ class TwistedNames(service.Service):
         Update config.
         """
         with settings(user=self.serviceUser):
-            git.branch('https://github.com/twisted-infra/t-names', self.configDir)
+            run('mkdir -p ' + self.configDir)
+            put(
+                os.path.dirname(__file__) + '/*', self.configDir,
+                mirror_local_mode=True)
 
     def task_update(self):
         """
