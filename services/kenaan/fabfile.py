@@ -46,7 +46,7 @@ class Kenaan(service.Service):
                 put(sibpath(__file__, 'private.py.sample'),
                     os.path.join(self.configDir, "private.py"), mode=0600)
                 put(sibpath(__file__, 'config.py.sample'),
-                    os.path.join(self.configDir, "config.py"), mode=0600)
+                    os.path.join(self.configDir, "config.py"))
 
 
     def task_installPrivateData(self, private=sibpath(__file__, 'private.py')):
@@ -55,7 +55,7 @@ class Kenaan(service.Service):
         """
         with settings(user=self.serviceUser):
             put(sibpath(__file__, 'config.py'),
-                os.path.join(self.configDir, "config.py"), mode=0600)
+                os.path.join(self.configDir, "config.py"))
 
             if FilePath(private).exists():
                 put(sibpath(__file__, 'private.py'),
