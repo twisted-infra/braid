@@ -12,6 +12,7 @@ deploy itself on a given machine.
 Currently Supported Services
 ============================
 
+- amptrac
 - t-names
 - [t-web](https://github.com/twisted-infra/t-web)
 - buildbot
