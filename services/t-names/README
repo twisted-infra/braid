@@ -1,0 +1,23 @@
+This is the configuration for twistedmatrix.com's DNS server using twisted.names.
+
+It is adminstered using braid[1]. It is installed in `/srv/t-names` as user t-names.
+It uses the following directories
+
+~/config - This repository.
+~/config/zones - DNS zone info
+~/bin - commands to start and stop the server
+~/log - log files
+~/run - pid files
+
+The DNS info has the ip address of all hosts in `hosts.py`, as well as some utility
+functions. The remaning files are zone definitions using those utilities and hosts.
+
+The following fabric commands are available:
+
+install - Create user and install configuration.
+update - Updates the configuration and restarts the server.
+start - Start server.
+stop - Stop server.
+restart - Restart the server.
+
+[1] https://github.com/twisted-infra/braid

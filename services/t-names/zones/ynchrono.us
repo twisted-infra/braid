@@ -1,0 +1,50 @@
+
+from twisted.names.authority import getSerial
+
+name = 'ynchrono.us'
+
+from hosts import dornkirk, tmtl, addSubdomains
+
+subs = {
+    dornkirk: ['ns1.', ''],
+    tmtl: ['ns2.', ''],
+    '104.130.225.186': ['chronology.'],
+}
+
+zone = [
+    SOA(
+        # For whom we are the authority
+        name,
+
+        # This nameserver's name
+        mname = "ns1.twistedmatrix.com",
+
+        # Mailbox of individual who handles this
+        rname = "exarkun.twistedmatrix.com",
+
+        # Unique serial identifying this SOA data
+        # <4-year> <2-month> <2-day> <2-counter>
+        serial = getSerial(),
+
+        # Time interval before zone should be refreshed
+        refresh = "1H",
+
+        # Interval before failed refresh should be retried
+        retry = "1H",
+
+        # Upper limit on time interval before expiry
+        expire = "21D",
+
+        # Minimum TTL
+        minimum = "1H"
+    ),
+
+    NS(name, 'ns1.ynchrono.us'),
+    NS(name, 'ns2.ynchrono.us'),
+
+    CNAME('as.ynchrono.us', 'ghs.google.com.', ttl='1D'),
+    CNAME('s.ynchrono.us', 's.ynchrono.us.s3-website-us-east-1.amazonaws.com'),
+
+]
+
+addSubdomains(name, zone, subs)
