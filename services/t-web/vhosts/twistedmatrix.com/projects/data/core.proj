@@ -1,0 +1,45 @@
+name: Twisted
+description: Asynchronous networking framework
+url: core
+licence: MIT
+releases: Complete Twisted 2.2.0 bz2|2006-02-12|2006-02-12|6cf4cb94a7582ff3a89a565b07c5f320|http://tmrc.mit.edu/mirror/twisted/Twisted/2.2/TwistedSumo-2006-02-12.tar.bz2|README-sumo.txt
+releases: Win32 exe Python 2.3|2.2.0|2006-02-12|ee99653bdec7063dd2c15e1ee08a6f4d|http://tmrc.mit.edu/mirror/twisted/Twisted/2.2/Twisted_NoDocs-2.2.0.win32-py2.3.exe|
+releases: Win32 exe Python 2.4|2.2.0|2005-02-12|fbd3efb856fea4af8e366f0294d2b23a|http://tmrc.mit.edu/mirror/twisted/Twisted/2.2/Twisted_NoDocs-2.2.0.win32-py2.4.exe|
+releases: Minimal bz2 (advanced users only!)|2.2.0|2006-02-12|4a9305e69cdcf01a594c4fe1ea1efc05|http://tmrc.mit.edu/mirror/twisted/Twisted/2.2/Twisted-2.2.0.tar.bz2|NEWS.txt
+maintainers: Glyph Lefkowitz|mailto:glyph@twistedmatrix.com
+help: The twisted-python mailing list|http://twistedmatrix.com/cgi-bin/mailman/twisted-python
+help: The #twisted IRC channel on freenode.net|irc:irc.freenode.net/twisted
+bugs: http://twistedmatrix.com/bugs/
+
+<p> Twisted is an asynchronous networking framework written in Python,
+supporting TCP, UDP, multicast, SSL/TLS, serial communication and
+more.  It is used by most of the servers, clients and protocols that
+are part of other <a href="/projects/">Twisted projects</a>.  </p>
+
+<p>A full <a href="/documents/current/api/">API reference</a> of
+Twisted and all subprojects is available.</p>
+
+<p>
+Twisted contains a number of modules:
+</p>
+
+<ul>
+<li><a href="cred">twisted.cred</a>, a pluggable authentication system for
+servers;</li>
+<li><a href="enterprise">twisted.enterprise</a>, an asynchonous adaptor of 
+Python DB-API 2.0 database interfaces;</li>
+<li><a href="internet">twisted.internet</a>, the Twisted event loop;</li>
+<li><a href="manhole">twisted.manhole</a>, a debugging service;</li>
+<li>twisted.persisted, a collection of object persistance systems</li>
+<li>twisted.protocols, a collection of simple network protocols and helper
+utilities;</li>
+<li>twisted.python, a set of Twisted programming abstractions;
+<li><a href="spread">twisted.spread</a>, a network transport, serializer and
+object broker;</li>
+<li>twisted.trial, a unit-testing framework; and</li>
+</ul>
+<p>
+The "Twisted" tarball contains only twisted core. The other subprojects are available on their own webpages.
+</p><p>
+The "Twisted-sumo" tarball contains twisted core, all the Twisted python subprojects, and Zope-Interface.
+</p>

@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Twisted Cred</title>
+<link type="text/css" rel="stylesheet" href="/stylesheet.css"/>
+<link type="text/css" rel="stylesheet" href="/project.css"/>
+</head>
+<body>
+
+<div id="navigation">
+<p>
+<a href="/">Twisted Matrix Labs</a> :
+<a href="/projects/">Projects</a> :
+<a href="/projects/core/">Twisted</a>:
+Twisted Cred
+</p>
+</div>
+
+<!-- -*- HTML-Helper -*- -->
+
+
+<h1>Twisted.Cred</h1>
+
+<p>Cred is a pluggable authentication system for servers.  It allows any
+number of network protocols to connect and authenticate to a system, and
+communicate to those aspects of the system which are meaningful to the specific
+protocol.  For example, Twisted's POP3 support passes a <q>username and
+password</q> set of credentials to get back a mailbox for the specified email
+account.  IMAP does the same, but retrieves a slightly different view of the
+same mailbox, enabling those features specific to IMAP which are not available
+in other mail protocols.</p>
+
+<p>Cred is designed to allow both the backend implementation of the business
+logic - called the <em>avatar</em> - and the authentication database - called
+the <em>credential checker</em> - to be decided during deployment. For example,
+the same POP3 server should be able to authenticate against the local UNIX
+password database or an LDAP server without having to know anything about how
+or where mail is stored.  </p>
+
+</body>
+</html>
+    

@@ -1,6 +1,3 @@
-[submodule "services/t-names"]
-	path = services/t-names
-	url = https://github.com/twisted-infra/t-names
 [submodule "services/diffresource"]
 	path = services/diffresource
 	url = https://github.com/twisted-infra/diffresource
@@ -13,9 +10,6 @@
 [submodule "services/trac"]
 	path = services/trac
 	url = https://github.com/twisted-infra/trac-config
-[submodule "services/t-web"]
-	path = services/t-web
-	url = https://github.com/twisted-infra/t-web
 [submodule "services/amptrac"]
 	path = services/amptrac
 	url = https://github.com/twisted-infra/amptrac-config
