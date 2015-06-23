@@ -46,7 +46,7 @@ class TwistedWeb(service.Service):
 
             run('/bin/mkdir -p ~/data')
             if env.get('installPrivateData'):
-                self.task_installSSLKeys()
+                self.task_installTLSKeys()
                 run('/usr/bin/touch {}/production'.format(self.configDir))
             else:
                 run('/bin/rm -f {}/production'.format(self.configDir))
@@ -67,9 +67,9 @@ class TwistedWeb(service.Service):
             pem=sibpath(__file__, 'www.twistedmatrix.com.pem')))
 
 
-    def task_installSSLKeys(self):
+    def task_installTLSKeys(self):
         """
-        Install SSL keys.
+        Install TLS keys.
         """
         with settings(user=self.serviceUser):
             run('mkdir -p ~/ssl')
@@ -81,6 +81,7 @@ class TwistedWeb(service.Service):
             run('ln -s ~/ssl/www.twistedmatrix.com.pem '
                 '~/ssl/twistedmatrix.com.pem')
             run('ln -s ~/ssl/www.twistedmatrix.com.pem ~/ssl/DEFAULT.pem')
+
 
     def update(self):
         """
