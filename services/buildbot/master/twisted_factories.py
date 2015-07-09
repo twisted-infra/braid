@@ -17,10 +17,13 @@ from twisted_steps import ProcessDocs, ReportPythonModuleVersions, \
     SetBuildProperty
 
 from txbuildbot.lint import (
-        CheckDocumentation,
-        CheckCodesByTwistedChecker,
-        PyFlakes,
-        )
+    CheckDocumentation,
+    CheckCodesByTwistedChecker,
+    PyFlakes,
+)
+
+import private
+reload(private)
 
 TRIAL_FLAGS = ["--reporter=bwverbose"]
 WARNING_FLAGS = ["--unclean-warnings"]
@@ -69,6 +72,33 @@ class TwistedBaseFactory(BuildFactory):
             workdir=".", command=["chmod", "u+rwX", "-f", "-R", "Twisted"])
         source.insert(0, fixPermissions)
 
+    def _reportVersions(self, python=None):
+        # Report the module versions
+        if python == None:
+            python = self.python
+
+        self.addStep(
+            ReportPythonModuleVersions,
+            python=python,
+            moduleInfo=[
+                ("Python", "sys", "sys.version"),
+                ("OpenSSL", "OpenSSL", "OpenSSL.__version__"),
+                ("PyCrypto", "Crypto", "Crypto.__version__"),
+                ("gmpy", "gmpy", "gmpy.version()"),
+                ("SOAPpy", "SOAPpy", "SOAPpy.__version__"),
+                ("ctypes", "ctypes", "ctypes.__version__"),
+                ("gtk", "gtk", "gtk.gtk_version"),
+                ("pygtk", "gtk", "gtk.pygtk_version"),
+                ("pywin32", "win32api",
+                 "win32api.GetFileVersionInfo(win32api.__file__, chr(92))['FileVersionLS'] >> 16"),
+                ("pyasn1", "pyasn1", "pyasn1.__version__"),
+                ("cffi", "cffi", "cffi.__version__"),
+                ],
+            pkg_resources=[
+                ("subunit", "subunit"),
+                ("zope.interface", "zope.interface"),
+                ])
+
 
     def __init__(
         self, python, source, uncleanWarnings, trialTests=None,
@@ -102,34 +132,18 @@ class TwistedBaseFactory(BuildFactory):
             # wheels on the fly and install them from user's cache.
             self.addStep(
                 shell.ShellCommand,
-                command=[
+                command = self.python + ["-m",
                     'virtualenv', '--clear',
-                    '-p', self.python[0],
                     self._virtualEnvPath,
                     ],
                 )
 
-        self.addStep(
-            ReportPythonModuleVersions,
-            python=self.python,
-            moduleInfo=[
-                ("Python", "sys", "sys.version"),
-                ("OpenSSL", "OpenSSL", "OpenSSL.__version__"),
-                ("PyCrypto", "Crypto", "Crypto.__version__"),
-                ("gmpy", "gmpy", "gmpy.version()"),
-                ("SOAPpy", "SOAPpy", "SOAPpy.__version__"),
-                ("ctypes", "ctypes", "ctypes.__version__"),
-                ("gtk", "gtk", "gtk.gtk_version"),
-                ("pygtk", "gtk", "gtk.pygtk_version"),
-                ("pywin32", "win32api",
-                 "win32api.GetFileVersionInfo(win32api.__file__, chr(92))['FileVersionLS'] >> 16"),
-                ("pyasn1", "pyasn1", "pyasn1.__version__"),
-                ("cffi", "cffi", "cffi.__version__"),
-                ],
-            pkg_resources=[
-                ("subunit", "subunit"),
-                ("zope.interface", "zope.interface"),
-                ])
+        else:
+            # Report the versions, since we're using the system ones. If it's a
+            # virtualenv, it's up to the venv factory to report the versions
+            # itself.
+            self._reportVersions()
+
 
 
     def addTrialStep(self, **kw):
@@ -553,21 +567,44 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
 class TwistedPython3CoveragePyFactory(TwistedBaseFactory):
     OMIT_PATHS = [
         '/usr/*',
-        '*/tw-py3-*/*',
-        ]
+        '*/tw-py3-*/*'
+    ]
 
     def __init__(self, python, source):
-        TwistedBaseFactory.__init__(self, python, source, False)
-        self.addStep(
+        OMIT = self.OMIT_PATHS[:]
+        OMIT.append(self._virtualEnvPath + "/*")
+
+        TwistedBaseFactory.__init__(
+            self,
+            source=source,
+            python=python,
+            uncleanWarnings=False,
+            virtualenv=True,
+        )
+        self.addVirtualEnvStep(
             shell.ShellCommand,
-            command = self.python + [
-                "-m", "coverage", "run", "--omit", ','.join(self.OMIT_PATHS),
-                "--branch", "admin/run-python3-tests"])
-        self.addStep(
+            description = "installing dependencies".split(" "),
+            command=['pip', 'install',
+                     'pyopenssl',
+                     'service_identity',
+                     'zope.interface',
+                     'idna',
+                     'coverage',
+                     'codecov'
+            ])
+
+        self._reportVersions(python=[self.python[0].split(os.sep)[-1]])
+
+        self.addVirtualEnvStep(
             shell.ShellCommand,
-            command=self.python + [
-                "-m", "coverage", 'html', '-d', 'twisted-coverage', '--omit',
-                ','.join(self.OMIT_PATHS), '-i'])
+            description = "run tests".split(" "),
+            command = ["coverage", "run", "--omit",
+                       ','.join(OMIT), "--branch", "admin/run-python3-tests"])
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            description = "run coverage html".split(" "),
+            command=["coverage", 'html', '-d', 'twisted-coverage', '--omit',
+                ','.join(OMIT), '-i'])
         self.addStep(
             transfer.DirectoryUpload,
             workdir='Twisted',
