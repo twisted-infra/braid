@@ -614,6 +614,17 @@ class TwistedPython3CoveragePyFactory(TwistedBaseFactory):
             blocksize=2 ** 16,
             compress='gz')
 
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            description = "run coverage xml".split(" "),
+            command=["coverage", 'xml', '-o', 'coverage.xml', '--omit',
+                ','.join(OMIT), '-i'])
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            warnOnFailure = True,
+            description = "upload to codecov".split(" "),
+            command=["codecov", "--token={}".format(private.codecov_twisted_token)])
+
 
 class TwistedBenchmarksFactory(TwistedBaseFactory):
     def __init__(self, python, source):
