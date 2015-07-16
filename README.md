@@ -12,12 +12,13 @@ deploy itself on a given machine.
 Currently Supported Services
 ============================
 
+- amptrac
 - t-names
 - [t-web](https://github.com/twisted-infra/t-web)
 - buildbot
 - codespeed
 - [diffresource](https://github.com/twisted-infra/diffresource)
-- [kenaan](https://github.com/twisted-infra/kenaan)
+- kenaan
 - [hiscore](svn.twistedmatrix.com:infra/twisted-highscore)
 - [trac](https://github.com/twisted-infra/trac-config)
 - [mailman](https://github.com/twisted-infra/mailman-config)
