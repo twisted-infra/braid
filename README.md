@@ -135,7 +135,9 @@ used, and a ssh connection as that user (with `settings(user='user')` or the lik
 Vagrant
 =======
 
-There is `Vagrantfile` provided with braid, that will setup a staging sever.
+> [Vagrant](https://www.vagrantup.com/) 1.7+ and [Ansible](http://docs.ansible.com/) 1.9+ is required to use the Vagrant image.
+
+There is `Vagrantfile` provided with braid, that will set up a staging server.
 It uses the address `172.16.255.140`, and there is a braid config named `vagrant` that connects to it by default.
 
 ```shell
