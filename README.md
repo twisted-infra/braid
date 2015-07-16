@@ -139,13 +139,8 @@ There is `Vagrantfile` provided with braid, that will setup a staging sever.
 It uses the address `172.16.255.140`, and there is a braid config named `vagrant` that connects to it by default.
 
 ```shell
-# Get the required base OS image if you don't have it yet.
-vagrant box add precise64 http://files.vagrantup.com/precise64.box
 # Start the VM
 vagrant up
-# With ssh-aget add private key used by Vagrant
-ssh-add ~/.vagrant.d/insecure_private_key
+# Run the command
 fab config.vagrant COMMAND
-# Or without ssh-agent
-fab -i ~/.vagrant.d/insecure_private_key config.vagrant COMMAND
 ```
