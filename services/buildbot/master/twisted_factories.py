@@ -146,7 +146,7 @@ class TwistedBaseFactory(BuildFactory):
 
 
 
-    def addTrialStep(self, **kw):
+    def addTrialStep(self, virtualenv=False, **kw):
         if self.trialMode is not None:
             trialMode = self.trialMode
         else:
@@ -160,7 +160,10 @@ class TwistedBaseFactory(BuildFactory):
             kw['tests'] = self.trialTests
         if 'python' not in kw:
             kw['python'] = self.python
-        self.addStep(TwistedTrial, trialMode=trialMode, **kw)
+        if virtualenv:
+            self.addVirtualEnvStep(TwistedTrial, trialMode=trialMode, **kw)
+        else:
+            self.addStep(TwistedTrial, trialMode=trialMode, **kw)
 
 
     @property
@@ -313,6 +316,57 @@ class TwistedReactorsBuildFactory(TwistedBaseFactory):
             self.addTrialStep(
                 name=reactor, reactor=reactor, flunkOnFailure=True,
                 warnOnFailure=False)
+
+
+class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
+    treeStableTimer = 5*60
+
+    def __init__(self, source, RemovePYCs=RemovePYCs,
+                 python="python", compileOpts=[], compileOpts2=[],
+                 reactors=["select"], uncleanWarnings=True):
+
+        TwistedBaseFactory.__init__(
+            self,
+            source=source,
+            python=python,
+            uncleanWarnings=False,
+            virtualenv=True,
+        )
+
+        assert isinstance(compileOpts, list)
+        assert isinstance(compileOpts2, list)
+
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            description = "installing dependencies".split(" "),
+            command=['pip', 'install',
+                     'pyopenssl',
+                     'service_identity',
+                     'zope.interface',
+                     'idna',
+                     'pycrypto',
+                     'pyasn1',
+                     'soappy',
+                     'pyserial',
+                     'python-subunit'
+            ])
+
+        venvPython = [os.path.join(self._virtualEnvBin, self.python[0])]
+
+        self._reportVersions(python=venvPython)
+
+        cmd = (self.python + compileOpts + ["setup.py", "build_ext"]
+               + compileOpts2 + ["-i"])
+
+        self.addVirtualEnvStep(shell.Compile, command=cmd, warnOnFailure=True)
+
+        for reactor in reactors:
+            self.addStep(RemovePYCs)
+            self.addStep(RemoveTrialTemp, python=self.python)
+            self.addTrialStep(
+                name=reactor, reactor=reactor, flunkOnFailure=True,
+                warnOnFailure=False, virtualenv=True)
+
 
 
 
