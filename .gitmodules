@@ -4,6 +4,3 @@
 [submodule "services/mailman"]
 	path = services/mailman
 	url = https://github.com/twisted-infra/mailman-config
-[submodule "services/codespeed"]
-	path = services/codespeed
-	url = https://github.com/twisted-infra/codespeed
