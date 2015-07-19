@@ -675,7 +675,7 @@ class TwistedPython3CoveragePyFactory(TwistedBaseFactory):
         '_trial_temp/*',
     ]
 
-    def __init__(self, python, source):
+    def __init__(self, python, source, build_id=None):
         OMIT = self.OMIT_PATHS[:]
         OMIT.append(self._virtualEnvPath + "/*")
 
@@ -695,10 +695,10 @@ class TwistedPython3CoveragePyFactory(TwistedBaseFactory):
                      'zope.interface',
                      'idna',
                      'coverage',
-                     'codecov'
+                     'https://github.com/codecov/codecov-python/archive/master.zip'
             ])
 
-        self._reportVersions(python=[self.python[0].split(os.sep)[-1]])
+        self._reportVersions(virtualenv=True)
 
         self.addVirtualEnvStep(
             shell.ShellCommand,
@@ -726,9 +726,11 @@ class TwistedPython3CoveragePyFactory(TwistedBaseFactory):
                 ','.join(OMIT), '-i'])
         self.addVirtualEnvStep(
             shell.ShellCommand,
-            warnOnFailure = True,
-            description = "upload to codecov".split(" "),
-            command=["codecov", "--token={}".format(private.codecov_twisted_token)])
+            warnOnFailure=True,
+            description="upload to codecov".split(" "),
+            command=["codecov",
+                     "--token={}".format(private.codecov_twisted_token),
+                     "--build={}".format(build_id)])
 
 
 class TwistedBenchmarksFactory(TwistedBaseFactory):
