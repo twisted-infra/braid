@@ -72,12 +72,17 @@ class TwistedBaseFactory(BuildFactory):
             workdir=".", command=["chmod", "u+rwX", "-f", "-R", "Twisted"])
         source.insert(0, fixPermissions)
 
-    def _reportVersions(self, python=None):
+    def _reportVersions(self, python=None, virtualenv=False):
         # Report the module versions
         if python == None:
             python = self.python
 
-        self.addStep(
+        if virtualenv:
+            stepAdder = self.addVirtualEnvStep
+        else:
+            stepAdder = self.addStep
+
+        stepAdder(
             ReportPythonModuleVersions,
             python=python,
             moduleInfo=[
