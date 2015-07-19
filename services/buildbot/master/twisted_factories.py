@@ -591,23 +591,53 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
         '_trial_temp/*',
         ]
 
-    REPORT_COMMAND = [
-        'coverage', 'html', '-d', 'twisted-coverage',
-        '--omit', ','.join(OMIT_PATHS), '-i']
+    def __init__(self, python, source, build_id=None):
+        OMIT = self.OMIT_PATHS[:]
+        OMIT.append(self._virtualEnvPath + "/*")
 
-    def __init__(self, python, source):
-        TwistedBaseFactory.__init__(self, python, source, False)
-        self.addStep(
-            shell.Compile,
-            command=python + ["setup.py", "build_ext", "-i"],
-            flunkOnFailure=True)
-        self.addTrialStep(python=[
+        TwistedBaseFactory.__init__(
+            self,
+            source=source,
+            python=python,
+            uncleanWarnings=False,
+            virtualenv=True,
+        )
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            description = "installing dependencies".split(" "),
+            command=['pip', 'install',
+                     'pyopenssl',
+                     'service_identity',
+                     'zope.interface',
+                     'idna',
+                     'pycrypto',
+                     'pyasn1',
+                     'soappy',
+                     'pyserial',
+                     'python-subunit',
+                     'coverage',
+                     'https://github.com/codecov/codecov-python/archive/master.zip',
+            ])
+
+        self._reportVersions(virtualenv=True)
+
+        cmd = (self.python + ["setup.py", "build_ext", "-i"])
+        self.addVirtualEnvStep(shell.Compile, command=cmd, warnOnFailure=True)
+
+        self.addTrialStep(
+            flunkOnFailure=True,
+            python=[
                 "coverage", "run",
                 "--omit", ','.join(self.OMIT_PATHS),
-                "--branch"])
-        self.addStep(
+                "--branch"],
+            warnOnFailure=False, virtualenv=True)
+
+        self.addVirtualEnvStep(
             shell.ShellCommand,
-            command=self.REPORT_COMMAND)
+            description = "run coverage html".split(" "),
+            command=["coverage", 'html', '-d', 'twisted-coverage', '--omit',
+                ','.join(OMIT), '-i'])
+
         self.addStep(
             transfer.DirectoryUpload,
             workdir='Twisted',
@@ -616,6 +646,21 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
             url=WithProperties('/builds/twisted-coverage.py/twisted-coverage.py-r%(got_revision)s/'),
             blocksize=2 ** 16,
             compress='gz')
+
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            description = "run coverage xml".split(" "),
+            command=["coverage", 'xml', '-o', 'coverage.xml', '--omit',
+                ','.join(OMIT), '-i'])
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            warnOnFailure=True,
+            description="upload to codecov".split(" "),
+            command=["codecov",
+                     "--token={}".format(private.codecov_twisted_token),
+                     "--build={}".format(build_id)])
+
+
 
 
 class TwistedPython3CoveragePyFactory(TwistedBaseFactory):
