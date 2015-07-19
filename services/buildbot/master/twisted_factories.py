@@ -727,6 +727,14 @@ class PyFlakesBuildFactory(TwistedBaseFactory):
     """
 
     def __init__(self, source, python="python"):
-        TwistedBaseFactory.__init__(self, python, source, False)
-
-        self.addStep(PyFlakes)
+        TwistedBaseFactory.__init__(
+            self,
+            source=source,
+            python=python,
+            uncleanWarnings=False,
+            virtualenv=True,
+            )
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            command=['pip', 'install', 'pyflakes'])
+        self.addVirtualEnvStep(PyFlakes)
