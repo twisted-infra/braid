@@ -621,7 +621,8 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
 class TwistedPython3CoveragePyFactory(TwistedBaseFactory):
     OMIT_PATHS = [
         '/usr/*',
-        '*/tw-py3-*/*'
+        '*/tw-py3-*/*',
+        '_trial_temp/*',
     ]
 
     def __init__(self, python, source):
