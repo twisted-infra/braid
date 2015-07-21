@@ -29,6 +29,15 @@ TRIAL_FLAGS = ["--reporter=bwverbose"]
 WARNING_FLAGS = ["--unclean-warnings"]
 FORCEGC_FLAGS = ["--force-gc"]
 
+BASE_DEPENDENCIES = [
+    'pyopenssl',
+    'service_identity',
+    'zope.interface',
+    'idna',
+    'pycrypto',
+    'pyasn1',
+]
+
 class TwistedBuild(Build):
     workdir = "Twisted" # twisted's bin/trial expects to live in here
 
@@ -733,17 +742,44 @@ class TwistedPython3CoveragePyFactory(TwistedBaseFactory):
                      "--build={}".format(build_id)])
 
 
+
 class TwistedBenchmarksFactory(TwistedBaseFactory):
     def __init__(self, python, source):
-        TwistedBaseFactory.__init__(self, python, source, False)
+        TwistedBaseFactory.__init__(
+            self,
+            source=source,
+            python=python,
+            uncleanWarnings=False,
+            virtualenv=True,
+        )
 
-        self.addStep(
+        self.addStep(shell.ShellCommand,
+                     command=["wget", "https://github.com/twisted-infra/twisted-benchmarks/archive/master.tar.gz",
+                              "-O", "twisted-benchmarks.tar.gz"])
+        self.addStep(shell.ShellCommand,
+                     command=["rm", "-rf", "twisted-benchmarks/"])
+        self.addStep(shell.ShellCommand,
+                     command=["mkdir", "-p", "twisted-benchmarks/"])
+        self.addStep(shell.ShellCommand,
+                     command=["tar", "xvf", "twisted-benchmarks.tar.gz",
+                              "--strip-components=1", "--directory=twisted-benchmarks/"])
+
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            description = "installing dependencies".split(" "),
+            command=['pip', 'install'] + BASE_DEPENDENCIES + ["requests"])
+
+        self._reportVersions(virtualenv=True)
+
+        self.addVirtualEnvStep(
             shell.ShellCommand,
             env={'PYTHONPATH': '.'},
             command=self.python + [
-                "../../../twisted-benchmarks/speedcenter.py",
-                "--duration", "1", "--iterations", "60",
-                "--url", "http://speed.twistedmatrix.com/result/add/"])
+                "twisted-benchmarks/speedcenter.py",
+                "--duration", "1", "--iterations", "30", "--warmup", "5",
+                "--url", "http://speed.twistedmatrix.com/result/add/json/"])
+
+
 
 class TwistedPython3Tests(TwistedBaseFactory):
     def __init__(self, python, source):
