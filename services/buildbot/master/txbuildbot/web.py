@@ -143,10 +143,9 @@ class TwistedWebStatus(html.WebStatus):
         self.putChild("boxes-supported", TenBoxesPerBuilder(categories=['supported']))
         self.putChild("boxes-unsupported", TenBoxesPerBuilder(categories=['unsupported']))
         self.putChild("boxes-all", TenBoxesPerBuilder(categories=['supported', 'unsupported']))
-        self.putChild("boxes-pyopenssl", TenBoxesPerBuilder(categories=['pyopenssl']))
+        self.putChild("boxes-benchmark", TenBoxesPerBuilder(categories=['benchmark']))
         self.putChild("supported", WaterfallStatusResource(categories=['supported']))
         self.putChild("waterfall", WaterfallStatusResource(categories=['supported', 'unsupported']))
-        self.putChild("waterfall-pyopenssl", WaterfallStatusResource(categories=['pyopenssl']))
 
         # These are are expensive, so disable them
         # http://trac.buildbot.net/ticket/2268
