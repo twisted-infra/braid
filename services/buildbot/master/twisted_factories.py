@@ -502,13 +502,6 @@ class TwistedBdistMsiFactory(TwistedBaseFactory):
 
 
 
-class TwistedIronPythonBuildFactory(FullTwistedBuildFactory):
-    def __init__(self, source, *a, **kw):
-        FullTwistedBuildFactory.__init__(
-            self, source, ["ipy"], buildExtensions=False, *a, **kw)
-
-
-
 class TwistedCoveragePyFactory(TwistedBaseFactory):
     OMIT_PATHS = [
         '/usr/*',
