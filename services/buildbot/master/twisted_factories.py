@@ -410,8 +410,6 @@ class TwistedJythonReactorsBuildFactory(TwistedBaseFactory):
 
         self._reportVersions(python=venvPython)
 
-        self.addVirtualEnvStep(shell.Compile, command=cmd, warnOnFailure=True)
-
         for reactor in reactors:
             self.addStep(RemovePYCs)
             self.addStep(RemoveTrialTemp, python=self.python)
