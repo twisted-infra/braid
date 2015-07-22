@@ -384,6 +384,43 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
 
 
 
+class TwistedJythonReactorsBuildFactory(TwistedBaseFactory):
+    treeStableTimer = 5*60
+
+    def __init__(self, source, RemovePYCs=RemovePYCs,
+                 python="jython", compileOpts=[], compileOpts2=[],
+                 reactors=["select"], uncleanWarnings=True):
+
+        TwistedBaseFactory.__init__(
+            self,
+            source=source,
+            python=python,
+            uncleanWarnings=False,
+            virtualenv=True,
+        )
+
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            description = "installing dependencies".split(" "),
+            command=['pip', 'install',
+                     'zope.interface',
+            ])
+
+        venvPython = [os.path.join(self._virtualEnvBin, self.python[0])]
+
+        self._reportVersions(python=venvPython)
+
+        self.addVirtualEnvStep(shell.Compile, command=cmd, warnOnFailure=True)
+
+        for reactor in reactors:
+            self.addStep(RemovePYCs)
+            self.addStep(RemoveTrialTemp, python=self.python)
+            self.addTrialStep(
+                name=reactor, reactor=reactor, flunkOnFailure=True,
+                warnOnFailure=False, virtualenv=True)
+
+
+
 class TwistedBdistMsiFactory(TwistedBaseFactory):
     treeStableTimer = 5*60
 
