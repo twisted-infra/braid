@@ -76,11 +76,36 @@ class Buildbot(service.Service):
             if env.get('installPrivateData'):
                 self.task_updatePrivateData()
 
+    def updatefast(self):
+        """
+        Update only some of the config.
+        """
+        with settings(user=self.serviceUser):
+            put(
+                os.path.dirname(__file__) + '/master/twisted_*',
+                self.configDir + "/master/",
+                mirror_local_mode=True)
+            put(
+                os.path.dirname(__file__) + '/master/master.cfg',
+                self.configDir + "/master/",
+                mirror_local_mode=True)
+
+            if env.get('installPrivateData'):
+                self.task_updatePrivateData()
+
     def task_update(self):
         """
         Update config and restart.
         """
         self.update()
+        self.task_restart()
+
+
+    def task_updatefast(self):
+        """
+        Update config and restart.
+        """
+        self.updatefast()
         self.task_restart()
 
 
