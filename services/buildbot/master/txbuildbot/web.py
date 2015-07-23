@@ -18,7 +18,7 @@ _backgroundColors = {
     SKIPPED: "blue",
     EXCEPTION: "purple",
     RETRY: "purple",
-    
+
     # This is a buildbot bug or something.
     None: "yellow",
     }
@@ -54,7 +54,7 @@ class TenBoxesPerBuilder(HtmlResource):
     def body(self, req):
         status = self.getStatus(req)
         authz = self.getAuthz(req)
-        
+
         builders = req.args.get("builder", status.getBuilderNames(categories=self.categories))
         branches = [b for b in req.args.get("branch", []) if b]
         if not branches:
@@ -66,7 +66,7 @@ class TenBoxesPerBuilder(HtmlResource):
         num_builds = int(req.args.get("num_builds", [defaultCount])[0])
 
         tag = tags.div()
-        
+
         tag(tags.script(src="txbuildbot.js"))
         tag(tags.h2(style="float:left; margin-top:0")("Latest builds: ", ", ".join(branches)))
 
