@@ -55,6 +55,8 @@ COVERAGE_DEPENDENCIES = [
 class TwistedBuild(Build):
     workdir = "Twisted" # twisted's bin/trial expects to live in here
 
+
+
 ### WARNING (for buildbot-0.8.6)
 ### We use the build step factory repreentation deperecated in 0.8.6 here.
 ### Some of the steps in twisted_steps break otherwise, but will
@@ -69,6 +71,8 @@ class TwistedTrial(Trial):
     trialMode = TRIAL_FLAGS
     testpath = None
     trial = "./bin/trial"
+
+
 
 class TwistedBaseFactory(BuildFactory):
     """
@@ -94,6 +98,7 @@ class TwistedBaseFactory(BuildFactory):
         fixPermissions = ShellCommand(
             workdir=".", command=["chmod", "u+rwX", "-f", "-R", "Twisted"])
         source.insert(0, fixPermissions)
+
 
     def _reportVersions(self, python=None, virtualenv=False):
         # Report the module versions
@@ -128,10 +133,8 @@ class TwistedBaseFactory(BuildFactory):
                 ])
 
 
-    def __init__(
-        self, python, source, uncleanWarnings, trialTests=None,
-        trialMode=None, virtualenv=False,
-            ):
+    def __init__(self, python, source, uncleanWarnings, trialTests=None,
+                 trialMode=None, virtualenv=False):
         if not isinstance(source, list):
             source = [source]
         else:
@@ -171,7 +174,6 @@ class TwistedBaseFactory(BuildFactory):
             # virtualenv, it's up to the venv factory to report the versions
             # itself.
             self._reportVersions()
-
 
 
     def addTrialStep(self, virtualenv=False, **kw):
@@ -292,11 +294,13 @@ class FullTwistedBuildFactory(TwistedBaseFactory):
         self.addTrialStep(randomly=runTestsRandomly)
 
 
+
 class Win32RemovePYCs(ShellCommand):
     name = "remove-.pyc"
     command = 'del /s *.pyc'
     description = ["removing", ".pyc", "files"]
     descriptionDone = ["remove", ".pycs"]
+
 
 
 class GoodTwistedBuildFactory(TwistedBaseFactory):
@@ -323,6 +327,7 @@ class GoodTwistedBuildFactory(TwistedBaseFactory):
         self.addTrialStep(randomly=runTestsRandomly, **extraTrialArguments)
 
 
+
 class TwistedReactorsBuildFactory(TwistedBaseFactory):
     treeStableTimer = 5*60
 
@@ -344,6 +349,7 @@ class TwistedReactorsBuildFactory(TwistedBaseFactory):
             self.addTrialStep(
                 name=reactor, reactor=reactor, flunkOnFailure=True,
                 warnOnFailure=False)
+
 
 
 class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
@@ -385,7 +391,6 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
             self.addTrialStep(
                 name=reactor, reactor=reactor, flunkOnFailure=True,
                 warnOnFailure=False, virtualenv=True)
-
 
 
 
@@ -503,6 +508,7 @@ class TwistedBdistMsiFactory(TwistedBaseFactory):
                 + wheelPythonVersion + '.whl'),
             )
 
+
     def python(self, pyVersion):
         return (
             "c:\\python%s\\python.exe" % (
@@ -573,7 +579,6 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
             command=["codecov",
                      "--token={}".format(private.codecov_twisted_token),
                      "--build={}".format(build_id)])
-
 
 
 
@@ -709,6 +714,7 @@ class TwistedPython3Tests(TwistedBaseFactory):
             command=self.python + ["admin/run-python3-tests"])
 
 
+
 class TwistedCheckerBuildFactory(TwistedBaseFactory):
     """
     Run twistedchecker check from an virtualenv.
@@ -726,6 +732,7 @@ class TwistedCheckerBuildFactory(TwistedBaseFactory):
             shell.ShellCommand,
             command=['pip', 'install', 'twistedchecker==0.4.0'])
         self.addVirtualEnvStep(CheckCodesByTwistedChecker, want_stderr=False)
+
 
 
 class PyFlakesBuildFactory(TwistedBaseFactory):
