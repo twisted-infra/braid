@@ -639,6 +639,31 @@ class TwistedPython3CoveragePyFactory(TwistedBaseFactory):
 
 
 
+class TwistedVirtualenvPython3TestsFactory(TwistedBaseFactory):
+    def __init__(self, python, source):
+        TwistedBaseFactory.__init__(
+            self,
+            source=source,
+            python=python,
+            uncleanWarnings=False,
+            virtualenv=True,
+        )
+
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            description = "installing dependencies".split(" "),
+            command=['pip', 'install'] + BASE_DEPENDENCIES
+        )
+
+        self._reportVersions(virtualenv=True)
+
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            description = "run tests".split(" "),
+            command = ["python", "admin/run-python3-tests"])
+
+
+
 class TwistedBenchmarksFactory(TwistedBaseFactory):
     def __init__(self, python, source):
         TwistedBaseFactory.__init__(
