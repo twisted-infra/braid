@@ -29,6 +29,7 @@ TRIAL_FLAGS = ["--reporter=bwverbose"]
 WARNING_FLAGS = ["--unclean-warnings"]
 FORCEGC_FLAGS = ["--force-gc"]
 
+# Dependencies that work on both CPython 2.7 + 3.3 + 3.4
 BASE_DEPENDENCIES = [
     'pyopenssl',
     'service_identity',
@@ -36,7 +37,22 @@ BASE_DEPENDENCIES = [
     'idna',
     'pycrypto',
     'pyasn1',
+    'python-subunit',
 ]
+
+# Dependencies that don't work on CPython 3.3+
+EXTRA_DEPENDENCIES = [
+    'soappy',
+    'pyserial',
+]
+
+# Dependencies used for coverage testing
+COVERAGE_DEPENDENCIES = [
+    'coverage',
+    'https://github.com/codecov/codecov-python/archive/master.zip',
+]
+
+
 
 class TwistedBuild(Build):
     workdir = "Twisted" # twisted's bin/trial expects to live in here
@@ -353,17 +369,8 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
         self.addVirtualEnvStep(
             shell.ShellCommand,
             description = "installing dependencies".split(" "),
-            command=['pip', 'install',
-                     'pyopenssl',
-                     'service_identity',
-                     'zope.interface',
-                     'idna',
-                     'pycrypto',
-                     'pyasn1',
-                     'soappy',
-                     'pyserial',
-                     'python-subunit'
-            ])
+            command=['pip', 'install'] + BASE_DEPENDENCIES + EXTRA_DEPENDENCIES
+        )
 
         venvPython = [os.path.join(self._virtualEnvBin, self.python[0])]
 
@@ -520,19 +527,8 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
         self.addVirtualEnvStep(
             shell.ShellCommand,
             description = "installing dependencies".split(" "),
-            command=['pip', 'install',
-                     'pyopenssl',
-                     'service_identity',
-                     'zope.interface',
-                     'idna',
-                     'pycrypto',
-                     'pyasn1',
-                     'soappy',
-                     'pyserial',
-                     'python-subunit',
-                     'coverage',
-                     'https://github.com/codecov/codecov-python/archive/master.zip',
-            ])
+            command=['pip', 'install'] + BASE_DEPENDENCIES + EXTRA_DEPENDENCIES + COVERAGE_DEPENDENCIES
+        )
 
         self._reportVersions(virtualenv=True)
 
@@ -599,14 +595,8 @@ class TwistedPython3CoveragePyFactory(TwistedBaseFactory):
         self.addVirtualEnvStep(
             shell.ShellCommand,
             description = "installing dependencies".split(" "),
-            command=['pip', 'install',
-                     'pyopenssl',
-                     'service_identity',
-                     'zope.interface',
-                     'idna',
-                     'coverage',
-                     'https://github.com/codecov/codecov-python/archive/master.zip'
-            ])
+            command=['pip', 'install'] + BASE_DEPENDENCIES + COVERAGE_DEPENDENCIES
+        )
 
         self._reportVersions(virtualenv=True)
 
