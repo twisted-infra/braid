@@ -406,12 +406,17 @@ class TwistedJythonReactorsBuildFactory(TwistedBaseFactory):
             virtualenv=True,
         )
 
+        self.addStep(
+            shell.ShellCommand,
+            description="Fixing permissions".split(" "),
+            command=["chmod", "+x", "../venv/bin/pip"]
+        )
+
         self.addVirtualEnvStep(
             shell.ShellCommand,
             description = "installing dependencies".split(" "),
-            command=['pip', 'install',
-                     'zope.interface',
-            ])
+            command=['pip', 'install', 'zope.interface']
+        )
 
         venvPython = [os.path.join(self._virtualEnvBin, self.python[0])]
 
