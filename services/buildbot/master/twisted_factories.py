@@ -727,7 +727,7 @@ class TwistedCheckerBuildFactory(TwistedBaseFactory):
             python=python,
             uncleanWarnings=False,
             virtualenv=True,
-            )
+        )
         self.addVirtualEnvStep(
             shell.ShellCommand,
             command=['pip', 'install', 'twistedchecker==0.4.0'])
@@ -747,7 +747,7 @@ class PyFlakesBuildFactory(TwistedBaseFactory):
             python=python,
             uncleanWarnings=False,
             virtualenv=True,
-            )
+        )
         self.addVirtualEnvStep(
             shell.ShellCommand,
             command=['pip', 'install', 'pyflakes'])
