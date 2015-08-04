@@ -136,9 +136,6 @@ class TwistedWeb(service.Service):
                  '.win-amd64-py2.7.msi', '.win-amd64-py2.7.exe', '-cp27-none-win_amd64.whl']:
             tarball = 'Twisted-{}{}'.format(release, ext)
             distPaths[tarball] = 'data/releases/Twisted/{}/{}'.format(apiVersion, tarball)
-        for subproject in ['Core', 'Conch', 'Lore', 'Mail', 'Names', 'News', 'Pair', 'Runner', 'Web', 'Words']:
-            tarball = 'Twisted{}-{}.tar.bz2'.format(subproject, release)
-            distPaths[tarball] = 'data/releases/{}/{}/{}'.format(subproject, apiVersion, tarball)
 
         distPaths['doc'] = 'data/documentation/{}'.format(release)
         distPaths['api'] = 'data/documentation/{}/api'.format(release)
