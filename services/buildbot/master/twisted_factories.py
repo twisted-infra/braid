@@ -356,7 +356,9 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
 
     def __init__(self, source, RemovePYCs=RemovePYCs,
                  python="python", compileOpts=[], compileOpts2=[],
-                 reactors=["select"], uncleanWarnings=True):
+                 reactors=["select"], uncleanWarnings=True,
+                 dependencies=BASE_DEPENDENCIES + EXTRA_DEPENDENCIES
+    ):
 
         TwistedBaseFactory.__init__(
             self,
@@ -372,7 +374,7 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
         self.addVirtualEnvStep(
             shell.ShellCommand,
             description = "installing dependencies".split(" "),
-            command=['pip', 'install'] + BASE_DEPENDENCIES + EXTRA_DEPENDENCIES
+            command=['pip', 'install'] + dependencies
         )
 
         venvPython = [os.path.join(self._virtualEnvBin, self.python[0])]
