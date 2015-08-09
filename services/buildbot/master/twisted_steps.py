@@ -378,7 +378,10 @@ class Trial(ShellCommand):
                 if f.endswith(".py"):
                     self.command.append("--testmodule=%s" % f)
         else:
-            self.command.extend(self.tests)
+            for test in self.tests:
+                if test:
+                    # If there's just a null-y string, don't add it
+                    self.command.append(test)
         log.msg("Trial.start: command is", self.command)
 
         # if our slave is too old to understand logfiles=, fetch them
@@ -818,25 +821,26 @@ class RemoveTrialTemp(ShellCommand):
     descriptionDone = ["remove", "_trial_temp"]
 
     source = (
+        "from __future__ import print_function\n"
         "import os, sys, time, shutil\n"
         "target = os.path.abspath(sys.argv[1])\n"
         "for i in range(10):\n"
         "    if os.path.exists(target):\n"
-        "        print 'Attempting to delete', target\n"
+        "        print('Attempting to delete', target)\n"
         "        try:\n"
         "            shutil.rmtree(target, False)\n"
-        "        except Exception, e:\n"
-        "            print 'Failed to delete:', e\n"
+        "        except Exception as e:\n"
+        "            print('Failed to delete:', e)\n"
         "            time.sleep(6)\n"
         "        else:\n"
-        "            print 'Succeeded'\n"
+        "            print('Succeeded')\n"
         "            break\n")
 
     def __init__(self, python):
         ShellCommand.__init__(self)
         self.command = python + [
             "-c",
-            'exec "%s".decode("hex")' % (self.source.encode('hex'),),
+            'import codecs; exec(codecs.decode("%s", "hex"))' % (self.source.encode('hex'),),
             "_trial_temp"]
 
 

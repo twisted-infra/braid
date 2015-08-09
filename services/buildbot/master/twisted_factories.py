@@ -377,12 +377,7 @@ class TwistedReactorsBuildFactory(TwistedBaseFactory):
 class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
     treeStableTimer = 5*60
 
-    def __init__(self, source, RemovePYCs=RemovePYCs,
-                 python="python", compileOpts=[], compileOpts2=[],
-                 reactors=["select"], uncleanWarnings=False,
-                 dependencies=BASE_DEPENDENCIES + EXTRA_DEPENDENCIES,
-                 forceGarbageCollection=False,
-    ):
+    def __init__(self, source, RemovePYCs=RemovePYCs, python="python", buildExtensions=True, trial="./bin/trial", reactors=["select"], uncleanWarnings=False, dependencies=BASE_DEPENDENCIES + EXTRA_DEPENDENCIES, forceGarbageCollection=False, tests=None):
 
         TwistedBaseFactory.__init__(
             self,
@@ -391,10 +386,8 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
             uncleanWarnings=uncleanWarnings,
             virtualenv=True,
             forceGarbageCollection=forceGarbageCollection,
+            trialTests=tests,
         )
-
-        assert isinstance(compileOpts, list)
-        assert isinstance(compileOpts2, list)
 
         self.addVirtualEnvStep(
             shell.ShellCommand,
@@ -403,20 +396,20 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
         )
 
         venvPython = [os.path.join(self._virtualEnvBin, self.python[0])]
-
         self._reportVersions(python=venvPython)
 
-        cmd = (self.python + compileOpts + ["setup.py", "build_ext"]
-               + compileOpts2 + ["-i"])
+        if buildExtensions:
+            cmd = (self.python + ["setup.py", "build_ext", "-i"])
 
-        self.addVirtualEnvStep(shell.Compile, command=cmd, warnOnFailure=True)
+            self.addVirtualEnvStep(shell.Compile, command=cmd,
+                                   warnOnFailure=True)
 
         for reactor in reactors:
             self.addStep(RemovePYCs)
             self.addStep(RemoveTrialTemp, python=self.python)
             self.addTrialStep(
                 name=reactor, reactor=reactor, flunkOnFailure=True,
-                warnOnFailure=False, virtualenv=True)
+                warnOnFailure=False, virtualenv=True, trial=trial)
 
 
 
