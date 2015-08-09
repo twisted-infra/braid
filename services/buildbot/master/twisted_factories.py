@@ -233,13 +233,22 @@ class TwistedBaseFactory(BuildFactory):
 class TwistedDocumentationBuildFactory(TwistedBaseFactory):
     treeStableTimer = 5 * 60
 
-    def __init__(self, source, python="python"):
-        TwistedBaseFactory.__init__(self, python, source, False)
+    def __init__(self, source, python="python",
+                 reactors=["select"], uncleanWarnings=True,
+                 dependencies=BASE_DEPENDENCIES + EXTRA_DEPENDENCIES + DOC_DEPENDENCIES):
+
+        TwistedBaseFactory.__init__(
+            self,
+            source=source,
+            python=python,
+            uncleanWarnings=False,
+            virtualenv=True,
+        )
 
         self.addVirtualEnvStep(
             shell.ShellCommand,
             description = "installing dependencies".split(" "),
-            command=['pip', 'install'] + BASE_DEPENDENCIES + EXTRA_DEPENDENCIES + DOC_DEPENDENCIES
+            command=['pip', 'install'] + dependencies
         )
 
         # Build our extensions, in case any API documentation wants to link to
@@ -250,19 +259,19 @@ class TwistedDocumentationBuildFactory(TwistedBaseFactory):
 
         self.addVirtualEnvStep(CheckDocumentation)
         self.addVirtualEnvStep(ProcessDocs)
-        self.addVirtualEnvStep(
+        self.addStep(
             shell.ShellCommand,
             name="bundle-docs",
             description=["bundling", "docs"],
             descriptionDone=["bundle", "docs"],
             command=['/bin/tar', 'cjf', 'doc.tar.bz2', 'doc'])
-        self.addVirtualEnvStep(
+        self.addStep(
             shell.ShellCommand,
             name="bundle-apidocs",
             description=["bundling", "apidocs"],
             descriptionDone=["bundle", "apidocs"],
             command=['/bin/tar', 'cjf', 'apidocs.tar.bz2', 'apidocs'])
-        self.addVirtualEnvStep(
+        self.addStep(
             transfer.FileUpload,
             name='upload-apidocs',
             workdir='.',
@@ -271,7 +280,7 @@ class TwistedDocumentationBuildFactory(TwistedBaseFactory):
                 'build_products/apidocs/apidocs-%(got_revision)s.tar.bz2'),
             url=WithProperties(
                 '/builds/apidocs/apidocs-%(got_revision)s.tar.bz2'))
-        self.addVirtualEnvStep(
+        self.addStep(
             transfer.FileUpload,
             name='upload-docs',
             workdir='.',
