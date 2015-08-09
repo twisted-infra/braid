@@ -379,7 +379,7 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
 
     def __init__(self, source, RemovePYCs=RemovePYCs,
                  python="python", compileOpts=[], compileOpts2=[],
-                 reactors=["select"], uncleanWarnings=True,
+                 reactors=["select"], uncleanWarnings=False,
                  dependencies=BASE_DEPENDENCIES + EXTRA_DEPENDENCIES,
                  forceGarbageCollection=False,
     ):
@@ -388,9 +388,9 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
             self,
             source=source,
             python=python,
-            uncleanWarnings=False,
+            uncleanWarnings=uncleanWarnings,
             virtualenv=True,
-            forceGarbageCollection=False,
+            forceGarbageCollection=forceGarbageCollection,
         )
 
         assert isinstance(compileOpts, list)
