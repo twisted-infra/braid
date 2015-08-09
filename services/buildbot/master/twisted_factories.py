@@ -293,61 +293,11 @@ class TwistedDocumentationBuildFactory(TwistedBaseFactory):
                 '/builds/docs/doc-%(got_revision)s.tar.bz2'))
 
 
-
-class FullTwistedBuildFactory(TwistedBaseFactory):
-    treeStableTimer = 5*60
-
-    def __init__(self, source, python="python",
-                 runTestsRandomly=False,
-                 compileOpts=[], compileOpts2=[],
-                 uncleanWarnings=True, trialMode=None,
-                 trialTests=None, buildExtensions=True):
-        TwistedBaseFactory.__init__(self, python, source, uncleanWarnings, trialTests=trialTests, trialMode=trialMode)
-
-        assert isinstance(compileOpts, list)
-        assert isinstance(compileOpts2, list)
-
-        if buildExtensions:
-            cmd = (python + compileOpts + ["setup.py", "build_ext"]
-                   + compileOpts2 + ["-i"])
-            self.addStep(shell.Compile, command=cmd, flunkOnFailure=True)
-
-        self.addStep(RemovePYCs)
-        self.addTrialStep(randomly=runTestsRandomly)
-
-
-
 class Win32RemovePYCs(ShellCommand):
     name = "remove-.pyc"
     command = 'del /s *.pyc'
     description = ["removing", ".pyc", "files"]
     descriptionDone = ["remove", ".pycs"]
-
-
-
-class GoodTwistedBuildFactory(TwistedBaseFactory):
-    treeStableTimer = 5 * 60
-
-    def __init__(self, source, python="python",
-                 processDocs=False, runTestsRandomly=False,
-                 compileOpts=[], compileOpts2=[],
-                 uncleanWarnings=True,
-                 extraTrialArguments={},
-                 forceGarbageCollection=False):
-        TwistedBaseFactory.__init__(self, python, source, uncleanWarnings)
-        self.forceGarbageCollection = forceGarbageCollection
-        if processDocs:
-            self.addStep(ProcessDocs)
-
-        assert isinstance(compileOpts, list)
-        assert isinstance(compileOpts2, list)
-        cmd = (self.python + compileOpts + ["setup.py", "build_ext"]
-               + compileOpts2 + ["-i"])
-
-        self.addStep(shell.Compile, command=cmd, flunkOnFailure=True)
-        self.addStep(RemovePYCs)
-        self.addTrialStep(randomly=runTestsRandomly, **extraTrialArguments)
-
 
 
 class TwistedReactorsBuildFactory(TwistedBaseFactory):
@@ -377,7 +327,11 @@ class TwistedReactorsBuildFactory(TwistedBaseFactory):
 class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
     treeStableTimer = 5*60
 
-    def __init__(self, source, RemovePYCs=RemovePYCs, python="python", buildExtensions=True, trial="./bin/trial", reactors=["select"], uncleanWarnings=False, dependencies=BASE_DEPENDENCIES + EXTRA_DEPENDENCIES, forceGarbageCollection=False, tests=None):
+    def __init__(self, source, RemovePYCs=RemovePYCs, python="python",
+                 trial="./bin/trial",
+                 reactors=["select"], uncleanWarnings=False,
+                 dependencies=BASE_DEPENDENCIES + EXTRA_DEPENDENCIES,
+                 forceGarbageCollection=False, tests=None):
 
         TwistedBaseFactory.__init__(
             self,
@@ -395,14 +349,10 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
             command=['pip', 'install'] + dependencies
         )
 
-        venvPython = [os.path.join(self._virtualEnvBin, self.python[0])]
-        self._reportVersions(python=venvPython)
+        self._reportVersions(virtualenv=True)
 
-        if buildExtensions:
-            cmd = (self.python + ["setup.py", "build_ext", "-i"])
-
-            self.addVirtualEnvStep(shell.Compile, command=cmd,
-                                   warnOnFailure=True)
+        cmd = (self.python + ["setup.py", "build_ext", "-i"])
+        self.addVirtualEnvStep(shell.Compile, command=cmd, warnOnFailure=True)
 
         for reactor in reactors:
             self.addStep(RemovePYCs)
@@ -541,7 +491,8 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
         '_trial_temp/*',
         ]
 
-    def __init__(self, python, source, build_id=None):
+    def __init__(self, python, source, buildID=None, trial="./bin/trial",
+                 tests=None, dependencies=BASE_DEPENDENCIES + EXTRA_DEPENDENCIES):
         OMIT = self.OMIT_PATHS[:]
         OMIT.append(self._virtualEnvPath + "/*")
 
@@ -551,11 +502,12 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
             python=python,
             uncleanWarnings=False,
             virtualenv=True,
+            trialTests=tests,
         )
         self.addVirtualEnvStep(
             shell.ShellCommand,
             description = "installing dependencies".split(" "),
-            command=['pip', 'install'] + BASE_DEPENDENCIES + EXTRA_DEPENDENCIES + COVERAGE_DEPENDENCIES
+            command=['pip', 'install'] + dependencies + COVERAGE_DEPENDENCIES
         )
 
         self._reportVersions(virtualenv=True)
@@ -569,28 +521,23 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
                 "coverage", "run",
                 "--omit", ','.join(self.OMIT_PATHS),
                 "--branch"],
-            warnOnFailure=False, virtualenv=True)
+            warnOnFailure=False, virtualenv=True, trial=trial)
 
         self.addVirtualEnvStep(
             shell.ShellCommand,
             description = "run coverage html".split(" "),
-            command=["coverage", 'html', '-d', 'twisted-coverage', '--omit',
-                ','.join(OMIT), '-i'])
+            command=["coverage", 'html', '-d', 'twisted-coverage',
+                     '--omit', ','.join(OMIT), '-i']
+        )
 
         self.addStep(
             transfer.DirectoryUpload,
             workdir='Twisted',
             slavesrc='twisted-coverage',
-            masterdest=WithProperties('build_products/twisted-coverage.py/twisted-coverage.py-r%(got_revision)s'),
-            url=WithProperties('/builds/twisted-coverage.py/twisted-coverage.py-r%(got_revision)s/'),
+            masterdest=WithProperties('build_products/twisted-coverage.py/twisted-' + buildID + '-coverage.py-r%(got_revision)s'),
+            url=WithProperties('/builds/twisted-coverage.py/twisted-' + buildID + '-coverage.py-r%(got_revision)s/'),
             blocksize=2 ** 16,
             compress='gz')
-
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            description = "run coverage xml".split(" "),
-            command=["coverage", 'xml', '-o', 'coverage.xml', '--omit',
-                ','.join(OMIT), '-i'])
 
 
 
@@ -647,31 +594,6 @@ class TwistedPython3CoveragePyFactory(TwistedBaseFactory):
 
 
 
-class TwistedVirtualenvPython3TestsFactory(TwistedBaseFactory):
-    def __init__(self, python, source):
-        TwistedBaseFactory.__init__(
-            self,
-            source=source,
-            python=python,
-            uncleanWarnings=False,
-            virtualenv=True,
-        )
-
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            description = "installing dependencies".split(" "),
-            command=['pip', 'install'] + BASE_DEPENDENCIES
-        )
-
-        self._reportVersions(virtualenv=True)
-
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            description = "run tests".split(" "),
-            command = ["python", "admin/run-python3-tests"])
-
-
-
 class TwistedBenchmarksFactory(TwistedBaseFactory):
     def __init__(self, python, source):
         TwistedBaseFactory.__init__(
@@ -707,17 +629,6 @@ class TwistedBenchmarksFactory(TwistedBaseFactory):
                 "twisted-benchmarks/speedcenter.py",
                 "--duration", "1", "--iterations", "30", "--warmup", "5",
                 "--url", "http://speed.twistedmatrix.com/result/add/json/"])
-
-
-
-class TwistedPython3Tests(TwistedBaseFactory):
-    def __init__(self, python, source):
-        TwistedBaseFactory.__init__(self, python, source, False)
-        self.addStep(RemovePYCs)
-        self.addStep(
-            shell.ShellCommand,
-            command=self.python + ["admin/run-python3-tests"])
-
 
 
 class TwistedCheckerBuildFactory(TwistedBaseFactory):
