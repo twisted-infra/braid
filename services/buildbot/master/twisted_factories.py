@@ -293,11 +293,13 @@ class TwistedDocumentationBuildFactory(TwistedBaseFactory):
                 '/builds/docs/doc-%(got_revision)s.tar.bz2'))
 
 
+
 class Win32RemovePYCs(ShellCommand):
     name = "remove-.pyc"
     command = 'del /s *.pyc'
     description = ["removing", ".pyc", "files"]
     descriptionDone = ["remove", ".pycs"]
+
 
 
 class TwistedReactorsBuildFactory(TwistedBaseFactory):
@@ -541,59 +543,6 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
 
 
 
-class TwistedPython3CoveragePyFactory(TwistedBaseFactory):
-    OMIT_PATHS = [
-        '/usr/*',
-        '*/tw-py3-*/*',
-        '_trial_temp/*',
-    ]
-
-    def __init__(self, python, source, build_id=None):
-        OMIT = self.OMIT_PATHS[:]
-        OMIT.append(self._virtualEnvPath + "/*")
-
-        TwistedBaseFactory.__init__(
-            self,
-            source=source,
-            python=python,
-            uncleanWarnings=False,
-            virtualenv=True,
-        )
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            description = "installing dependencies".split(" "),
-            command=['pip', 'install'] + BASE_DEPENDENCIES + COVERAGE_DEPENDENCIES
-        )
-
-        self._reportVersions(virtualenv=True)
-
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            description = "run tests".split(" "),
-            command = ["coverage", "run", "--omit",
-                       ','.join(OMIT), "--branch", "admin/run-python3-tests"])
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            description = "run coverage html".split(" "),
-            command=["coverage", 'html', '-d', 'twisted-coverage', '--omit',
-                ','.join(OMIT), '-i'])
-        self.addStep(
-            transfer.DirectoryUpload,
-            workdir='Twisted',
-            slavesrc='twisted-coverage',
-            masterdest=WithProperties('build_products/twisted-coverage.py/twisted-py3-coverage.py-r%(got_revision)s'),
-            url=WithProperties('/builds/twisted-coverage.py/twisted-py3-coverage.py-r%(got_revision)s/'),
-            blocksize=2 ** 16,
-            compress='gz')
-
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            description = "run coverage xml".split(" "),
-            command=["coverage", 'xml', '-o', 'coverage.xml', '--omit',
-                ','.join(OMIT), '-i'])
-
-
-
 class TwistedBenchmarksFactory(TwistedBaseFactory):
     def __init__(self, python, source):
         TwistedBaseFactory.__init__(
@@ -629,6 +578,7 @@ class TwistedBenchmarksFactory(TwistedBaseFactory):
                 "twisted-benchmarks/speedcenter.py",
                 "--duration", "1", "--iterations", "30", "--warmup", "5",
                 "--url", "http://speed.twistedmatrix.com/result/add/json/"])
+
 
 
 class TwistedCheckerBuildFactory(TwistedBaseFactory):
