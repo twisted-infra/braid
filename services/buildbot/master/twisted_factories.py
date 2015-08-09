@@ -139,7 +139,8 @@ class TwistedBaseFactory(BuildFactory):
 
 
     def __init__(self, python, source, uncleanWarnings, trialTests=None,
-                 trialMode=None, virtualenv=False):
+                 trialMode=None, virtualenv=False,
+                 forceGarbageCollection=False):
         if not isinstance(source, list):
             source = [source]
         else:
@@ -158,6 +159,7 @@ class TwistedBaseFactory(BuildFactory):
 
         self.python = python
         self.uncleanWarnings = uncleanWarnings
+        self.forceGarbageCollection = forceGarbageCollection
         self.trialMode = trialMode
         if trialTests is None:
             trialTests = [WithProperties("%(test-case-name:~twisted)s")]
@@ -378,7 +380,8 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
     def __init__(self, source, RemovePYCs=RemovePYCs,
                  python="python", compileOpts=[], compileOpts2=[],
                  reactors=["select"], uncleanWarnings=True,
-                 dependencies=BASE_DEPENDENCIES + EXTRA_DEPENDENCIES
+                 dependencies=BASE_DEPENDENCIES + EXTRA_DEPENDENCIES,
+                 forceGarbageCollection=False,
     ):
 
         TwistedBaseFactory.__init__(
@@ -387,6 +390,7 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
             python=python,
             uncleanWarnings=False,
             virtualenv=True,
+            forceGarbageCollection=False,
         )
 
         assert isinstance(compileOpts, list)
