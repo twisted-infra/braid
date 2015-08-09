@@ -49,6 +49,12 @@ COVERAGE_DEPENDENCIES = [
     'coverage',
 ]
 
+# Dependencies for building the documentation
+DOC_DEPENDENCIES = [
+    'sphinx',
+    'pydoctor',
+]
+
 
 
 class TwistedBuild(Build):
@@ -230,27 +236,33 @@ class TwistedDocumentationBuildFactory(TwistedBaseFactory):
     def __init__(self, source, python="python"):
         TwistedBaseFactory.__init__(self, python, source, False)
 
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            description = "installing dependencies".split(" "),
+            command=['pip', 'install'] + BASE_DEPENDENCIES + EXTRA_DEPENDENCIES + DOC_DEPENDENCIES
+        )
+
         # Build our extensions, in case any API documentation wants to link to
         # them.
-        self.addStep(
+        self.addVirtualEnvStep(
             shell.Compile,
             command=[python, "setup.py", "build_ext", "-i"])
 
-        self.addStep(CheckDocumentation)
-        self.addStep(ProcessDocs)
-        self.addStep(
+        self.addVirtualEnvStep(CheckDocumentation)
+        self.addVirtualEnvStep(ProcessDocs)
+        self.addVirtualEnvStep(
             shell.ShellCommand,
             name="bundle-docs",
             description=["bundling", "docs"],
             descriptionDone=["bundle", "docs"],
             command=['/bin/tar', 'cjf', 'doc.tar.bz2', 'doc'])
-        self.addStep(
+        self.addVirtualEnvStep(
             shell.ShellCommand,
             name="bundle-apidocs",
             description=["bundling", "apidocs"],
             descriptionDone=["bundle", "apidocs"],
             command=['/bin/tar', 'cjf', 'apidocs.tar.bz2', 'apidocs'])
-        self.addStep(
+        self.addVirtualEnvStep(
             transfer.FileUpload,
             name='upload-apidocs',
             workdir='.',
@@ -259,7 +271,7 @@ class TwistedDocumentationBuildFactory(TwistedBaseFactory):
                 'build_products/apidocs/apidocs-%(got_revision)s.tar.bz2'),
             url=WithProperties(
                 '/builds/apidocs/apidocs-%(got_revision)s.tar.bz2'))
-        self.addStep(
+        self.addVirtualEnvStep(
             transfer.FileUpload,
             name='upload-docs',
             workdir='.',
