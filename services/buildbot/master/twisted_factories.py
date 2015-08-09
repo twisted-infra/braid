@@ -47,7 +47,6 @@ EXTRA_DEPENDENCIES = [
 # Dependencies used for coverage testing
 COVERAGE_DEPENDENCIES = [
     'coverage',
-    'https://github.com/codecov/codecov-python/archive/master.zip',
 ]
 
 
@@ -572,13 +571,6 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
             description = "run coverage xml".split(" "),
             command=["coverage", 'xml', '-o', 'coverage.xml', '--omit',
                 ','.join(OMIT), '-i'])
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            warnOnFailure=True,
-            description="upload to codecov".split(" "),
-            command=["codecov",
-                     "--token={}".format(private.codecov_twisted_token),
-                     "--build={}".format(build_id)])
 
 
 
@@ -632,13 +624,6 @@ class TwistedPython3CoveragePyFactory(TwistedBaseFactory):
             description = "run coverage xml".split(" "),
             command=["coverage", 'xml', '-o', 'coverage.xml', '--omit',
                 ','.join(OMIT), '-i'])
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            warnOnFailure=True,
-            description="upload to codecov".split(" "),
-            command=["codecov",
-                     "--token={}".format(private.codecov_twisted_token),
-                     "--build={}".format(build_id)])
 
 
 
