@@ -3,7 +3,7 @@ IRC_SERVER = 'irc.freenode.net'
 IRC_PORT = 6667
 
 # Nickname to use on that IRC server
-BOT_NICK = 'kenaan7'
+BOT_NICK = 'kenaan-staging'
 
 # Password for this nickname
-BOT_PASS = 'abcdefg'
+BOT_PASS = ''

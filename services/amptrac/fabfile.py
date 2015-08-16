@@ -38,6 +38,9 @@ class AmpTrac(service.Service):
                 os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
 
+            # amptrac needs an older pg8000
+            pip.install('pg8000==1.9.14')
+
             amptracSource = 'git+https://github.com/twisted-infra/amptrac-server'
             if _installDeps:
                 pip.install('{}'.format(amptracSource))
