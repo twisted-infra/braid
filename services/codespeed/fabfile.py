@@ -75,7 +75,8 @@ class Codespeed(service.Service):
         """
         with settings(user=self.serviceUser):
             path = '~/config:~/codespeed/'
-            run('PYTHONPATH={}:$PYTHONPATH DJANGO_SETTINGS_MODULE=local_settings '
+            run('PYTHONPATH={} '
+                'DJANGO_SETTINGS_MODULE=twistedcodespeed.local_settings '
                 '~/.local/bin/django-admin.py {}'.format(path, ' '.join(args)))
 
     def task_installTestData(self):
