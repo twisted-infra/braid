@@ -26,13 +26,12 @@ class Codespeed(service.Service):
         # Bootstrap a new service environment
         self.bootstrap(python='system')
 
-        package.update()
-        package.install(['python-svn'])
+        self.update()
 
         with settings(user=self.serviceUser):
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
             run('mkdir -p ~/data')
-            pip.install('Django==1.2.7', python='system')
+            pip.install('-r ~/codespeed/requirements.txt', python='system')
             execute(self.update)
             cron.install(self.serviceUser, '{}/crontab'.format(self.configDir))
             self.task_generateSecretKey()
@@ -65,7 +64,7 @@ class Codespeed(service.Service):
                 os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
 
-            git.branch('https://github.com/twisted-infra/codespeed-source', '~/codespeed')
+            git.branch('https://github.com/tobami/codespeed.git', '~/codespeed')
 
             if env.get('installTestData'):
                 exceute(self.task_installTestData)
@@ -75,15 +74,23 @@ class Codespeed(service.Service):
         Run django-admin with proper settings.
         """
         with settings(user=self.serviceUser):
-            path = '~/config:~/codespeed:~/codespeed/speedcenter'
-            run('PYTHONPATH={}:$PYTHONPATH ~/.local/bin/django-admin.py {} '
-                '--settings=local_settings'.format(path, ' '.join(args)))
+            path = '~/config:~/codespeed/'
+            run('PYTHONPATH={} '
+                'DJANGO_SETTINGS_MODULE=twistedcodespeed.local_settings '
+                '~/.local/bin/django-admin.py {}'.format(path, ' '.join(args)))
 
     def task_installTestData(self):
         """
         Create test db.
         """
         self.djangoAdmin(['syncdb', '--noinput'])
+        self.djangoAdmin(['migrate'])
+
+    def task_createSuperuser(self):
+        """
+        Reset the admin password.
+        """
+        self.djangoAdmin(['createsuperuser'])
 
     def task_update(self):
         """

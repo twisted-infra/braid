@@ -19,10 +19,10 @@ import os, sys
 
 codespeed = os.path.expanduser('~/codespeed')
 sys.path.insert(0, codespeed)
-sys.path.insert(0, os.path.join(codespeed, 'speedcenter'))
+sys.path.insert(0, os.path.join(codespeed, 'codespeed'))
 sys.path.insert(0, os.path.dirname(__file__))
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'local_settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'twistedcodespeed.local_settings'
 
 from twisted.application.service import Application
 from twisted.application.internet import TCPServer
