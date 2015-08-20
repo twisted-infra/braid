@@ -86,6 +86,12 @@ class Codespeed(service.Service):
         self.djangoAdmin(['syncdb', '--noinput'])
         self.djangoAdmin(['migrate'])
 
+    def task_createSuperuser(self):
+        """
+        Reset the admin password.
+        """
+        self.djangoAdmin(['createsuperuser'])
+
     def task_update(self):
         """
         Update config and restart.
