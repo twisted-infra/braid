@@ -27,12 +27,11 @@ class Codespeed(service.Service):
         self.bootstrap(python='system')
 
         package.update()
-        package.install(['python-svn'])
 
         with settings(user=self.serviceUser):
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
             run('mkdir -p ~/data')
-            pip.install('Django==1.2.7', python='system')
+            pip.install('-r requirements.txt', python='system')
             execute(self.update)
             cron.install(self.serviceUser, '{}/crontab'.format(self.configDir))
             self.task_generateSecretKey()
@@ -65,7 +64,7 @@ class Codespeed(service.Service):
                 os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
 
-            git.branch('https://github.com/twisted-infra/codespeed-source', '~/codespeed')
+            git.branch('https://github.com/tobami/codespeed.git', '~/codespeed')
 
             if env.get('installTestData'):
                 exceute(self.task_installTestData)
