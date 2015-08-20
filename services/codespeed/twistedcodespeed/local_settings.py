@@ -115,7 +115,7 @@ INSTALLED_APPS = (
 )
 SOUTH_TESTS_MIGRATE = False
 
-STATIC_URL = '/media/'
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASEDIR, "sitestatic")
 STATICFILES_DIRS = (
     os.path.join(BASEDIR, 'static'),
