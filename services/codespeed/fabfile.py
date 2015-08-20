@@ -26,12 +26,12 @@ class Codespeed(service.Service):
         # Bootstrap a new service environment
         self.bootstrap(python='system')
 
-        package.update()
+        self.update()
 
         with settings(user=self.serviceUser):
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
             run('mkdir -p ~/data')
-            pip.install('-r requirements.txt', python='system')
+            pip.install('-r ~/codespeed/requirements.txt', python='system')
             execute(self.update)
             cron.install(self.serviceUser, '{}/crontab'.format(self.configDir))
             self.task_generateSecretKey()
@@ -74,15 +74,16 @@ class Codespeed(service.Service):
         Run django-admin with proper settings.
         """
         with settings(user=self.serviceUser):
-            path = '~/config:~/codespeed:~/codespeed/speedcenter'
-            run('PYTHONPATH={}:$PYTHONPATH ~/.local/bin/django-admin.py {} '
-                '--settings=local_settings'.format(path, ' '.join(args)))
+            path = '~/config:~/codespeed/'
+            run('PYTHONPATH={}:$PYTHONPATH DJANGO_SETTINGS_MODULE=local_settings '
+                '~/.local/bin/django-admin.py {}'.format(path, ' '.join(args)))
 
     def task_installTestData(self):
         """
         Create test db.
         """
         self.djangoAdmin(['syncdb', '--noinput'])
+        self.djangoAdmin(['migrate'])
 
     def task_update(self):
         """
