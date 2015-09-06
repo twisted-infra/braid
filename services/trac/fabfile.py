@@ -31,9 +31,6 @@ class Trac(service.Service):
             run('/bin/ln -nsf ~/attachments {}/trac-env/files/attachments'.format(
                 self.configDir))
 
-            run('/bin/ln -nsf ~/website/trac-files {}/trac-env/htdocs'.format(
-                self.configDir))
-
             run('/bin/ln -nsf {} {}/trac-env/log'.format(self.logDir, self.configDir))
 
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
@@ -57,11 +54,7 @@ class Trac(service.Service):
             put(os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
 
-            run('mkdir -p ~/website/')
-            put(os.path.dirname(__file__) + '/../t-web/*', "~/website/",
-                mirror_local_mode=True)
-
-            pip.install('trac==1.0.6post2', python='system')
+            pip.install('trac==1.0.8', python='system')
             pip.install('pygments==1.6', python='system')
 
             if _installDeps:
@@ -72,7 +65,7 @@ class Trac(service.Service):
 
             pip.install('TracAccountManager==0.4.4', python='system')
             pip.install('svn+https://trac-hacks.org/svn/defaultccplugin/tags/0.2/', python='system')
-            pip.install('svn+https://svn.edgewall.org/repos/trac/plugins/1.0/spam-filter@14116', python='system')
+            pip.install('svn+https://svn.edgewall.org/repos/trac/plugins/1.0/spam-filter@14302', python='system')
 
 
     def task_update(self):
