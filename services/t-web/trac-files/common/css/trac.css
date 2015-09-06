@@ -744,17 +744,29 @@ div.system-message p.system-message-title { font-weight: bold; }
     float: right;
 }
 
-#metanav :link, #metanav :visited {
+#metanav button {
+     background: none!important;
+     border: none;
+     padding: 0!important;
+     font: inherit;
+     cursor: pointer;
+}
+
+#metanav :link, #metanav :visited, #metanav button {
     color: #fff;
 }
 
-#metanav :link:hover, #metanav :visited:hover {
+#metanav :link:hover, #metanav :visited:hover, #metanav button:hover {
     color: #bbb;
     border-bottom: 1px dotted #bbb;
 }
 
 #metanav ul li.first {
     color: #ccc;
+}
+
+#metanav ul li form {
+    display: inline-block;
 }
 
 #side_bar {
