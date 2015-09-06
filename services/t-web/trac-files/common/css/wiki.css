@@ -1,182 +1,69 @@
-/* BEGIN inline of code.css */
-/*
-div.code {
- background: #f7f7f7;
- border: 1px solid #d7d7d7;
- margin: 1em 1.75em;
- padding: .25em;
- overflow: auto
-}
-*/
-div.code pre { margin: 0; }
+@import url(code.css);
 
-table.code {
- border: 1px solid #ddd;
- border-spacing: 0;
- border-top: 0;
- empty-cells: show;
- font-size: 12px;
- line-height: 130%;
- padding: 0;
- margin: 0 auto;
- table-layout: fixed;
- width: 100%;
+#info { margin: 0 0 1em 0 }
+#wikipage { clear: both }
+
+.wikipage h2 {
+ border-bottom: 1px solid #ddd;
+ box-shadow: .1em .4em .7em 0 #f2f2f2;
+ padding: 0.2em .3em .1em;
 }
-table.code th {
- border-right: 1px solid #d7d7d7;
- border-bottom: 1px solid #998;
- font-size: 11px;
+@media print { .wikipage h2 { box-shadow: none } }
+
+.wikipage h3 {
+ border-bottom: 1px dashed #ddd;
+ padding: 0.2em .3em .1em;
 }
-table.code th.lineno { width: 4em }
-table.code thead th {
- background: #eee;
- border-top: 1px solid #d7d7d7;
- color: #999;
- padding: 0 .25em;
- text-align: center;
- white-space: nowrap;
-}
-table.code tbody th {
- background: #eed;
- color: #886;
- font-weight: normal;
- padding: 0 .5em;
- text-align: right;
- vertical-align: top;
-}
-table.code tbody th :link, table.code tbody th :visited {
- border: none;
- color: #886;
- text-decoration: none;
-}
-table.code tbody th :link:hover, table.code tbody th :visited:hover {
- color: #000;
-}
-table.code tbody td {
- background: #fff;
- font: normal 11px monospace;
- overflow: hidden;
- padding: 1px 2px;
- vertical-align: top;
+.wikipage .trac-content {
+ margin-left: -18px;
+ padding-left: 28px;
 }
 
-.image-file { background: #eee; padding: .3em }
-.image-file img { background: url(../imggrid.png) }
-
-/* Default */
-.code-block span {
- font-family: monospace;
+/* Styles for the path of hierarchical pages */
+#pagepath {
+ font-size: 10px; /* same as .nav ul in trac.css */
+ float: left;
+ padding: .4em 0;
 }
+#pagepath :link, #pagepath :visited { margin: 0 .2em }
+#pagepath .first:link, #pagepath .first:visited { color: #998 }
+#pagepath .sep { color: #666; padding: 0 .1em }
+#pagepath .pathentry { float: left }
 
-/* Comments */
-.code-comment, .css_comment, .c_comment, .c_commentdoc, .c_commentline,
-.c_commentlinedoc, .h_comment,.pl_commentline, .p_commentblock,
-.p_commentline, .hphp_comment, .hphp_commentblock, .hphp_commentline,
-.yaml_comment {
- color: #998; 
- font-style: italic;
-}
-
-/* Language keyword */
-.code-keyword, .pl_word  { color: #789; font-weight: bold }
-
-/* Type */
-.code-type, .c_word, .c_word2, .p_classname, .hphp_classname{
- color: #468;
- font-weight: bold;
-}
-
-/* Function */
-.code-func, .p_defname {
- color: #900;
- font-weight: bold;
- border-bottom: none;
-}
-
-/* Pre-processor */
-.code-prep, .c_preprocessor, .pl_preprocessor, .yaml_identifier {
- color: #999;
- font-weight: bold;
-}
-
-/* Language construct */
-.code-lang, .p_word { color: #000; font-weight: bold }
-
-/* String */
-.code-string, .c_string, .c_stringeol, .css_doublestring, .css_singlestring,
-.h_singlestring, .h_doublestring, .pl_string, .pl_string_q, .pl_string_qq,
-.pl_string_qr, .pl_string_qw, .pl_string_qx, .pl_backticks, .pl_character,
-.p_string, .p_stringeol, .hphp_string, .hphp_stringeol, .hphp_triple,
-.hphp_tripledouble, .p_character, .p_triple, .p_tripledouble {
- color: #b84;
- font-weight: normal;
-}
-
-/* Variable name */
-.code-var { color: #f9f }
-
-/* SilverCity-specific styles */
-.css_id, .css_class, .css_pseudoclass, .css_tag { color: #900000 }
-.css_directive { color: #009000; font-weight: bold }
-.css_important { color: blue }
-.css_operator { color: #000090; font-weight: bold }
-.css_tag { font-weight: bold }
-.css_unknown_identifier, .css_unknown_pseudoclass { color: red }
-.css_value { color: navy }
-.c_commentdockeyword { color: navy; font-weight: bold }
-.c_commentdockeyworderror { color: red; font-weight: bold }
-.c_character, .c_regex, .c_uuid, .c_verbatim { color: olive }
-.c_number { color: #099 }
-.h_asp { color: #ff0 }
-.h_aspat { color: #ffdf00 }
-.h_attribute { color: teal }
-.h_attributeunknown { color: red }
-.h_cdata { color: #373 }
-.h_entity { color: purple }
-.h_number { color: #099 }
-.h_other { color: purple }
-.h_script, .h_tag, .h_tagend { color: navy }
-.h_tagunknown { color: red }
-.h_xmlend, .h_xmlstart { color: blue }
-.pl_datasection { color: olive }
-.pl_error { color: red; font-weight: bold }
-.pl_hash { color: #000 }
-.pl_here_delim, .pl_here_q, .pl_here_qq, .pl_here_qx, .pl_longquote { color: olive }
-.pl_number { color: #099 }
-.pl_pod { font-style: italic }
-.pl_regex, .pl_regsubst { color: olive }
-.p_number { color: #099 }
-.hphp_character { color: olive }
-.hphp_defname { color: #099; font-weight: bold }
-.hphp_number { color: #099 }
-.hphp_word { color: navy; font-weight: bold }
-.yaml_document { color: gray; font-style: italic }
-.yaml_keyword { color: #808 }
-.yaml_number { color: #800 }
-.yaml_reference { color: #088 }
-.v_comment { color: gray; font-style: italic }
-.v_commentline, .v_commentlinebang { color: red; font-style: italic }
-.v_number, .v_preprocessor { color: #099 }
-.v_string, .v_stringeol { color: olive }
-.v_user{ color: blue; font-weight: bold }
-.v_word, .v_word3 { color: navy; font-weight: bold }
-.v_word2 { color: green; font-weight: bold }
-/* END OF code.css */
-/* @import url(code.css); */
+/* Styles for the page creation form */
+.create #modifypage input { margin: 2px /* trac.css' input {} */ }
 
 /* Styles for the page editing form */
-#edit #rows { float: right; font-size: 80% }
+.preview-right {
+ float: right;
+ width: 50%;
+ display: block;
+ margin: 0 0 0 1em;
+}
+.sidebyside > h2 { margin: .4em 0 }
+.sidebyside #preview { margin: 0 }
+.sidebyside #text { overflow: hidden }
+
+#edit { margin-top: .5em }
+#edit #rows {
+ float: right;
+ font-size: 80%;
+ margin: .4em 0 0 0;
+}
 #edit #rows select { font-size: 90% }
-#edit #text { clear: both; width: 100% }
-#edit .wikitoolbar { float: left; }
-#changeinfo { padding: .5em }
-#changeinfo .field { float: left; margin: 0 1em .5em 0 }
-#changeinfo br { clear: left }
-#changeinfo .options { padding: 0 0 1em 1em }
-#changeinfo .options, #changeinfo .buttons { clear: left }
-#delete { margin-left: 6em }
+#edit fieldset { margin-left: 1px; margin-right: 1px }
+#edit #text {
+ clear: both;
+ min-height: 10em;
+ resize: vertical;
+}
+#edit .wikitoolbar { float: left }
+#edit div.trac-resizable { clear: both }
+#edit + #info { margin-top: 1em }
+#edit + #attachments { margin-top: 1.5em }
+#delete, #rename, #save { margin-left: 3em }
 #preview {
- background: #f4f4f4 url(../draft.png);
+ background: #f8f8f8 url(../draft.png);
  margin: 1em 0 2em;
  overflow: auto;
 }
@@ -186,17 +73,7 @@ table.code tbody td {
 #overview .ipnr { color: #999; font-size: 80% }
 #overview .comment { padding: 1em 0 0 }
 
-/* Styles for the page history table
-   (extends the styles for "table.listing") */
-#wikihist td { padding: 0 .5em }
-#wikihist td.date, #wikihist td.diff, #wikihist td.version,
-#wikihist td.author {
- white-space: nowrap;
-}
-#wikihist td.version { text-align: center }
-#wikihist td.comment { width: 100% }
-
-@media print { 
+@media print {
  th.diff, td.diff { display: none }
 }
 
@@ -205,17 +82,40 @@ table.code tbody td {
  padding: .5em 1em;
  margin: 0 0 2em 1em;
  float: right;
- border: 1px solid #bce715;
- background: #edf9c0;
+ clear: right;
+ border: 1px outset #ddc;
+ background: #ffd;
  font-size: 85%;
  position: relative;
 }
-.wiki-toc h4 { font-size: 12px; margin: 0; color: #444444; }
+.wiki-toc h4 { font-size: 12px; margin: 0 }
 .wiki-toc ul, .wiki-toc ol { list-style: none; padding: 0; margin: 0 }
 .wiki-toc ul ul, .wiki-toc ol ol { padding-left: 1.2em }
 .wiki-toc li { margin: 0; padding: 0 }
-.wiki-toc .active { background: #ddf482; position: relative; padding: 2px 0 2px 5px; border-left: 2px solid #bce715; }
+.wiki-toc .active { background: #ff9; position: relative; }
+.wiki-toc-un ul, .wiki-toc-un ol { list-style: none; }
 
-#pagepath {
-    text-align: right;
+div.trac-modifiedby {
+ margin: .3em .5em;
+ *width: 100%; /* Workaround horizontal scrollbar on IE7 */
+ color: #888;
+ font-size: 80%;
+ font-style: italic;
+ text-align: right;
+ float: right;
+}
+div.trac-modifiedby :link, div.trac-modifiedby :visited { color: inherit }
+div.trac-modifiedby span.trac-print { display: none; }
+@media print {
+ div.trac-modifiedby span { display: none; }
+ div.trac-modifiedby span.trac-print { display: block; }
+}
+
+/* TracIni default value */
+div.tracini td.default { font-size: 90% }
+div.tracini td.nodefault {
+ color: #777;
+ font-size: 85%;
+ font-style: italic;
+ white-space: nowrap;
 }
