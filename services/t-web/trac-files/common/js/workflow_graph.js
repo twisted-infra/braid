@@ -205,7 +205,7 @@
     });
   }
 
-  $(document).ready(function() {
+  $.documentReady(function() {
     $('.trac-workflow-graph').each(function (index) {
       var data = window['graph_' + this.id.slice(-12)];
       var width = data.width, height = data.height;
@@ -228,7 +228,7 @@
       canvas.height = $(canvas).height();
       if (typeof(G_vmlCanvasManager) != 'undefined')
         canvas = G_vmlCanvasManager.initElement(canvas);
-      $(this).replaceWith(canvas);
+      $(this).empty().append(canvas);
       var ctx = canvas.getContext('2d');
 
       if (nodes.length == 0)
