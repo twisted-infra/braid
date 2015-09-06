@@ -101,6 +101,13 @@ class TwistedWeb(service.Service):
         self.task_restart()
 
 
+    def task_updateData(self):
+        """
+        Update config.
+        """
+        self.update()
+
+
     def task_dump(self, dump):
         """
         Dump non-versioned resources.

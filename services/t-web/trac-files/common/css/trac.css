@@ -186,7 +186,7 @@ form#attachfile,
 }
 .buttons form, .buttons form div { display: inline }
 .buttons input { margin: 1em .5em .1em 0 }
-.inlinebuttons input { 
+.inlinebuttons input {
     font-size: 0.6875em;
     margin: 0;
     padding: 0.25em;
@@ -389,7 +389,7 @@ input[name="save"]:hover {
 
 #ctxtnav :link, #ctxtnav :visited {
 	color: #555555;
-	
+
 }
 #ctxtnav :link:hover, #ctxtnav :visited:hover {
 	color: #999999;
@@ -531,7 +531,7 @@ div.code, pre.wiki, pre.literal-block {
  overflow: auto;
 }
 
-blockquote.citation { 
+blockquote.citation {
     margin: -0.6em 0;
     border-left: 2px solid #1d61be;
     padding-left: 1.4em;
@@ -941,4 +941,24 @@ pre.prettyprint {
 .throbber {
     display: block;
     margin: auto;
+}
+
+/* Tickets */
+
+.ticket h1 {
+    padding-bottom: 10px
+}
+
+.ticket #modify table {
+    width: 100%;
+    text-align: right;
+}
+
+.ticket #modify label {
+    padding-right: 10px;
+}
+
+.ticket #modify table textarea, .ticket #modify table input, .ticket #modify table select {
+    box-sizing : border-box;
+    width: 100%;
 }
