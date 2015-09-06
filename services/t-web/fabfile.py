@@ -87,9 +87,10 @@ class TwistedWeb(service.Service):
         """
         Update config.
         """
-        run('mkdir -p ' + self.configDir)
-        put(os.path.dirname(__file__) + '/*', self.configDir,
-            mirror_local_mode=True)
+        with settings(user=self.serviceUser):
+            run('mkdir -p ' + self.configDir)
+            put(os.path.dirname(__file__) + '/*', self.configDir,
+                mirror_local_mode=True)
 
 
     def task_update(self):
