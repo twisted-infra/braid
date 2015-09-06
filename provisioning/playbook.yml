@@ -1,0 +1,8 @@
+- hosts: dornkirk-staging
+  sudo: yes
+  tasks:
+    - name: Add vagrant key
+      action: authorized_key user=root key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+  roles:
+    - systemupdate
+    - requirements-debian

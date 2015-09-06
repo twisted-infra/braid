@@ -1,0 +1,14 @@
+- name: Install locales
+  action: apt pkg=locales
+
+- name: Set up locale
+  action: locale_gen name=en_US.UTF-8
+
+- name: Install build requirements
+  action: apt pkg=build-essential,libffi-dev,libssl-dev,wget,git
+
+- name: Install Python
+  action: apt pkg=python-pip,python-virtualenv,python-subversion
+
+- name: Install other deps
+  action: apt pkg=sqlite3,equivs,enscript
