@@ -21,7 +21,8 @@ Currently Supported Services
 - kenaan
 - [hiscore](svn.twistedmatrix.com:infra/twisted-highscore)
 - [trac](https://github.com/twisted-infra/trac-config)
-- [mailman](https://github.com/twisted-infra/mailman-config)
+- mailman
+
 
 Server Dependencies
 ===================
