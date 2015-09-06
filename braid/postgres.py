@@ -27,6 +27,16 @@ def _userExists(name):
     return res == '1'
 
 
+def tableExists(database, table):
+    """
+    Check that a table exists in a given database.
+    """
+    res = _runQuery("select table_name from information_schema.tables "
+                    "where table_name = '{}';".format(table),
+                    database=database)
+    return res == table
+
+
 def createUser(name):
     if not _userExists(name):
         sudo('/usr/bin/createuser -D -R -S {}'.format(name), user='postgres',

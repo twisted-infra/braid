@@ -1,6 +1,8 @@
+import shutil
 import os
+import tempfile
 
-from fabric.api import run, settings, put
+from fabric.api import abort, env, run, settings, put
 
 from braid import pip, postgres, cron, git, archive, utils
 from braid.twisted import service
@@ -18,15 +20,9 @@ class Trac(service.Service):
         """
         self.bootstrap(python='system')
 
-        # FIXME: Make these idempotent.
-        postgres.createUser('trac')
-        postgres.createDb('trac', 'trac')
-
         with settings(user=self.serviceUser):
-            pip.install('psycopg2 pygments', python='system')
+            pip.install('psycopg2', python='system')
             self.update(_installDeps=True)
-            # Note that this has to be after trac is installed, to get the right version
-            pip.install('TracAccountManager==0.4.3', python='system')
 
             run('/bin/mkdir -p ~/svn')
             run('/bin/ln -nsf ~/svn {}/trac-env/svn-repo'.format(self.configDir))
@@ -44,6 +40,13 @@ class Trac(service.Service):
 
             cron.install(self.serviceUser, '{}/crontab'.format(self.configDir))
 
+            # Create an empty password file if not present.
+            run('/usr/bin/touch config/htpasswd')
+
+        # FIXME: Make these idempotent.
+        postgres.createUser('trac')
+        postgres.createDb('trac', 'trac')
+
 
     def update(self, _installDeps=False):
         """
@@ -58,15 +61,18 @@ class Trac(service.Service):
             put(os.path.dirname(__file__) + '/../t-web/*', "~/website/",
                 mirror_local_mode=True)
 
-            pip.install('trac==1.0.1', python='system')
+            pip.install('trac==1.0.6post2', python='system')
+            pip.install('pygments==1.6', python='system')
 
             if _installDeps:
                 pip.install('git+https://github.com/twisted-infra/twisted-trac-plugins.git', python='system')
             else:
                 pip.install('--no-deps --upgrade git+https://github.com/twisted-infra/twisted-trac-plugins.git', python='system')
             pip.install('spambayes==1.1b1', python='system')
-            # This was the latest version at the time it was added.
-            pip.install('svn+https://svn.edgewall.org/repos/trac/plugins/1.0/spam-filter@13100', python='system')
+
+            pip.install('TracAccountManager==0.4.4', python='system')
+            pip.install('svn+https://trac-hacks.org/svn/defaultccplugin/tags/0.2/', python='system')
+            pip.install('svn+https://svn.edgewall.org/repos/trac/plugins/1.0/spam-filter@14116', python='system')
 
 
     def task_update(self):
@@ -74,6 +80,18 @@ class Trac(service.Service):
         Update config and restart.
         """
         self.update()
+        self.task_restart()
+
+
+    def task_upgrade(self):
+        """
+        Run a Trac upgrade.
+        """
+        with settings(user=self.serviceUser):
+            self.update()
+            run(".local/bin/trac-admin {}/trac-env upgrade".format(self.configDir))
+            run(".local/bin/trac-admin {}/trac-env wiki upgrade".format(self.configDir))
+
         self.task_restart()
 
 
@@ -91,6 +109,7 @@ class Trac(service.Service):
                     'attachments': 'attachments',
                     'db.dump': temp,
                 }, localfile)
+
 
     def task_restore(self, localfile, restoreDb=True):
         """
@@ -161,6 +180,31 @@ class Trac(service.Service):
             # Wiki pages have attachments too, so upgrade any metadata
             # associated with those.
             run(".local/bin/trac-admin {}/trac-env wiki upgrade".format(self.configDir))
+
+
+    def task_installTestData(self):
+        """
+        Create an empty trac database for testing.
+        """
+        if env.get('environment') == 'production':
+           abort("Don't use installTestData in production.")
+
+        if postgres.tableExists('trac', 'system'):
+           abort("Existing Trac tables found.")
+
+        with settings(user=self.serviceUser):
+            # Run trac initenv to create the postgresql database tables, but use
+            # a throwaway trac-env directory because that comes from
+            # https://github.com/twisted-infra/trac-config/tree/master/trac-env
+            try:
+                run('~/.local/bin/trac-admin '
+                    '/tmp/trac-init initenv TempTrac postgres://@/trac svn ""')
+            finally:
+                run("rm -rf /tmp/trac-init")
+
+            # Run an upgrade to add plugin specific database tables and columns.
+            run('~/.local/bin/trac-admin config/trac-env upgrade --no-backup')
+
 
 
 addTasks(globals(), Trac('trac').getTasks())

@@ -4,7 +4,7 @@ Support for www service installation and management.
 
 import os
 
-from fabric.api import run, settings, env, put, sudo
+from fabric.api import run, settings, env, put, sudo, local
 
 from os import path
 from twisted.python.util import sibpath
@@ -46,18 +46,31 @@ class TwistedWeb(service.Service):
 
             run('/bin/mkdir -p ~/data')
             if env.get('installPrivateData'):
-                self.task_installSSLKeys()
+                self.task_installTLSKeys()
                 run('/usr/bin/touch {}/production'.format(self.configDir))
             else:
                 run('/bin/rm -f {}/production'.format(self.configDir))
 
 
-    def task_installSSLKeys(self):
+    def task_makeTestTLSKeys(self):
         """
-        Install SSL keys.
+        Make some test TLS certs.
         """
-        cert = sibpath(__file__, 'twistedmatrix.com.crt')
+        local("openssl req -new -newkey rsa:2048 -nodes -keyout {key}".format(
+            key=sibpath(__file__, 'TEST.key')))
+        local("openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout {key} -out {cert}".format(
+            key=sibpath(__file__, 'TEST.key'),
+            cert=sibpath(__file__, 'twistedmatrix.com.crt')))
+        local("cat {key} {cert} > {pem}".format(
+            key=sibpath(__file__, 'TEST.key'),
+            cert=sibpath(__file__, 'twistedmatrix.com.crt'),
+            pem=sibpath(__file__, 'www.twistedmatrix.com.pem')))
 
+
+    def task_installTLSKeys(self):
+        """
+        Install TLS keys.
+        """
         with settings(user=self.serviceUser):
             run('mkdir -p ~/ssl')
             for cert in ['www.twistedmatrix.com.pem',
@@ -68,6 +81,7 @@ class TwistedWeb(service.Service):
             run('ln -s ~/ssl/www.twistedmatrix.com.pem '
                 '~/ssl/twistedmatrix.com.pem')
             run('ln -s ~/ssl/www.twistedmatrix.com.pem ~/ssl/DEFAULT.pem')
+
 
     def update(self):
         """
