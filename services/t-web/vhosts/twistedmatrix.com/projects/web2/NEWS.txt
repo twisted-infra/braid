@@ -1,0 +1,17 @@
+0.1.0 (June 16, 2005): 
+Initial Release
+
+Major Features
+--------------
+
+ - Streaming upload data
+ - Support for multiple headers of the same name
+ - Separation of low level HTTP and high level request handling which allows
+it to run under other transports such as SCGI and CGI
+ - IResource API improvements from Nevow
+ - More versatile outgoing data streaming API
+ - Correct header parsing
+ - Full HTTP/1.1 support
+ - Output filters (HTTP range support in a generic fashion, and gzip support)
+ - Significantly better URI Rewriting when used behind a reverse proxy such as 
+Apache's mod_proxy

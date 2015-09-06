@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+  <title>Twisted.Internet: Echo Server Comparison</title>
+  <link href="../stylesheet.css" rel="stylesheet" />
+</head>
+<body>
+<div class="prod-text">
+
+<!-- -*- HTML-Helper -*- -->
+
+<h1>Twisted.Internet: Echo Server Comparison</h1>
+
+<p> To demonstrate the ease of use of Twisted, we compare implementations
+of a very basic network server. </p>
+
+<h2>Asyncore Echo Server</h2>
+
+<p> While Asyncore provides the asynchronous networking capabilities, it
+does so at a fairly low level, requiring you to write a fair bit of code
+even for a trivial server. </p>
+
+<pre class="python">
+class EchoChannel(asyncore.dispatcher):
+    def __init__(self, sock):
+        asyncore.dispatcher.__init__(self, sock)
+        self.buffer = ""
+    
+    def handle_read(self):
+       self.buffer += self.recv(8192)
+
+    def handle_write(self):
+        sent = self.send(self.buffer)
+        self.buffer = self.buffer[sent:]
+
+    def handle_close(self):
+        self.close()
+
+class EchoServer(asyncore.dispatcher):
+
+    def __init__(self, addr):
+        asyncore.dispatcher.__init__(self)
+        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.bind(addr)
+        self.listen(5)
+    
+    def handle_accept (self):
+        conn, addr = self.accept()
+        EchoChannel(conn)
+</pre>
+
+<h2>Twisted Echo Server</h2>
+
+<p> In this sample, the power of Twisted and the default behaviors that
+it automatically provides become evident.  You are able to simply
+write the code that your application needs.  Of course, all of the
+more complex mechanics that other frameworks require you to know about
+are still present and can be modified if necessary. </p>
+
+<pre class="python">
+class Echo(protocol.Protocol):
+
+    def dataReceived(self, data):
+        self.transport.write(data)
+
+class EchoFactory(protocol.ServerFactory):
+
+    protocol = Echo
+</pre>
+</div>
+</body>
+</html>

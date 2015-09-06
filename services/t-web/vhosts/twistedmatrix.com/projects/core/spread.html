@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+  <title>Twisted Spread</title>
+  <link type="text/css" href="/stylesheet.css" rel="stylesheet"/>
+  <link type="text/css" rel="stylesheet" href="/project.css"/>
+</head>
+<body>
+
+<div id="navigation">
+<p>
+<a href="/">Twisted Matrix Labs</a> :
+<a href="/projects/">Projects</a> :
+<a href="/projects/core/">Twisted</a>:
+Twisted Spread
+</p>
+</div>
+<!-- -*- HTML-Helper -*- -->
+<h1>Twisted Spread</h1>
+
+<p> Twisted Spread is a package of modules that support "spreadable computing".
+(Note that this is our notion of 'spread' -- I was unaware of <a
+href="http://www.spread.org/">The Spread Toolkit</a> when I named it, and it is
+not related.)</p>
+
+<p> Twisted's notion of "spreadable" computing is distinct from distributed
+computing in that it doesn't attempt to solve issues of transparency; nor to
+seamlessly and fluidly move computation from one site to another, or migrate
+objects. Twisted Spread facilitates communication between objects in distinct
+locations.
+</p>
+
+<p>If you're writing servers that need to communicate with each other, or new
+client/server programs, twisted.spread in general and the Perspective Broker
+protocol specifically are probably good solutions for your problems.  </p>
+
+<p>The components that Twisted Spread provides are as follows:</p>
+<ul>
+  <li> <a href="#pb">pb</a>: pb is the Perspective Broker.
+  It lets you talk to remote objects, implementing semantics for object
+  copying, caching, and referencing. </li>
+  <li> <a href="#jelly">jelly</a>: serialization for Python objects </li>
+  <li> <a href="#banana">banana</a>: low level data marshaller </li>
+</ul>
+
+
+<h2><a name="pb">Perspective Broker</a></h2>
+
+<p> Perspective Broker is a broker for proxies for and copies of objects.
+It provides a translucent interface layer to those proxies. </p>
+
+<p> The protocol is not opaque, because it provides objects which
+represent the remote proxies and require no context (server
+references, IDs) to operate on. </p>
+
+<p> It is not transparent because it does *not* attempt to make remote
+objects behave identically, or even similiarly, to local objects.
+Method calls are invoked asynchronously, and specific rules are
+applied when serializing arguments. </p>
+
+<p> PB relies upon <a href="#jelly">Jelly</a> for object serialization
+and <a href="#banana">Banana</a> for the byte-level encoding of data.
+It also defines a specialized profile for Banana to reduce network
+bandwidth usage for the common string constants used within the PB
+protocol. </p>
+
+<p> PB also builds upon the authentication framework provided by <a
+href="cred">Twisted Cred</a>. </p>
+
+<h2><a name="jelly">Jelly</a></h2>
+
+<p> Jelly is the serializer used by Perspective Broker.  It converts
+Python objects into lists of strings and numbers, deferring to an
+encoder (Banana) to encode them. </p>
+
+<p> The main goals of Jelly are: </p>
+
+<ul>
+    <li> Security and safety: Perspective Broker may receive
+         requests from hostile sources with invalid data. The process
+         of unjellying invalid data must not execute arbitrary code,
+         crash the interpreter, or do other similarly bad things.  In
+         the past, security issues have been a <a
+         href="http://www.python.org/doc/2.2.3/lib/pickle-sec.html"
+         >concern for Pickle</a>.  </li>
+    <li> Language Neutrality: Implementations of the Perspective
+         Broker exist in multiple languages, so the serialization
+         strategy and formats must not be Python-specific. This rules
+         out traditional Python modules like Pickle and Marshal. </li>
+</ul>
+
+<p> Specifications and a high-performance C implementation of Jelly will
+be forthcoming. </p>
+
+
+<h2><a name="banana">Banana</a></h2>
+
+<p> Banana (Banana Allows Network Abstraction Nearly Always) is the
+low-level marshaller created to support Jelly and the Perspective
+Broker.  It encodes a limited set of datatypes into a space efficient
+network transportable form.  The details of the datatypes and the
+nature of the encoding are all cover in the <a
+href="../documents/specifications/banana.html">specifications</a>.</p>
+
+<p> Banana is extensible through the addition of "profiles" which allow
+an application to customize Banana for peak space efficiency by special
+encoding data streams in an application (profile) specific manner.  The
+standard Twisted distribution includes support for two profiles, "none"
+and "pb".  The "none" profile does no work to carry out extra compression
+while the "pb" profile supports the compression of the strings generated
+by Jelly into integers. </p>
+
+<p> The <a href="../documents/specifications/banana.html">Banana
+Specifications</a> are available.  Twisted includes both a Python
+and a high performance C implementation. </p>
+
+
+<h2>Availability</h2>
+
+<p> In addition to the Python reference implementation in Twisted,
+an interoperable version of Perspective Broker for Java and the
+beginning of an Emacs Lisp version are available from the <a
+href="download">downloads page</a>.  Implementations for other
+languages are in progress.</p>
+
+</body>
+</html>
+

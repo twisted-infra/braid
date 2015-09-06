@@ -1,0 +1,17 @@
+name: Twisted Web
+description: An HTTP protocol implementation together with clients and servers
+url: web
+licence: MIT
+releases: Web bz2|0.5.0|2005-03-22|287b9402ca99d05e6d3be99413317633|http://tmrc.mit.edu/mirror/twisted/Web/0.5/TwistedWeb-0.5.0.tar.bz2|NEWS.txt
+maintainers: Donovan Preston|mailto:dp@divmod.com
+help: The twisted-web mailing list|http://twistedmatrix.com/cgi-bin/mailman/listinfo/twisted-web
+help: The #twisted.web IRC channel on freenode.net|irc:irc.freenode.net/twisted.web
+bugs: http://twistedmatrix.com/bugs/
+
+Twisted web is a web server, and also provides basic HTTP client
+support. You may want to check out <a
+href="http://divmod.org/projects/nevow">Nevow</a>, a templating
+toolkit designed for twisted.web, and <a
+href="http://twistedmatrix.com/projects/web2/">Twisted Web2</a>, the
+next generation Twisted web server.
+

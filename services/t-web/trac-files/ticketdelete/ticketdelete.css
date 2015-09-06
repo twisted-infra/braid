@@ -1,0 +1,15 @@
+.inlinebuttons a { 
+ font-size: 87%;
+ border-width: 1px;
+ border-style: dotted;
+ border-color: #ccc;
+ margin: 0;
+ padding: 0.1em;
+ background: none;
+ color: #000;
+}
+
+.inlinebuttons a:hover { 
+ color: #000;
+ background-color: #ccb;
+}

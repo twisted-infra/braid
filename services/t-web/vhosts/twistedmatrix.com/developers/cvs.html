@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html><head><title>SVN Access</title></head>
+<body>
+<div class="dev-text">
+
+<!-- -*- HTML-Helper -*- -->
+<h1>Subversion access to the Twisted Repository</h1>
+
+<p>
+The Twisted project is stored in a SVN repository with anonymous read-access. 
+We have two ways to access this repository: with the <a href="http://svn.twistedmatrix.com/cvs/?root=Twisted">web interface</a>,
+and with svn.
+</p>
+
+<h2>Anonymous access to the repository</h2>
+
+<p>
+To get the SVN code anonymously, make sure you have the subversion package for your operating system, and issue the command:
+</p>
+
+<pre class="shell">
+$ svn co svn://svn.twistedmatrix.com/svn/Twisted/trunk Twisted
+</pre>
+
+<p>
+After the command finishes, you should have a populated "Twisted" directory
+where you issued the 'co' command. You're all set for hacking on the
+bleeding-edge Twisted code-base!
+</p>
+
+<h2>Anonymous access using TortoiseSVN</h2>
+<p>
+Download TortoiseSVN from <a
+href="http://tortoisesvn.tigris.org/">http://tortoisesvn.tigris.org/</a>. Check
+out the svn URL svn://svn.twistedmatrix.com/svn/Twisted/trunk with it.
+</p>
+
+<h2>Remaining Informed</h2>
+
+<p>If you'd like to keep up to date with the changes in SVN, you can
+subscribe to the <a
+href="/cgi-bin/mailman/listinfo/twisted-commits">twisted-commits</a>
+list.  <a href="/pipermail/twisted-commits/">Archives</a> are
+available. </p>
+
+</div>
+</body>
+</html>
+

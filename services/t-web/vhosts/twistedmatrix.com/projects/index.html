@@ -1,0 +1,125 @@
+<html>
+<head>
+  <title>Twisted Matrix Laboratories Projects</title>
+  <link href="main.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" type="text/css" href="/stylesheet.css" />
+  <!--[if IE]>
+    <link rel="stylesheet" type="text/css" href="/stylesheet-msie.css" />
+  <![endif]-->
+</head>
+<body>
+
+<div id="header">
+<a href="/"><img src="/images/header-logo.png" alt="Twisted Matrix Laboratories" border="0" /></a>
+</div>
+
+<div id="maincontent">
+
+<h1>Twisted Matrix Laboratories Projects</h1>
+
+<h2>Python</h2>
+
+<table class="projects" nevow:data="pyprojects" nevow:render="sequence">
+  <tr nevow:pattern="item">
+    <th align="right"><span nevow:render="title" /></th>
+    <td><span nevow:render="description" /></td>
+  </tr>
+</table>
+
+<!--
+
+# Trac sucks, nobody maintains our installation, and it's basically just full
+# of spam.  These projects should get real websites, or something.
+
+<h2>Other projects by Labs members</h2>
+<table class="projects">
+  <tr>
+    <th align="right"><a href="/trac/imagination">Imagination</a></th>
+    <td>A simulation framework</td>
+  </tr>
+  <tr>
+    <th align="right"><a href="/trac/infogreater">Infogreater</a></th>
+    <td>A mind-mapping application</td>
+  </tr>
+  <tr>
+    <th align="right"><a href="/trac/oust">Oust</a></th>
+    <td>A GTK+ GUI builder (Glade-compatible)</td>
+  </tr>
+</table>
+-->
+
+<h2>Other languages</h2>
+
+<table class="projects" nevow:data="otherprojects" nevow:render="sequence">
+  <tr nevow:pattern="item">
+    <th align="right"><span nevow:render="title" /></th>
+    <td><span nevow:render="description" /></td>
+  </tr>
+</table>
+
+</div>
+
+<div id="leftcontent">
+    <div class="prod">
+     <div class="header-link"><a href="/projects/"><h2>Projects</h2></a></div>
+     <ul>
+       <li><a href="/projects/core">Twisted</a>
+           <a href="/projects/core/documentation/" class="docs-link">(Documentation)</a></li>
+       <li><a href="/projects/web">Twisted Web</a>
+           <a href="/projects/web/documentation/" class="docs-link">(Documentation)</a></li>
+       <li><a href="/projects/conch">Conch</a> 
+           <a href="/projects/conch/documentation/" class="docs-link">(Documentation)</a></li>
+       <li><a href="/projects/mail">Twisted Mail</a>
+           <a href="/projects/mail/documentation/" class="docs-link">(Documentation)</a></li>
+       <li><a href="/projects/words">Twisted Words</a>
+           <a href="/projects/words/documentation/" class="docs-link">(Documentation)</a></li>
+       <li><a href="/projects/">More...</a></li>
+       </ul>
+    </div>
+
+     <div class="serv">
+      <div class="header-link"><a href="services/"><h2>Services</h2></a></div>
+      <ul>
+       <li><a href="/services/twisted-advantage">Why Use Twisted?</a></li>
+       <li><a href="/services/success">Success Stories</a></li>
+       <li><a href="/services/consulting">Consulting Network</a></li>
+       <li><a href="/services/online-help">Getting Free Help</a></li>
+       <li><a href="/cgi-bin/mailman/listinfo/twisted-python">Twisted Mailing List</a></li>
+       <li><a href="/cgi-bin/mailman/listinfo/twisted-web">Twisted-Web Mailing List</a></li>
+      </ul>
+     </div>
+
+     <div class="dev">
+      <div class="header-link"><a href="developers/"><h2>Developers</h2></a></div>
+      <ul>
+       <li><a href="/developers/credits">Credits</a></li>
+       <li><a href="/developers/contributing">Contributing</a></li>
+       <li><a href="/developers/cvs">Subversion Repository</a></li>
+       <li><a href="http://twistedmatrix.com/bugs/">Bug/Issue Tracker</a></li>
+       <li><a href="http://twistedmatrix.com/buildbot/">Build Status</a></li>
+       <li><a href="http://isometric.sixsided.org/_/twisted_plutonium/">Plutonium</a></li>
+       <li><a href="http://planet.twistedmatrix.com/">Developer Blogs</a></li>
+      </ul>
+     </div>
+
+  <div id="logo"><img alt="[Twisted Logo]" src="/images/TwistedLogoSmall.png" /></div>
+
+<div id="sitemeter">
+<!--WEBBOT bot="HTMLMarkup" startspan ALT="Site Meter" -->
+<!--
+<script type="text/javascript" language="JavaScript">var site="sm7twistedmatrix"</script>
+<script type="text/javascript" language="JavaScript1.2" src="http://sm7.sitemeter.com/js/counter.js?site=sm7twistedmatrix">
+</script>
+<noscript>
+-->
+<a href="http://sm7.sitemeter.com/stats.asp?site=sm7twistedmatrix" target="_top">
+<img src="http://sm7.sitemeter.com/meter.asp?site=sm7twistedmatrix" alt="Site Meter" border="0" /></a>
+<!-- </noscript> -->
+<!-- Copyright (c)2002 Site Meter -->
+<!--WEBBOT bot="HTMLMarkup" Endspan -->
+</div>
+
+</div>
+
+</body>
+</html>
