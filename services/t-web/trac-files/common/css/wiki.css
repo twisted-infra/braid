@@ -102,7 +102,6 @@ div.trac-modifiedby {
  font-size: 80%;
  font-style: italic;
  text-align: right;
- float: right;
 }
 div.trac-modifiedby :link, div.trac-modifiedby :visited { color: inherit }
 div.trac-modifiedby span.trac-print { display: none; }
