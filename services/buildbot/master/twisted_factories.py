@@ -374,8 +374,35 @@ class TwistedJythonReactorsBuildFactory(TwistedBaseFactory):
     treeStableTimer = 5*60
 
     def __init__(self, source, RemovePYCs=RemovePYCs,
-                 python="jython", compileOpts=[], compileOpts2=[],
+                 compileOpts=[], compileOpts2=[],
                  reactors=["select"], uncleanWarnings=True):
+
+        # Download and build Jython
+        self.addStep(
+            shell.ShellCommand,
+            command=["rm", "-f", "master.tar.gz"]
+        )
+        self.addStep(
+            shell.ShellCommand,
+            command=["rm", "-rf", "jython-master"]
+        )
+
+        self.addStep(
+            shell.ShellCommand,
+            command=["wget", "https://github.com/jythontools/jython/archive/master.tar.gz"],
+        )
+
+        self.addStep(
+            shell.ShellCommand,
+            command=["tar", "-xvf", "master.tar.gz"]
+        )
+
+        self.addStep(
+            shell.ShellCommand,
+            command=["ant", "-file", "jython-master/build.xml"]
+        )
+
+        python = "jython-master/dist/bin/jython"
 
         TwistedBaseFactory.__init__(
             self,
