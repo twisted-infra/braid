@@ -88,7 +88,7 @@ class Trac(service.Service):
         self.task_restart()
 
 
-    def task_dump(self, localfile):
+    def task_dump(self, localfile, withAttachments=True):
         """
         Create a tarball containing all information not currently stored in
         version control and download it to the given C{localfile}.
@@ -97,14 +97,18 @@ class Trac(service.Service):
             with utils.tempfile() as temp:
                 postgres.dumpToPath('trac', temp)
 
-                archive.dump({
+                files = {
                     'htpasswd': 'config/htpasswd',
-                    'attachments': 'attachments',
                     'db.dump': temp,
-                }, localfile)
+                }
+
+                if withAttachments is True:
+                    files['attachments'] = 'attachments'
+
+                archive.dump(files, localfile)
 
 
-    def task_restore(self, localfile, restoreDb=True):
+    def task_restore(self, localfile, restoreDb=True, withAttachments=True):
         """
         Restore all information not stored in version control from a tarball
         on the invoking users machine.
@@ -131,11 +135,15 @@ class Trac(service.Service):
 
             with settings(user=self.serviceUser):
                 with utils.tempfile() as temp:
-                    archive.restore({
+                    files = {
                         'htpasswd': 'config/htpasswd',
-                        'attachments': 'attachments',
                         'db.dump': temp,
-                    }, localfile)
+                    }
+
+                    if withAttachments is True:
+                        files['attachments'] = 'attachments'
+
+                    archive.restore(files, localfile)
                     if restoreDb:
                         postgres.restoreFromPath('trac', temp)
 
