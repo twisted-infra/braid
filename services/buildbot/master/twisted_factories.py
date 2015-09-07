@@ -34,9 +34,13 @@ BASE_DEPENDENCIES = [
     'service_identity',
     'zope.interface',
     'idna',
-    'pycrypto',
     'pyasn1',
     'python-subunit',
+]
+
+# Dependencies that don't work on PyPy
+CEXT_DEPENDENCIES = [
+    'pycrypto',
 ]
 
 # Dependencies that don't work on CPython 3.3+
@@ -238,7 +242,7 @@ class TwistedDocumentationBuildFactory(TwistedBaseFactory):
 
     def __init__(self, source, python="python",
                  reactors=["select"], uncleanWarnings=True,
-                 dependencies=BASE_DEPENDENCIES + EXTRA_DEPENDENCIES + DOC_DEPENDENCIES):
+                 dependencies=BASE_DEPENDENCIES + CEXT_DEPENDENCIES + EXTRA_DEPENDENCIES + DOC_DEPENDENCIES):
 
         TwistedBaseFactory.__init__(
             self,
@@ -333,7 +337,7 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
     def __init__(self, source, RemovePYCs=RemovePYCs, python="python",
                  trial="./bin/trial",
                  reactors=["select"], uncleanWarnings=False,
-                 dependencies=BASE_DEPENDENCIES + EXTRA_DEPENDENCIES,
+                 dependencies=BASE_DEPENDENCIES + CEXT_DEPENDENCIES + EXTRA_DEPENDENCIES,
                  forceGarbageCollection=False, tests=None):
 
         TwistedBaseFactory.__init__(
@@ -495,7 +499,7 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
         ]
 
     def __init__(self, python, source, buildID=None, trial="./bin/trial",
-                 tests=None, dependencies=BASE_DEPENDENCIES + EXTRA_DEPENDENCIES):
+                 tests=None, dependencies=BASE_DEPENDENCIES + CEXT_DEPENDENCIES + EXTRA_DEPENDENCIES):
         OMIT = self.OMIT_PATHS[:]
         OMIT.append(self._virtualEnvPath + "/*")
 
