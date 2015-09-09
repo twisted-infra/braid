@@ -18,7 +18,6 @@ class Buildbot(service.Service):
         self.bootstrap()
 
         with settings(user=self.serviceUser):
-            pip.install('sqlalchemy==0.7.10')
             execute(self.update, _installDeps=True)
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
             run('/bin/mkdir -p ~/data')
@@ -64,7 +63,9 @@ class Buildbot(service.Service):
             buildbotSource = os.path.join(self.configDir, 'buildbot-source')
             git.branch('https://github.com/twisted-infra/buildbot', buildbotSource)
             if _installDeps:
-                pip.install('{}'.format(os.path.join(buildbotSource, 'master')),
+                # sqlalchemy-migrate only works with a specific version of
+                # sqlalchemy.
+                pip.install('sqlalchemy==0.7.10 {}'.format(os.path.join(buildbotSource, 'master')),
                         python='python')
             else:
                 pip.install('--no-deps --upgrade {}'.format(os.path.join(buildbotSource, 'master')),
