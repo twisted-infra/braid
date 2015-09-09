@@ -1,6 +1,6 @@
 import os
 
-from fabric.api import settings, run, env, cd, put, puts, abort
+from fabric.api import settings, run, env, execute, cd, put, puts, abort
 from fabric.contrib import files
 
 from braid import git, cron, pip, archive, config
@@ -18,33 +18,29 @@ class Buildbot(service.Service):
         self.bootstrap()
 
         with settings(user=self.serviceUser):
-            pip.install('sqlalchemy==0.7.10')
-            self.update(_installDeps=True)
+            execute(self.update, _installDeps=True)
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
             run('/bin/mkdir -p ~/data')
             run('/bin/mkdir -p ~/data/build_products')
             run('/bin/ln -nsf ~/data/build_products {}/master/public_html/builds'.format(self.configDir))
-
-            # TODO: install dependencies
-            if env.get('installTestData'):
-                self.task_installTestData()
-
             cron.install(self.serviceUser, '{}/crontab'.format(self.configDir))
 
-    def task_installTestData(self, force=None):
+    def task_installTestData(self):
         """
         Do test environment setup (with fake passwords, etc).
         """
         if env.get('environment') == 'production':
            abort("Don't use testInit in production.")
 
-        with settings(user=self.serviceUser), cd(os.path.join(self.configDir, 'master')):
-            if force or not files.exists('private.py'):
-                puts('Using sample private.py')
-                run('/bin/cp private.py.sample private.py')
-
-            if force or not files.exists('state.sqlite'):
-                run('~/.local/bin/buildbot upgrade-master')
+        targetPath = os.path.join(self.configDir, 'master')
+        with settings(user=self.serviceUser), cd(targetPath):
+            puts('Copying testing private.py to %s' % (targetPath,))
+            run('/bin/cp private.py.sample private.py')
+            puts('Migrating SQLite db.')
+            run('~/.local/bin/buildbot upgrade-master')
+            puts('Copying migrated state.sqlite db to ~/data')
+            run('/bin/mkdir -p ~/data')
+            run('/bin/cp state.sqlite ~/data')
 
     def task_updatePrivateData(self):
         """
@@ -67,11 +63,32 @@ class Buildbot(service.Service):
             buildbotSource = os.path.join(self.configDir, 'buildbot-source')
             git.branch('https://github.com/twisted-infra/buildbot', buildbotSource)
             if _installDeps:
-                pip.install('{}'.format(os.path.join(buildbotSource, 'master')),
+                # sqlalchemy-migrate only works with a specific version of
+                # sqlalchemy.
+                pip.install('sqlalchemy==0.7.10 {}'.format(os.path.join(buildbotSource, 'master')),
                         python='python')
             else:
                 pip.install('--no-deps --upgrade {}'.format(os.path.join(buildbotSource, 'master')),
                         python='python')
+
+            if env.get('installPrivateData'):
+                self.task_updatePrivateData()
+            else:
+                execute(self.task_installTestData)
+
+    def updatefast(self):
+        """
+        Update only some of the config.
+        """
+        with settings(user=self.serviceUser):
+            put(
+                os.path.dirname(__file__) + '/master/twisted_*',
+                self.configDir + "/master/",
+                mirror_local_mode=True)
+            put(
+                os.path.dirname(__file__) + '/master/master.cfg',
+                self.configDir + "/master/",
+                mirror_local_mode=True)
 
             if env.get('installPrivateData'):
                 self.task_updatePrivateData()
@@ -81,6 +98,14 @@ class Buildbot(service.Service):
         Update config and restart.
         """
         self.update()
+        self.task_restart()
+
+
+    def task_updatefast(self):
+        """
+        Update config and restart.
+        """
+        self.updatefast()
         self.task_restart()
 
 

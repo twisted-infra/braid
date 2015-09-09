@@ -1,0 +1,16 @@
+name: Twisted News
+description: An NNTP protocol implementation with client and server
+url: news
+licence: MIT
+releases: News bz2|0.1.0|2005-03-22|9e8d4b39152f8b30d8a2255fc5ec9920|http://tmrc.mit.edu/mirror/twisted/News/0.1/TwistedNews-0.1.0.tar.bz2|
+maintainers: Jp Calderone|mailto:exarkun@twistedmatrix.com
+help: The twisted-python mailing list|http://twistedmatrix.com/cgi-bin/mailman/listinfo/twisted-python
+help: The #twisted IRC channel on freenode.net|irc:irc.freenode.net/twisted
+bugs: http://twistedmatrix.com/bugs/
+
+Twisted News provides a very basic NNTP server, as well as an NNTP client
+protocol implementation.  Two messages storage systems are supported: the
+DB-API 2.0 backend stores and indexes messages in any compatible SQL
+database; the Twisted dirdbm backend uses serialized Python objects stored
+directly on the filesystem for message storage.  Twisted News also has very
+rudamentary support for moderated groups.

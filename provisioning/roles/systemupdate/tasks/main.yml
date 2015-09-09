@@ -1,0 +1,7 @@
+- name: Update apt cache (Debian)
+  action: apt update_cache=yes
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Upgrade apt packages (Debian)
+  action: apt upgrade=dist
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'

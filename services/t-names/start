@@ -1,0 +1,15 @@
+#!/bin/bash
+
+Z=~/config/zones
+export PYTHONPATH=$PYTHONPATH:$Z
+
+authbind --deep ~pypy/bin/twistd \
+    --logfile ~/log/twistd.log \
+    --pidfile ~/run/twistd.pid \
+    dns \
+    --pyzone $Z/twistedmatrix.com \
+    --pyzone $Z/divunal.com \
+    --pyzone $Z/ynchrono.us \
+    --pyzone $Z/divmod.com \
+    --pyzone $Z/divmod.org \
+    --pyzone $Z/crookedsapling.us

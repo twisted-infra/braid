@@ -1,3 +1,7 @@
 /braidrc.local/*.py
 .vagrant/
 *.pyc
+.DS_Store
+*~
+dump.tar
+dump.bz2

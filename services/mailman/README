@@ -1,0 +1,19 @@
+This is the configuration for twistedmatrix.com's mailman instalation.
+
+It is adminstered using braid[1].
+
+Mailman isn't directly installed, rather it uses the ubuntu's stock
+installation of mailman.
+
+It is available at the default location http://host/cgi-bin/mailman/listinfo.
+
+In production this is https://twistedmatrix.com/cgi-bin/mailman/listinfo.
+
+install - Install mailman and update configuration.
+dump:<dump-file>.tar - Dump mailing lists and archives
+restore:<dump-file>.tar - Restore mailing lists and archives.
+start - Start server.
+stop - Stop server
+restart - Restart server.
+
+[1] https://github.com/twisted-infra/braid
