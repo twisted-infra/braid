@@ -374,8 +374,16 @@ class TwistedJythonReactorsBuildFactory(TwistedBaseFactory):
     treeStableTimer = 5*60
 
     def __init__(self, source, RemovePYCs=RemovePYCs,
-                 compileOpts=[], compileOpts2=[],
+                 compileOpts=[], compileOpts2=[], python="jython",
                  reactors=["select"], uncleanWarnings=True):
+
+        TwistedBaseFactory.__init__(
+            self,
+            source=source,
+            python=python,
+            uncleanWarnings=False,
+            virtualenv=False,
+        )
 
         # Download and build Jython
         self.addStep(
@@ -399,18 +407,24 @@ class TwistedJythonReactorsBuildFactory(TwistedBaseFactory):
 
         self.addStep(
             shell.ShellCommand,
+            warnOnFailure=True,
+            command=["ant", "-file", "jython-master/build.xml"]
+        )
+
+        # Run it again... because
+        self.addStep(
+            shell.ShellCommand,
+            warnOnFailure=True,
             command=["ant", "-file", "jython-master/build.xml"]
         )
 
         python = "jython-master/dist/bin/jython"
 
-        TwistedBaseFactory.__init__(
-            self,
-            source=source,
-            python=python,
-            uncleanWarnings=False,
-            virtualenv=True,
+        self.addStep(
+            shell.ShellCommand,
+            command=["python", "-m", "virtualenv", "-p", python, self._virtualEnvPath]
         )
+
 
         self.addStep(
             shell.ShellCommand,
