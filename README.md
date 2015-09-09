@@ -14,13 +14,14 @@ Currently Supported Services
 
 - amptrac
 - t-names
-- [t-web](https://github.com/twisted-infra/t-web)
-- buildbot
+- t-web
+- buildbot (buildmaster)
+- buildslave
 - codespeed
 - [diffresource](https://github.com/twisted-infra/diffresource)
 - kenaan
 - [hiscore](svn.twistedmatrix.com:infra/twisted-highscore)
-- [trac](https://github.com/twisted-infra/trac-config)
+- trac
 - mailman
 
 

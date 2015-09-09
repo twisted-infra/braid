@@ -9,6 +9,7 @@
 
 # This is the list of currently configured slaves
 slaves = [
+    'vagrant-testing',
     'bot-glyph-1',
     'bot-glyph-6',
 
