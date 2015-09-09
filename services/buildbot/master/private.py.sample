@@ -14,22 +14,29 @@ slaves = [
 
     'egh-osx-1',
 
-    'hawkowl-debian7-py27',
     'hawkowl-debian7-py34',
-    'hawkowl-debian8-py27',
 
     'tavendo-freebsd-10.1-amd64',
 
-    'osuosl-osx10.6',
     'tomprince-socrates-winxp-1',
+
+    'rax-ubuntu1504-1',
+    'rax-ubuntu1504-2',
+    'rax-ubuntu1504-3',
+
+    'rax-debian8-1',
+    'rax-debian8-2',
+
+    'fedora-fedora21-1',
+    'fedora-fedora21-2',
+
+    'fedora-fedora22-1',
+    'fedora-fedora22-2',
+
+    'fedora-rhel7-1',
+    'fedora-rhel7-2',
     ]
 
-slaves += ['fedora-fedora17-x86_64-%d' % (i,) for i in range(1,3)]
-slaves += ['fedora-fedora18-x86_64-%d' % (i,) for i in range(1,3)]
-slaves += ['fedora-fedora19-x86_64-%d' % (i,) for i in range(1,3)]
-slaves += ['fedora-rhel6-x86_64-%d' % (i,) for i in range(1,3)]
-
-slaves += ['rackspace-debian6-%d' % (i,) for i in range(1,3)]
 slaves += ['rackspace-ubuntu-12.04-%d' % (i,) for i in range(1,3)]
 
 # Give each slave a default password.
