@@ -34,9 +34,13 @@ BASE_DEPENDENCIES = [
     'service_identity',
     'zope.interface',
     'idna',
-    'pycrypto',
     'pyasn1',
     'python-subunit',
+]
+
+# Dependencies that don't work on PyPy
+CEXT_DEPENDENCIES = [
+    'pycrypto',
 ]
 
 # Dependencies that don't work on CPython 3.3+
@@ -238,7 +242,7 @@ class TwistedDocumentationBuildFactory(TwistedBaseFactory):
 
     def __init__(self, source, python="python",
                  reactors=["select"], uncleanWarnings=True,
-                 dependencies=BASE_DEPENDENCIES + EXTRA_DEPENDENCIES + DOC_DEPENDENCIES):
+                 dependencies=BASE_DEPENDENCIES + CEXT_DEPENDENCIES + EXTRA_DEPENDENCIES + DOC_DEPENDENCIES):
 
         TwistedBaseFactory.__init__(
             self,
@@ -333,7 +337,7 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
     def __init__(self, source, RemovePYCs=RemovePYCs, python="python",
                  trial="./bin/trial",
                  reactors=["select"], uncleanWarnings=False,
-                 dependencies=BASE_DEPENDENCIES + EXTRA_DEPENDENCIES,
+                 dependencies=BASE_DEPENDENCIES + CEXT_DEPENDENCIES + EXTRA_DEPENDENCIES,
                  forceGarbageCollection=False, tests=None):
 
         TwistedBaseFactory.__init__(
@@ -370,7 +374,7 @@ class TwistedJythonReactorsBuildFactory(TwistedBaseFactory):
     treeStableTimer = 5*60
 
     def __init__(self, source, RemovePYCs=RemovePYCs,
-                 python="jython", compileOpts=[], compileOpts2=[],
+                 compileOpts=[], compileOpts2=[], python="jython",
                  reactors=["select"], uncleanWarnings=True):
 
         TwistedBaseFactory.__init__(
@@ -378,8 +382,49 @@ class TwistedJythonReactorsBuildFactory(TwistedBaseFactory):
             source=source,
             python=python,
             uncleanWarnings=False,
-            virtualenv=True,
+            virtualenv=False,
         )
+
+        # Download and build Jython
+        self.addStep(
+            shell.ShellCommand,
+            command=["rm", "-f", "master.tar.gz"]
+        )
+        self.addStep(
+            shell.ShellCommand,
+            command=["rm", "-rf", "jython-master"]
+        )
+
+        self.addStep(
+            shell.ShellCommand,
+            command=["wget", "https://github.com/jythontools/jython/archive/master.tar.gz"],
+        )
+
+        self.addStep(
+            shell.ShellCommand,
+            command=["tar", "-xvf", "master.tar.gz"]
+        )
+
+        self.addStep(
+            shell.ShellCommand,
+            warnOnFailure=True,
+            command=["ant", "-file", "jython-master/build.xml"]
+        )
+
+        # Run it again... because
+        self.addStep(
+            shell.ShellCommand,
+            warnOnFailure=True,
+            command=["ant", "-file", "jython-master/build.xml"]
+        )
+
+        python = "jython-master/dist/bin/jython"
+
+        self.addStep(
+            shell.ShellCommand,
+            command=["python", "-m", "virtualenv", "-p", python, self._virtualEnvPath]
+        )
+
 
         self.addStep(
             shell.ShellCommand,
@@ -495,7 +540,7 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
         ]
 
     def __init__(self, python, source, buildID=None, trial="./bin/trial",
-                 tests=None, dependencies=BASE_DEPENDENCIES + EXTRA_DEPENDENCIES):
+                 tests=None, dependencies=BASE_DEPENDENCIES + CEXT_DEPENDENCIES + EXTRA_DEPENDENCIES):
         OMIT = self.OMIT_PATHS[:]
         OMIT.append(self._virtualEnvPath + "/*")
 

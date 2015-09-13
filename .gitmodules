@@ -1,6 +1,3 @@
 [submodule "services/diffresource"]
 	path = services/diffresource
 	url = https://github.com/twisted-infra/diffresource
-[submodule "services/mailman"]
-	path = services/mailman
-	url = https://github.com/twisted-infra/mailman-config
