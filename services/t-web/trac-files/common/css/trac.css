@@ -807,6 +807,7 @@ div.system-message p.system-message-title { font-weight: bold; }
 #download h1, #download h2 {
     color: #eee;
     text-shadow: 0 1px #222;
+    border: 0;
 }
 
 #download h1 {
@@ -816,6 +817,7 @@ div.system-message p.system-message-title { font-weight: bold; }
 #download h2 {
     color: #bbb;
     padding: 0;
+    margin-bottom: 5px;
 }
 
 #download ul {
