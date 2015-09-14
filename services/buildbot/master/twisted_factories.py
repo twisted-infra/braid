@@ -313,8 +313,6 @@ class TwistedReactorsBuildFactory(TwistedBaseFactory):
                                command=['pip', 'install', 'cexts/'],
                                warnOnFailure=True)
 
-        self.addStep(shell.Compile, command=cmd, warnOnFailure=True)
-
         for reactor in reactors:
             self.addStep(RemovePYCs)
             self.addStep(RemoveTrialTemp, python=self.python)
