@@ -451,85 +451,50 @@ class TwistedJythonReactorsBuildFactory(TwistedBaseFactory):
 
 
 
-class TwistedBdistMsiFactory(TwistedBaseFactory):
+class TwistedCextsWheelBuildFactory(TwistedBaseFactory):
+    """
+    Build the _twistedextensions package.
+    """
     treeStableTimer = 5*60
 
     uploadBase = 'build_products/'
-    def __init__(self, source, uncleanWarnings, arch, pyVersion):
-        python = self.python(pyVersion)
+    def __init__(self, python, source, uncleanWarnings, arch, pyVersion):
         TwistedBaseFactory.__init__(self, python, source, uncleanWarnings)
+
         self.addStep(
             LearnVersion, python=python, package='twisted', workdir='Twisted')
 
         def transformVersion(build):
             return build.getProperty("version").split("+")[0].split("pre")[0]
+
         self.addStep(SetBuildProperty,
-            property_name='versionMsi', value=transformVersion)
-        self.addStep(shell.ShellCommand,
-                name='write-copyright-file',
-                description=['Update', 'twisted/copyright.py'],
-                descriptionDone=['Updated', 'twisted/copyright.py'],
-                command=[python, "-c", WithProperties(
-                     'version = \'%(versionMsi)s\'; '
-                     'f = file(\'twisted\copyright.py\', \'at\'); '
-                     'f.write(\'version = \' + repr(version)); '
-                     'f.close()')],
-                     haltOnFailure=True)
-
-        self.addStep(shell.ShellCommand,
-                     name='build-msi',
-                     description=['Build', 'msi'],
-                     descriptionDone=['Built', 'msi'],
-                     command=[python, "setup.py", "bdist_msi"],
-                     haltOnFailure=True)
-        self.addStep(
-            transfer.FileUpload,
-            name='upload-msi',
-            slavesrc=WithProperties('dist/Twisted-%(versionMsi)s.' + arch + '-py' + pyVersion + '.msi'),
-            masterdest=WithProperties(
-                self.uploadBase + 'twisted-packages/Twisted-%%(version)s.%s-py%s.msi' % (arch, pyVersion)),
-            url=WithProperties(
-                '/build/twisted-packages/Twisted-%%(version)s.%s-py%s.msi' % (arch, pyVersion)))
-
-        self.addStep(shell.ShellCommand,
-                name='build-exe',
-                description=['Build', 'exe'],
-                descriptionDone=['Built', 'exe'],
-                command=[python, "setup.py", "bdist_wininst"],
-                haltOnFailure=True)
-        self.addStep(
-            transfer.FileUpload,
-            name='upload-exe',
-            slavesrc=WithProperties('dist/Twisted-%(versionMsi)s.' + arch + '-py' + pyVersion + '.exe'),
-            masterdest=WithProperties(
-                self.uploadBase + 'twisted-packages/Twisted-%%(version)s.%s-py%s.exe' % (arch, pyVersion)),
-            url=WithProperties(
-                '/build/twisted-packages/Twisted-%%(version)s.%s-py%s.exe' % (arch, pyVersion)))
+                     property_name="versionWhl",
+                     value=transformVersion)
 
         wheelPythonVersion = 'cp' + pyVersion.replace('.','') + '-none-' + arch.replace('-','_')
-        self.addStep(shell.ShellCommand,
-                name='build-whl',
-                description=['Build', 'wheel'],
-                descriptionDone=['Built', 'wheel'],
-                command=[python, "setup.py", "--command-package", "wheel", "bdist_wheel"],
-                haltOnFailure=True)
+
+        self.addStep(
+            shell.ShellCommand,
+            workdir="cexts",
+            name='build-whl',
+            description=['Build', 'wheel'],
+            descriptionDone=['Built', 'wheel'],
+            command=[python, "setup.py", "bdist_wheel"],
+            haltOnFailure=True
+        )
+
         self.addStep(
             transfer.FileUpload,
             name='upload-whl',
-            slavesrc=WithProperties('dist/Twisted-%(versionMsi)s-' + wheelPythonVersion + '.whl'),
+            slavesrc=WithProperties(
+                'cexts/dist/_twistedextensions-%(versionWhl)s-' + wheelPythonVersion + '.whl'),
             masterdest=WithProperties(
-                self.uploadBase + 'twisted-packages/Twisted-%(version)s-'
+                self.uploadBase + 'twisted-packages/_twistedextensions-%(version)s-'
                 + wheelPythonVersion + '.whl'),
             url=WithProperties(
-                '/build/twisted-packages/Twisted-%(version)s-'
+                '/build/twisted-packages/_twistedextensions-%(version)s-'
                 + wheelPythonVersion + '.whl'),
-            )
-
-
-    def python(self, pyVersion):
-        return (
-            "c:\\python%s\\python.exe" % (
-                pyVersion.replace('.', ''),))
+        )
 
 
 
