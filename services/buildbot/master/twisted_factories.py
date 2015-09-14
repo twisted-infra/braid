@@ -258,12 +258,6 @@ class TwistedDocumentationBuildFactory(TwistedBaseFactory):
             command=['pip', 'install'] + dependencies
         )
 
-        # Build our extensions, in case any API documentation wants to link to
-        # them.
-        self.addVirtualEnvStep(
-            shell.Compile,
-            command=[python, "setup.py", "build_ext", "-i"])
-
         self.addVirtualEnvStep(CheckDocumentation)
         self.addVirtualEnvStep(ProcessDocs)
         self.addStep(
@@ -311,14 +305,13 @@ class TwistedReactorsBuildFactory(TwistedBaseFactory):
     treeStableTimer = 5*60
 
     def __init__(self, source, RemovePYCs=RemovePYCs,
-                 python="python", compileOpts=[], compileOpts2=[],
-                 reactors=["select"], uncleanWarnings=True):
+                 python="python", reactors=["select"], uncleanWarnings=True):
         TwistedBaseFactory.__init__(self, python, source, uncleanWarnings)
 
-        assert isinstance(compileOpts, list)
-        assert isinstance(compileOpts2, list)
-        cmd = (self.python + compileOpts + ["setup.py", "build_ext"]
-               + compileOpts2 + ["-i"])
+        self.addVirtualEnvStep(shell.ShellCommand,
+                               description="installing CExts".split(" "),
+                               command=['pip', 'install', 'cexts/'],
+                               warnOnFailure=True)
 
         self.addStep(shell.Compile, command=cmd, warnOnFailure=True)
 
@@ -358,8 +351,10 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
 
         self._reportVersions(virtualenv=True)
 
-        cmd = (self.python + ["setup.py", "build_ext", "-i"])
-        self.addVirtualEnvStep(shell.Compile, command=cmd, warnOnFailure=True)
+        self.addVirtualEnvStep(shell.ShellCommand,
+                               description="installing CExts".split(" "),
+                               command=['pip', 'install', 'cexts/'],
+                               warnOnFailure=True)
 
         for reactor in reactors:
             self.addStep(RemovePYCs)
@@ -373,8 +368,7 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
 class TwistedJythonReactorsBuildFactory(TwistedBaseFactory):
     treeStableTimer = 5*60
 
-    def __init__(self, source, RemovePYCs=RemovePYCs,
-                 compileOpts=[], compileOpts2=[], python="jython",
+    def __init__(self, source, RemovePYCs=RemovePYCs, python="jython",
                  reactors=["select"], uncleanWarnings=True):
 
         TwistedBaseFactory.__init__(
@@ -519,14 +513,16 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
         )
         self.addVirtualEnvStep(
             shell.ShellCommand,
-            description = "installing dependencies".split(" "),
+            description="installing dependencies".split(" "),
             command=['pip', 'install'] + dependencies + COVERAGE_DEPENDENCIES
         )
 
         self._reportVersions(virtualenv=True)
 
-        cmd = (self.python + ["setup.py", "build_ext", "-i"])
-        self.addVirtualEnvStep(shell.Compile, command=cmd, warnOnFailure=True)
+        self.addVirtualEnvStep(shell.ShellCommand,
+                               description="installing CExts".split(" "),
+                               command=['pip', 'install', 'cexts/'],
+                               warnOnFailure=True)
 
         self.addTrialStep(
             flunkOnFailure=True,
