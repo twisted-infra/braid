@@ -137,8 +137,8 @@
         ${ticket['branch']}
         <py:if test="ticket['branch']">
           <br/>
-          (<a href="/~diffresource.twistd/${ticket.id}">diff</a>,
-          <a href="https://github.com/twisted/twisted/compare/trunk...${ticket['branch'][9:]}">github</a>,
+          (<a href="https://github.com/twisted/twisted/compare/trunk...${ticket['branch'][9:]}">github</a>,
+          <a href="https://github.com/twisted/twisted/compare/trunk...${ticket['branch'][9:]}.patch">patch</a>,
           <a href="https://buildbot.twistedmatrix.com/boxes-supported?branch=/${ticket['branch']}">buildbot</a>,
           <a href="/trac/log/${ticket['branch']}">log</a>)
         </py:if>
