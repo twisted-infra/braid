@@ -29,7 +29,6 @@ FORCEGC_FLAGS = ["--force-gc"]
 
 # Dependencies that work on both CPython 2.7 + 3.3 + 3.4
 BASE_DEPENDENCIES = [
-    'cryptography<=0.9',
     'pyopenssl',
     'service_identity',
     'zope.interface',
