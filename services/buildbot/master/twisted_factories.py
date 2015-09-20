@@ -2,7 +2,7 @@
 Build classes specific to the Twisted codebase
 """
 
-import os
+import posixpath, ntpath
 
 from buildbot.process.properties import WithProperties
 from buildbot.process.base import Build
@@ -145,6 +145,8 @@ class TwistedBaseFactory(BuildFactory):
 
     def __init__(self, python, source, uncleanWarnings, trialTests=None,
                  trialMode=None, virtualenv=False,
+                 virtualenv_module='virtualenv',
+                 platform='unix',
                  forceGarbageCollection=False):
         if not isinstance(source, list):
             source = [source]
@@ -162,6 +164,13 @@ class TwistedBaseFactory(BuildFactory):
         if type(python) is str:
             python = [python]
 
+        assert platform in ["unix", "windows"]
+
+        if platform == "unix":
+            self._path = posixpath
+        elif platform == "windows":
+            self._path = ntpath
+
         self.python = python
         self.uncleanWarnings = uncleanWarnings
         self.forceGarbageCollection = forceGarbageCollection
@@ -175,9 +184,8 @@ class TwistedBaseFactory(BuildFactory):
             # wheels on the fly and install them from user's cache.
             self.addStep(
                 shell.ShellCommand,
-                command = self.python + ["-m",
-                    'virtualenv', '--clear',
-                    self._virtualEnvPath,
+                command = self.python + [
+                    "-m", virtualenv_module, '--clear', self._virtualEnvPath,
                     ],
                 )
 
@@ -213,7 +221,7 @@ class TwistedBaseFactory(BuildFactory):
         """
         Path to the virtualenv bin folder.
         """
-        return os.path.join('..', 'venv', 'bin')
+        return self._path.join('..', 'venv', 'bin')
 
 
     @property
@@ -221,7 +229,7 @@ class TwistedBaseFactory(BuildFactory):
         """
         Path to the root virtualenv folder.
         """
-        return os.path.join('..', 'venv')
+        return self._path.join('..', 'venv')
 
 
     def addVirtualEnvStep(self, step, **kwargs):
@@ -231,7 +239,13 @@ class TwistedBaseFactory(BuildFactory):
         # Update PATH environment so that the virtualenv is listed first.
         env = kwargs.get('env', {})
         path = env.get('PATH', '')
-        env['PATH'] = os.pathsep.join([self._virtualEnvBin, path, '${PATH}'])
+
+        if self._path is ntpath:
+            pathsep = ";"
+        else:
+            pathsep = ":"
+
+        env['PATH'] = pathsep.join([self._virtualEnvBin, path, '${PATH}'])
         kwargs['env'] = env
         self.addStep(step, **kwargs)
 
@@ -335,8 +349,8 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
     treeStableTimer = 5*60
 
     def __init__(self, source, RemovePYCs=RemovePYCs, python="python",
-                 trial="./bin/trial",
-                 reactors=["select"], uncleanWarnings=False,
+                 trial="./bin/trial", virtualenv_module="virtualenv",
+                 reactors=["select"], uncleanWarnings=False, platform="unix",
                  dependencies=BASE_DEPENDENCIES + CEXT_DEPENDENCIES + EXTRA_DEPENDENCIES,
                  forceGarbageCollection=False, tests=None):
 
@@ -345,7 +359,9 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
             source=source,
             python=python,
             uncleanWarnings=uncleanWarnings,
+            platform=platform,
             virtualenv=True,
+            virtualenv_module=virtualenv_module,
             forceGarbageCollection=forceGarbageCollection,
             trialTests=tests,
         )
@@ -353,7 +369,7 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
         self.addVirtualEnvStep(
             shell.ShellCommand,
             description = "installing dependencies".split(" "),
-            command=['pip', 'install'] + dependencies
+            command=self.python + ['-m', 'pip', 'install'] + dependencies
         )
 
         self._reportVersions(virtualenv=True)
@@ -438,7 +454,7 @@ class TwistedJythonReactorsBuildFactory(TwistedBaseFactory):
             command=['pip', 'install', 'zope.interface']
         )
 
-        venvPython = [os.path.join(self._virtualEnvBin, self.python[0])]
+        venvPython = [posixpath.join(self._virtualEnvBin, self.python[0])]
 
         self._reportVersions(python=venvPython)
 
@@ -541,8 +557,6 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
 
     def __init__(self, python, source, buildID=None, trial="./bin/trial",
                  tests=None, dependencies=BASE_DEPENDENCIES + CEXT_DEPENDENCIES + EXTRA_DEPENDENCIES):
-        OMIT = self.OMIT_PATHS[:]
-        OMIT.append(self._virtualEnvPath + "/*")
 
         TwistedBaseFactory.__init__(
             self,
@@ -552,10 +566,15 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
             virtualenv=True,
             trialTests=tests,
         )
+
+        OMIT = self.OMIT_PATHS[:]
+        OMIT.append(self._virtualEnvPath + "/*")
+
+
         self.addVirtualEnvStep(
             shell.ShellCommand,
             description = "installing dependencies".split(" "),
-            command=['pip', 'install'] + dependencies + COVERAGE_DEPENDENCIES
+            command=self.python + ['-m', 'pip', 'install'] + dependencies + COVERAGE_DEPENDENCIES
         )
 
         self._reportVersions(virtualenv=True)
