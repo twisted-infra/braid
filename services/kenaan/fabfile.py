@@ -42,8 +42,11 @@ class Kenaan(service.Service):
 
         with settings(user=self.serviceUser), cd(self.configDir):
             if force or not files.exists('private.py'):
-                puts('Using sample private.py')
-                run('/bin/cp private.py.sample private.py')
+                puts('Using sample private.py and config.py')
+                put(sibpath(__file__, 'private.py.sample'),
+                    os.path.join(self.configDir, "private.py"), mode=0600)
+                put(sibpath(__file__, 'config.py.sample'),
+                    os.path.join(self.configDir, "config.py"))
 
 
     def task_installPrivateData(self, private=sibpath(__file__, 'private.py')):
@@ -51,8 +54,12 @@ class Kenaan(service.Service):
         Install private config.
         """
         with settings(user=self.serviceUser):
+            put(sibpath(__file__, 'config.py'),
+                os.path.join(self.configDir, "config.py"))
+
             if FilePath(private).exists():
-                put(private, '{}/private.py'.format(self.configDir), mode=0600)
+                put(sibpath(__file__, 'private.py'),
+                    os.path.join(self.configDir, "private.py"), mode=0600)
             else:
                 abort('Missing private config.')
 
@@ -62,10 +69,16 @@ class Kenaan(service.Service):
         Update config.
         """
         with settings(user=self.serviceUser):
+            filesToCopy = [
+                "_http.py", "alert", "alert.py", "commit", "commit.py",
+                "commit_bot.py", "commit_bot.tac", "crontab", "message",
+                "message.py", "start", "ticket", "ticket.py"
+            ]
             run('mkdir -p ' + self.configDir)
-            put(
-                os.path.dirname(__file__) + '/*', self.configDir,
-                mirror_local_mode=True)
+
+            for f in filesToCopy:
+                put(os.path.join(os.path.dirname(__file__), f), self.configDir,
+                    mirror_local_mode=True)
 
             if env.get('installPrivateData'):
                 execute(self.task_installPrivateData)

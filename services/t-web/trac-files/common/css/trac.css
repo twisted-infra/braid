@@ -13,10 +13,10 @@ address { font-style: normal }
 img { border: none; }
 
 body { font-size:81.25%; line-height:1.25; }
-h1, h2, h3 { margin-top:0; margin-bottom:0; }
-h1 { font-size:1.5em; padding:1.45833em 0; }
-h2 { font-size:1.33333em; padding:1.25em 0; }
-h3 { font-size:1.16667em; padding:1.51785em 0; }
+h1, h2, h3 { margin-top:0; margin-bottom: 0; }
+h1 { font-size:1.5em; padding:1.45833em 0 1em 0; }
+h2 { font-size:1.33333em; padding:1.25em 0 0.2em 0; margin-bottom: 1em  }
+h3 { font-size:1.16667em; padding:1.1785em 0 0.2em 0 ; margin-bottom: 0.4em }
 
 h1, h2, h3, h4 {
     color: #83A501;
@@ -186,7 +186,7 @@ form#attachfile,
 }
 .buttons form, .buttons form div { display: inline }
 .buttons input { margin: 1em .5em .1em 0 }
-.inlinebuttons input { 
+.inlinebuttons input {
     font-size: 0.6875em;
     margin: 0;
     padding: 0.25em;
@@ -365,9 +365,9 @@ input[name="save"]:hover {
 
 /* Context-dependent navigation links */
 #pagepath {
-    padding: 0.25em 0.75em;
+    padding: 0.5em 0.75em !important;
     padding-bottom: 0;
-    font-size: 0.85em;
+    font-size: 0.85em!important;
 }
 #ctxtnav {
     padding: .5em 0;
@@ -389,7 +389,7 @@ input[name="save"]:hover {
 
 #ctxtnav :link, #ctxtnav :visited {
 	color: #555555;
-	
+
 }
 #ctxtnav :link:hover, #ctxtnav :visited:hover {
 	color: #999999;
@@ -397,7 +397,7 @@ input[name="save"]:hover {
 
 /* Alternate links */
 #altlinks { clear: both; text-align: center }
-#altlinks h3 { font-size: 12px; letter-spacing: normal; margin: 0 }
+#altlinks h3 { font-size: 12px; letter-spacing: normal; }
 #altlinks ul { list-style: none; margin: 0; padding: 0 0 1em }
 #altlinks li {
  border-right: 1px solid #d7d7d7;
@@ -531,7 +531,7 @@ div.code, pre.wiki, pre.literal-block {
  overflow: auto;
 }
 
-blockquote.citation { 
+blockquote.citation {
     margin: -0.6em 0;
     border-left: 2px solid #1d61be;
     padding-left: 1.4em;
@@ -579,6 +579,7 @@ table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
 #attachments {
     background: #fff;
     border-radius: 0.35em;
+    margin-top: 1em;
     padding: .5em 1em;
     border: 1px solid #d0d0d0;
     border-bottom: 2px solid #83a501;
@@ -744,17 +745,29 @@ div.system-message p.system-message-title { font-weight: bold; }
     float: right;
 }
 
-#metanav :link, #metanav :visited {
+#metanav button {
+     background: none!important;
+     border: none;
+     padding: 0!important;
+     font: inherit;
+     cursor: pointer;
+}
+
+#metanav :link, #metanav :visited, #metanav button {
     color: #fff;
 }
 
-#metanav :link:hover, #metanav :visited:hover {
+#metanav :link:hover, #metanav :visited:hover, #metanav button:hover {
     color: #bbb;
     border-bottom: 1px dotted #bbb;
 }
 
 #metanav ul li.first {
     color: #ccc;
+}
+
+#metanav ul li form {
+    display: inline-block;
 }
 
 #side_bar {
@@ -766,7 +779,7 @@ div.system-message p.system-message-title { font-weight: bold; }
 #download_icon {
     position: absolute;
     right: -20px;
-    top: -35px;
+    top: -25px;
     z-index: 99;
 }
 
@@ -794,6 +807,7 @@ div.system-message p.system-message-title { font-weight: bold; }
 #download h1, #download h2 {
     color: #eee;
     text-shadow: 0 1px #222;
+    border: 0;
 }
 
 #download h1 {
@@ -803,6 +817,7 @@ div.system-message p.system-message-title { font-weight: bold; }
 #download h2 {
     color: #bbb;
     padding: 0;
+    margin-bottom: 5px;
 }
 
 #download ul {
@@ -844,12 +859,6 @@ pre.prettyprint {
     width: 15%;
 }
 
-/* IE7 hacks. */
-.leftcol {
-    *display: block;
-    *float: left;
-}
-
 .leftcolcol {
     padding: 1.5em;
     border-width: 0 1px 1px 0;
@@ -858,14 +867,12 @@ pre.prettyprint {
     border-radius: 0 0 0.35em 0;
 }
 
-.centercol {
-    padding: 0 2em;
+.leftcolcol .wikipage h2 {
+    box-shadow: none;
 }
 
-/* IE7 hacks. */
 .centercol {
-    *display: block;
-    *float: left;
+    padding: 0 2em;
 }
 
 #main .twisted-sponsors a:link {
@@ -929,4 +936,113 @@ pre.prettyprint {
 .throbber {
     display: block;
     margin: auto;
+}
+
+/* Ticket Editing */
+
+.ticket #modify table {
+    width: 100%;
+    text-align: right;
+}
+
+.ticket #modify #properties label {
+    padding-right: 10px;
+}
+
+.ticket #modify table textarea, .ticket #modify table input, .ticket #modify table select {
+    box-sizing : border-box;
+    width: 100%;
+}
+
+/* Ticket view */
+
+.ticket #ticket {
+    background: #fff;
+    border-radius: 0.35em;
+    margin-top: 1em;
+    padding: .5em 1em;
+    border: 1px solid #d0d0d0;
+    border-bottom: 2px solid #83a501;
+    margin-bottom: 1.5em;
+    -moz-box-shadow: 0 0.15em 0.25em rgba(0, 0, 0, 0.15);
+    -webkit-box-shadow: 0 0.15em 0.25em rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0.15em 0.25em rgba(0, 0, 0, 0.15);
+}
+
+#ticket .statuses {
+    vertical-align: middle
+}
+
+#ticket h1 {
+    padding-top: 1.2em;
+    padding-bottom: 0.8em;
+}
+
+#ticket h2 {
+    padding-top: 10px;
+}
+
+#ticket .date {
+    padding-top: 10px;
+    padding-left: 5px;
+}
+
+#ticket .properties {
+    font-size: 120%;
+}
+
+#ticket .trac-id {
+    color: #83A501;
+    font-size: 100%;
+}
+
+#ticket .statuses {
+    float: right;
+}
+
+#ticket .statuses .status,
+#ticket .statuses .type,
+#ticket .statuses .resolution {
+    text-transform: uppercase;
+    color: #fff;
+    padding: 0.35em 0.5em;
+    font-size: 0.6875em;
+    vertical-align: middle;
+    border-bottom: 2px solid #444;
+    border-radius: 0.35em;
+    margin: 0 0.25em 0 0;
+}
+
+#ticket .statuses .status {
+    background: #c27e7e;
+}
+
+#ticket .statuses .type {
+    background: #a2b16c;
+}
+
+#ticket .statuses .resolution {
+    background: #7e9ac2;
+}
+
+/* Wiki editing */
+
+.trac-resizable textarea {
+    box-sizing : border-box;
+    width: 100%;
+}
+
+/* Wiki stuff */
+
+#content .wikipage h2 {
+    box-shadow: none;
+}
+
+
+/* Random broken things */
+
+#trac-sort-order {
+    padding-top: 3px;
+    display: block;
+    font-size: 70%;
 }
