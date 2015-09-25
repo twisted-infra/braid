@@ -54,18 +54,18 @@ class Trac(service.Service):
             put(os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
 
-            pip.install('trac==1.0.8', python='system')
+            pip.install('trac==1.0.9', python='system')
             pip.install('pygments==1.6', python='system')
 
             if _installDeps:
                 pip.install('git+https://github.com/twisted-infra/twisted-trac-plugins.git', python='system')
             else:
                 pip.install('--no-deps --upgrade git+https://github.com/twisted-infra/twisted-trac-plugins.git', python='system')
-            pip.install('spambayes==1.1b1', python='system')
+            pip.install('spambayes==1.1b2', python='system')
 
             pip.install('TracAccountManager==0.4.4', python='system')
             pip.install('svn+https://trac-hacks.org/svn/defaultccplugin/tags/0.2/', python='system')
-            pip.install('svn+https://svn.edgewall.org/repos/trac/plugins/1.0/spam-filter@14302', python='system')
+            pip.install('svn+https://svn.edgewall.org/repos/trac/plugins/1.0/spam-filter@14340', python='system')
 
 
     def task_update(self):
