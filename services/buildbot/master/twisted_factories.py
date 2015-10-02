@@ -48,6 +48,12 @@ EXTRA_DEPENDENCIES = [
     'pyserial',
 ]
 
+# Dependencies for running on Windows
+WINDOWS_DEPENDENCIES = [
+    "cffi",
+    "pypiwin32",
+]
+
 # Dependencies used for coverage testing
 COVERAGE_DEPENDENCIES = [
     'coverage',
