@@ -8,7 +8,10 @@
   action: apt pkg=build-essential,libffi-dev,libssl-dev,wget,git
 
 - name: Install Python
-  action: apt pkg=python-pip,python-virtualenv,python-subversion
+  action: apt pkg=python-pip,python-virtualenv,python-dev
+
+- name: Install Python dependencies
+  action: apt pkg=python-subversion,python-openssl,python-twisted
 
 - name: Install other deps
   action: apt pkg=sqlite3,equivs,enscript
