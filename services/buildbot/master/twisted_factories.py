@@ -215,7 +215,10 @@ class TwistedBaseFactory(BuildFactory):
         if 'tests' not in kw:
             kw['tests'] = self.trialTests
         if 'python' not in kw:
-            kw['python'] = self.python
+            if self.virtualenv:
+                kw['python'] = "python"
+            else:
+                kw['python'] = self.python
         if virtualenv:
             self.addVirtualEnvStep(TwistedTrial, trialMode=trialMode, **kw)
         else:
