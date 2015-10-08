@@ -171,6 +171,7 @@ class TwistedBaseFactory(BuildFactory):
 
         assert platform in ["unix", "windows"]
 
+        self._platform = platform
         if platform == "unix":
             self._path = posixpath
         elif platform == "windows":
@@ -226,7 +227,10 @@ class TwistedBaseFactory(BuildFactory):
         """
         Path to the virtualenv bin folder.
         """
-        return self._path.join('..', 'venv', 'bin')
+        if self._platform == "windows":
+            return self._path.join('..', 'venv', 'Scripts')
+        else:
+            return self._path.join('..', 'venv', 'bin')
 
 
     @property
@@ -374,12 +378,12 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
         self.addVirtualEnvStep(
             shell.ShellCommand,
             description = "installing dependencies".split(" "),
-            command=self.python + ['-m', 'pip', 'install'] + dependencies
+            command=['python', '-m', 'pip', 'install'] + dependencies
         )
 
         self._reportVersions(virtualenv=True)
 
-        cmd = (self.python + ["setup.py", "build_ext", "-i"])
+        cmd = ["python", "setup.py", "build_ext", "-i"]
         self.addVirtualEnvStep(shell.Compile, command=cmd, warnOnFailure=True)
 
         for reactor in reactors:
