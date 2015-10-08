@@ -25,6 +25,8 @@ slaves = [
     'rax-ubuntu1504-2',
     'rax-ubuntu1504-3',
 
+    'rax-ubuntu1510-1',
+
     'rax-debian8-1',
     'rax-debian8-2',
 
@@ -36,7 +38,7 @@ slaves = [
 
     'fedora-rhel7-1',
     'fedora-rhel7-2',
-    ]
+]
 
 slaves += ['rackspace-ubuntu-12.04-%d' % (i,) for i in range(1,3)]
 
