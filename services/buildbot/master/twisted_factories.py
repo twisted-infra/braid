@@ -178,6 +178,7 @@ class TwistedBaseFactory(BuildFactory):
             self._path = ntpath
 
         self.python = python
+        self.virtualenv = virtualenv
         self.uncleanWarnings = uncleanWarnings
         self.forceGarbageCollection = forceGarbageCollection
         self.trialMode = trialMode
