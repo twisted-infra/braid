@@ -480,7 +480,7 @@ class TwistedJythonReactorsBuildFactory(TwistedBaseFactory):
 
 
 
-class TwistedBdistMsiFactory(TwistedBaseFactory):
+class TwistedBdistFactory(TwistedBaseFactory):
     treeStableTimer = 5*60
 
     uploadBase = 'build_products/'
@@ -494,46 +494,6 @@ class TwistedBdistMsiFactory(TwistedBaseFactory):
             return build.getProperty("version").split("+")[0].split("pre")[0]
         self.addStep(SetBuildProperty,
             property_name='versionMsi', value=transformVersion)
-        self.addStep(shell.ShellCommand,
-                name='write-copyright-file',
-                description=['Update', 'twisted/copyright.py'],
-                descriptionDone=['Updated', 'twisted/copyright.py'],
-                command=[python, "-c", WithProperties(
-                     'version = \'%(versionMsi)s\'; '
-                     'f = file(\'twisted\copyright.py\', \'at\'); '
-                     'f.write(\'version = \' + repr(version)); '
-                     'f.close()')],
-                     haltOnFailure=True)
-
-        self.addStep(shell.ShellCommand,
-                     name='build-msi',
-                     description=['Build', 'msi'],
-                     descriptionDone=['Built', 'msi'],
-                     command=[python, "setup.py", "bdist_msi"],
-                     haltOnFailure=True)
-        self.addStep(
-            transfer.FileUpload,
-            name='upload-msi',
-            slavesrc=WithProperties('dist/Twisted-%(versionMsi)s.' + arch + '-py' + pyVersion + '.msi'),
-            masterdest=WithProperties(
-                self.uploadBase + 'twisted-packages/Twisted-%%(version)s.%s-py%s.msi' % (arch, pyVersion)),
-            url=WithProperties(
-                '/build/twisted-packages/Twisted-%%(version)s.%s-py%s.msi' % (arch, pyVersion)))
-
-        self.addStep(shell.ShellCommand,
-                name='build-exe',
-                description=['Build', 'exe'],
-                descriptionDone=['Built', 'exe'],
-                command=[python, "setup.py", "bdist_wininst"],
-                haltOnFailure=True)
-        self.addStep(
-            transfer.FileUpload,
-            name='upload-exe',
-            slavesrc=WithProperties('dist/Twisted-%(versionMsi)s.' + arch + '-py' + pyVersion + '.exe'),
-            masterdest=WithProperties(
-                self.uploadBase + 'twisted-packages/Twisted-%%(version)s.%s-py%s.exe' % (arch, pyVersion)),
-            url=WithProperties(
-                '/build/twisted-packages/Twisted-%%(version)s.%s-py%s.exe' % (arch, pyVersion)))
 
         wheelPythonVersion = 'cp' + pyVersion.replace('.','') + '-none-' + arch.replace('-','_')
         self.addStep(shell.ShellCommand,
