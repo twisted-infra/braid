@@ -656,3 +656,27 @@ class PyFlakesBuildFactory(TwistedBaseFactory):
             shell.ShellCommand,
             command=['pip', 'install', 'pyflakes'])
         self.addVirtualEnvStep(PyFlakes)
+
+
+
+class CheckManifestBuildFactory(TwistedBaseFactory):
+    """
+    A build factory which checks the MANIFEST.in
+    """
+
+    def __init__(self, source, python="python"):
+        TwistedBaseFactory.__init__(
+            self,
+            source=source,
+            python=python,
+            uncleanWarnings=False,
+            virtualenv=True,
+        )
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            command=['pip', 'install', 'check-manifest'])
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            command=["check-manifest", "--ignore",
+                     ("docs/historic/\*,admin\*,bin/admin\*,"
+                      "twisted/topfiles/\*.Old")])
