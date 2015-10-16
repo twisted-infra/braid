@@ -678,5 +678,5 @@ class CheckManifestBuildFactory(TwistedBaseFactory):
         self.addVirtualEnvStep(
             shell.ShellCommand,
             command=["check-manifest", "--ignore",
-                     ("docs/historic/\*,admin\*,bin/admin\*,"
-                      "twisted/topfiles/\*.Old")])
+                     ("docs/historic/*,admin*,bin/admin*,"
+                      "twisted/topfiles/*.Old")])
