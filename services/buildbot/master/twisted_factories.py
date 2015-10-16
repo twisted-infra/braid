@@ -56,7 +56,7 @@ WINDOWS_DEPENDENCIES = [
 
 # Dependencies used for coverage testing
 COVERAGE_DEPENDENCIES = [
-    'coverage',
+    'coverage==4.0.0', # FIXME: 4.0.1 causes a test failure
 ]
 
 # Dependencies for building the documentation
