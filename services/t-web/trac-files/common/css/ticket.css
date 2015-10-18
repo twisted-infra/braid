@@ -178,7 +178,12 @@ ul.children > li.child {
 }
 #changelog .trac-lastedit :link, #changelog .trac-lastedit :visited { color: inherit }
 
-#changelog .changes, #ticketchange .changes { list-style: square; margin-left: 2em; padding: 0 }
+#changelog .changes, #ticketchange .changes {
+    list-style: square;
+    margin-left: 2em;
+    padding: 0;
+    display: block !important;
+}
 .trac-conflict { border-left: .3em solid #e44; padding-left: .3em; }
 #changelog .comment, #ticketchange .comment { margin-left: 2em }
 button.trac-revert, button.trac-revert:hover {
