@@ -81,3 +81,39 @@ According to correspondance with the GitHub team, migrating our tickets to GitHu
     https://github.com/settings/tokens
 
     In other words, you would be exposing a single permission (editing the list of labels) from a user who has push access to the project to other users who do not have that access. And the way you would be doing that is a small webapp so that the token is kept secret. While the GitHub Web UI doesn't support your workflow regarding labels, you could use the API to build tools that do fit your workflow.
+
+
+Plan B: LIKE RIPPING OFF A BANDAID, THE GITHUB MIGRATION IS INEVITABLE
+======================================================================
+
+This plan takes elements of A, but does it all on one go, with a direct SVN -> GitHub migration.
+
+Objectives of Plan A
+--------------------
+
+- Migrate to GitHub.
+
+Plan
+----
+
+Migrate to GitHub
+~~~~~~~~~~~~~~~~~
+
+- Doing a Git -> SVN format migration -- turning SVN commits into Git commits for `trunk`
+  - Potential tools are git-svn or ESR's reposurgeon (http://www.catb.org/~esr/reposurgeon/dvcs-migration-guide.html) -- reposurgeon seems to have better mapping, so it will give us a cleaner history
+- Make the base branch "master"
+- Push this repo to GitHub
+- Point Trac to the Git repo, synced with GitHub
+- Point Buildbot to GitHub's repo
+- Migrate the important parts of the Trac wiki to the Git repository/docs
+- Move Twisted into a src/ directory (https://hynek.me/articles/testing-packaging/)
+- Make all builder configurations into tox configs (usable on Travis later)
+- Turn the old precommit triggers into tests (eg. checking for a topfile)
+- Set up Travis, for basic PR filtering, that runs Py2.7/3.3/3.4/3.5 tests + linters in the tox envs
+- Write a bot so that committers + contribution process participants can say "please test", to run it on the multi-system Buildbot infra
+- Write a bot so that contributors can associate PRs with a Trac ticket
+- Change Trac to have direct links to the PRs?
+- Write a plugin to allow Buildbot builds to show up on GitHub PRs as a status
+- Set up a Git mirror on our infra, Just In Case
+
+This compresses many elements into one, but most of it should be locally testable, in virtual machines. Like a bandaid, it will have a long buildup but the actual pushing it to production will take a short amount of time.
