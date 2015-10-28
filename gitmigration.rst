@@ -7,6 +7,7 @@ Objectives of Plan A
 - Migrate our source code repository to Git.
 - Make our contribution process easier
 - Allow contributors to contribute code via GitHub
+- Migrate off Trac
 
 
 Plan
@@ -58,3 +59,25 @@ This would make our code hosted by GitHub (with a self-hosted mirror, Just In Ca
 - Change Trac to have direct links to the PRs?
 
 After this, our self-hosted Git repo will be a mirror to the GitHub primary. Core contributors have the 'merge bit', and can merge PRs. All other contributors issue PRs from personal forks. People working to be in core have the ability to spin builders for their and other PRs.
+
+
+Migrate off Trac
+~~~~~~~~~~~~~~~~
+
+According to correspondance with the GitHub team, migrating our tickets to GitHub Issues will not be possible in the near future:
+
+    You're right -- only users with push access can add labels currently. We don't comment on product plans or timelines publicly, so I can't say if/when such a feature might be available. I do agree with you that it would be a very useful feature, though. I'll pass your feedback to the team working on issues to consider, but I wouldn't expect this to be implemented in the near future.
+
+    In the meantime, there's perhaps a workaround you might consider. You could build an OAuth application and ask your contributors to sign in:
+
+    https://developer.github.com/v3/oauth/
+
+    That OAuth app would have a token stored internally from someone who has push access to the project (you might even create a special "machine" account for that purpose, which would never be removed from the project). When a contributor signs into the app, the app would list their issues and pull requests on the project and allow them to add labels to those via the API (using the internal token):
+
+    https://developer.github.com/v3/issues/#edit-an-issue
+
+    https://developer.github.com/v3/#authentication
+
+    https://github.com/settings/tokens
+
+    In other words, you would be exposing a single permission (editing the list of labels) from a user who has push access to the project to other users who do not have that access. And the way you would be doing that is a small webapp so that the token is kept secret. While the GitHub Web UI doesn't support your workflow regarding labels, you could use the API to build tools that do fit your workflow.
