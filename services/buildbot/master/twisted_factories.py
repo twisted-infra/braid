@@ -557,8 +557,8 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
 
         self.addTrialStep(
             flunkOnFailure=True,
-            python=[
-                "coverage", "run",
+            python=self.python + [
+                "-m", "coverage", "run",
                 "--omit", ','.join(self.OMIT_PATHS),
                 "--branch"],
             warnOnFailure=False, virtualenv=True, trial=trial)
@@ -566,8 +566,8 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
         self.addVirtualEnvStep(
             shell.ShellCommand,
             description = "run coverage html".split(" "),
-            command=["coverage", 'html', '-d', 'twisted-coverage',
-                     '--omit', ','.join(OMIT), '-i']
+            command=self.python + ["-m", "coverage", 'html', '-d',
+                                   'twisted-coverage', '--omit', ','.join(OMIT), '-i']
         )
 
         self.addStep(

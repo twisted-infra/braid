@@ -323,9 +323,6 @@ class Trial(ShellCommand):
         if self.python:
             command.extend(self.python)
 
-        # We want all warnings to be raised
-        command.append("-Wall")
-
         command.append(self.trial)
         command.extend(self.trialMode)
         if self.recurse:
