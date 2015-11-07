@@ -167,7 +167,7 @@ class TwistedBaseFactory(BuildFactory):
         BuildFactory.__init__(self, source)
 
         if type(python) is str:
-            python = [python]
+            python = [python, "-Wall"]
 
         assert platform in ["unix", "windows"]
 
@@ -217,7 +217,7 @@ class TwistedBaseFactory(BuildFactory):
             kw['tests'] = self.trialTests
         if 'python' not in kw:
             if self.virtualenv:
-                kw['python'] = ["python", "-Wall"]
+                kw['python'] = "python"
             else:
                 kw['python'] = self.python
         if virtualenv:
