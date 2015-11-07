@@ -217,7 +217,7 @@ class TwistedBaseFactory(BuildFactory):
             kw['tests'] = self.trialTests
         if 'python' not in kw:
             if self.virtualenv:
-                kw['python'] = "python"
+                kw['python'] = ["python", "-Wall"]
             else:
                 kw['python'] = self.python
         if virtualenv:

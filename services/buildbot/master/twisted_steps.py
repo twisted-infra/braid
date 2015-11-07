@@ -274,6 +274,8 @@ class Trial(ShellCommand):
         if self.python is not None:
             if type(self.python) is str:
                 self.python = [self.python]
+                # We want -Wall to be on
+                self.python.append("-Wall")
             for s in self.python:
                 if " " in s:
                     # this is not strictly an error, but I suspect more
