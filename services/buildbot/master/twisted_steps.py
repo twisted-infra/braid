@@ -19,10 +19,10 @@ import re
 
 
 def countFailedTests(output):
-    # start scanning 10kb from the end, because there might be a few kb of
+    # start scanning 50kb from the end, because there might be a few kb of
     # import exception tracebacks between the total/time line and the errors
     # line
-    chunk = output[-10000:]
+    chunk = output[-50000:]
     lines = chunk.split("\n")
     lines.pop() # blank line at end
     # lines[-3] is "Ran NN tests in 0.242s"
