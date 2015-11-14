@@ -591,7 +591,7 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
             description="upload to codecov".split(" "),
             command=["codecov",
                      "--token={}".format(private.codecov_twisted_token),
-                     "--build={}".format(build_id)])
+                     "--build={}".format(buildID)])
 
 
 
