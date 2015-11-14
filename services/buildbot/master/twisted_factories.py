@@ -57,6 +57,7 @@ WINDOWS_DEPENDENCIES = [
 # Dependencies used for coverage testing
 COVERAGE_DEPENDENCIES = [
     'coverage==4.0.0', # FIXME: 4.0.1 causes a test failure
+    'codecov',
 ]
 
 # Dependencies for building the documentation
@@ -543,7 +544,6 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
         OMIT = self.OMIT_PATHS[:]
         OMIT.append(self._virtualEnvPath + "/*")
 
-
         self.addVirtualEnvStep(
             shell.ShellCommand,
             description = "installing dependencies".split(" "),
@@ -578,6 +578,20 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
             url=WithProperties('/builds/twisted-coverage.py/twisted-' + buildID + '-coverage.py-r%(got_revision)s/'),
             blocksize=2 ** 16,
             compress='gz')
+
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            description = "run coverage xml".split(" "),
+            command=["coverage", 'xml', '-o', 'coverage.xml', '--omit',
+                ','.join(OMIT), '-i'])
+
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            warnOnFailure=True,
+            description="upload to codecov".split(" "),
+            command=["codecov",
+                     "--token={}".format(private.codecov_twisted_token),
+                     "--build={}".format(build_id)])
 
 
 
