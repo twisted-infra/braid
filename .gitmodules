@@ -1,3 +1,0 @@
-[submodule "services/diffresource"]
-	path = services/diffresource
-	url = https://github.com/twisted-infra/diffresource
