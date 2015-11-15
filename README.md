@@ -18,7 +18,6 @@ Currently Supported Services
 - buildbot (buildmaster)
 - buildslave
 - codespeed
-- [diffresource](https://github.com/twisted-infra/diffresource)
 - kenaan
 - [hiscore](svn.twistedmatrix.com:infra/twisted-highscore)
 - trac
