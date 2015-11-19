@@ -34,6 +34,7 @@ BASE_DEPENDENCIES = [
     'zope.interface',
     'idna',
     'pyasn1',
+    'pyserial',
     'python-subunit',
 ]
 
@@ -45,7 +46,6 @@ CEXT_DEPENDENCIES = [
 # Dependencies that don't work on CPython 3.3+
 EXTRA_DEPENDENCIES = [
     'soappy',
-    'pyserial',
 ]
 
 # Dependencies for running on Windows

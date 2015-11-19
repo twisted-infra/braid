@@ -1,6 +1,7 @@
-This is the configuration for twistedmatrix.com's buildbot.
+This is the configuration for buildbot.twistedmatrix.com's buildmaster.
 
-It is adminstered using braid[1]. It is installed in `/srv/bb-master` as user bb-master.
+It is installed in `/srv/bb-master` as user `bb-master`.
+
 It uses the following directories:
 
 ~/config - This repository
@@ -29,6 +30,3 @@ updatePrivateData - Updates `~/private`.
 start - Start server.
 stop - Stop server.
 restart - Restart the server.
-
-[1] https://github.com/twisted-infra/braid
-
