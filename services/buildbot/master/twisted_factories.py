@@ -530,7 +530,8 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
         ]
 
     def __init__(self, python, source, buildID=None, trial="./bin/trial",
-                 tests=None, dependencies=BASE_DEPENDENCIES + CEXT_DEPENDENCIES + EXTRA_DEPENDENCIES):
+                 tests=None, dependencies=BASE_DEPENDENCIES + CEXT_DEPENDENCIES + EXTRA_DEPENDENCIES,
+                 platform='unix', RemovePYCs=RemovePYCs):
 
         TwistedBaseFactory.__init__(
             self,
@@ -538,6 +539,7 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
             python=python,
             uncleanWarnings=False,
             virtualenv=True,
+            platform=platform,
             trialTests=tests,
         )
 
@@ -547,27 +549,29 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
         self.addVirtualEnvStep(
             shell.ShellCommand,
             description = "installing dependencies".split(" "),
-            command=self.python + ['-m', 'pip', 'install'] + dependencies + COVERAGE_DEPENDENCIES
+            command=["python", '-m', 'pip', 'install'] + dependencies + COVERAGE_DEPENDENCIES
         )
 
         self._reportVersions(virtualenv=True)
 
-        cmd = (self.python + ["setup.py", "build_ext", "-i"])
+        cmd = ["python", "setup.py", "build_ext", "-i"]
         self.addVirtualEnvStep(shell.Compile, command=cmd, warnOnFailure=True)
+
+        self.addStep(RemovePYCs)
 
         self.addTrialStep(
             flunkOnFailure=True,
-            python=self.python + [
-                "-m", "coverage", "run",
-                "--omit", ','.join(self.OMIT_PATHS),
-                "--branch"],
+            python=["python",
+                    "-m", "coverage", "run",
+                    "--omit", ','.join(self.OMIT_PATHS),
+                    "--branch"],
             warnOnFailure=False, virtualenv=True, trial=trial)
 
         self.addVirtualEnvStep(
             shell.ShellCommand,
             description = "run coverage html".split(" "),
-            command=self.python + ["-m", "coverage", 'html', '-d',
-                                   'twisted-coverage', '--omit', ','.join(OMIT), '-i']
+            command=["python", "-m", "coverage", 'html', '-d',
+                     'twisted-coverage', '--omit', ','.join(OMIT), '-i']
         )
 
         self.addStep(
@@ -582,8 +586,8 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
         self.addVirtualEnvStep(
             shell.ShellCommand,
             description = "run coverage xml".split(" "),
-            command=["coverage", 'xml', '-o', 'coverage.xml', '--omit',
-                ','.join(OMIT), '-i'])
+            command=["python", "-m", "coverage", 'xml', '-o', 'coverage.xml',
+                     '--omit', ','.join(OMIT), '-i'])
 
         self.addVirtualEnvStep(
             shell.ShellCommand,
