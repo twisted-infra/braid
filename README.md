@@ -38,10 +38,6 @@ Fabric configuration is located at `braid/settings.py`.
 ```shell
 # Get the code
 $ git clone https://github.com/twisted-infra/braid
-# Get the configurations for each service.
-# This will clone all the repos in to service/*
-$ cd braid
-$ git submodule update --init
 ```
 
 Some notable commands:
