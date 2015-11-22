@@ -9,6 +9,7 @@ from buildbot.process.base import Build
 from buildbot.process.factory import BuildFactory
 from buildbot.steps import shell, transfer
 from buildbot.steps.shell import ShellCommand
+from buildbot.process.properties import WithProperties
 
 from twisted_steps import ProcessDocs, ReportPythonModuleVersions, \
     Trial, RemovePYCs, RemoveTrialTemp, LearnVersion, \
@@ -595,7 +596,10 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
             description="upload to codecov".split(" "),
             command=["codecov",
                      "--token={}".format(private.codecov_twisted_token),
-                     "--build={}".format(buildID)])
+                     "--build={}".format(buildID),
+                     WithProperties("--commit=%(got_revision)s")
+            ],
+        )
 
 
 
