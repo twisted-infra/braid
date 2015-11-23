@@ -532,13 +532,13 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
 
     def __init__(self, python, source, buildID=None, trial="./bin/trial",
                  tests=None, dependencies=BASE_DEPENDENCIES + CEXT_DEPENDENCIES + EXTRA_DEPENDENCIES,
-                 platform='unix', RemovePYCs=RemovePYCs):
+                 platform='unix', RemovePYCs=RemovePYCs, uncleanWarnings=False):
 
         TwistedBaseFactory.__init__(
             self,
             source=source,
             python=python,
-            uncleanWarnings=False,
+            uncleanWarnings=uncleanWarnings,
             virtualenv=True,
             platform=platform,
             trialTests=tests,
