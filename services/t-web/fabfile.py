@@ -153,9 +153,7 @@ class TwistedWeb(service.Service):
         """
         apiVersion = '.'.join(release.split('.')[:2])
         distPaths = {}
-        for ext in ['.tar.bz2',
-                 '-cp27-none-win32.whl', '.win32-py2.7.exe', '.win32-py2.7.msi',
-                 '.win-amd64-py2.7.msi', '.win-amd64-py2.7.exe', '-cp27-none-win_amd64.whl']:
+        for ext in ['.tar.bz2', '-cp27-none-win_amd64.whl']:
             tarball = 'Twisted-{}{}'.format(release, ext)
             distPaths[tarball] = 'data/releases/Twisted/{}/{}'.format(apiVersion, tarball)
 
