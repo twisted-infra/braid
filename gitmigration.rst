@@ -1,119 +1,31 @@
-Plan A: AMBER'S SUPER SECRET AWESOME PLAN FOR MIGRATING TO GIT, GITHUB, AND WORLD LEADERSHIP
-============================================================================================
+LIKE RIPPING OFF A BANDAID, THE GITHUB MIGRATION IS INEVITABLE
+===============================================================
 
-Objectives of Plan A
---------------------
+Move to GitHub(r)(tm)(pat pending). This involves JUST moving to GitHub, not accepting PRs.
 
-- Migrate our source code repository to Git.
-- Make our contribution process easier
-- Allow contributors to contribute code via GitHub
-- Migrate off Trac
+Objectives
+----------
 
-
-Plan
-----
-
-Migration of repository to Git
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The Git repository migration will simply be a format change, from SVN to Git, with little/no workflow changes (with the exception of typing `git` where `svn` was once used). This involves:
-
-- Doing a Git -> SVN format migration -- turning SVN commits into Git commits for `trunk`
-  - Potential tools are git-svn or ESR's reposurgeon (http://www.catb.org/~esr/reposurgeon/dvcs-migration-guide.html) -- reposurgeon seems to have better mapping, so it will give us a cleaner history
-- Make the base branch "master"
-- Converting the SVN commit triggers to Git `prerecieve` triggers
-- Setting up a `git.twistedmatrix.com` with the smallest surface possible
-- Install gitolite (http://gitolite.com/gitolite/gitolite.html#basic-use-case) so that we don't need to use icky UNIX accounts
-- Add existing contribitors the gitolite
-- Pointing Trac to the Git repo
-- Make GitHub a mirror of `git.twistedmatrix.com/repos/Twisted.git`
-
-After this, Twisted will not use SVN, and will use Git on self-hosted infrastructure. Release management changes are minimal, rather than git branches there will be tags.
-
-
-Make our contribution process easier
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-This makes some things more like GitHub, to ease the transition.
-
-- Move Twisted into a src/ directory (https://hynek.me/articles/testing-packaging/)
-- Make all builder configurations into tox configs (usable on Travis later)
-- Make Buildbot build using Tox
-- Configure gitolite to allow people going through the contribution process the ability to make branches, spin builders, but not merge to master
-- Migrate the important parts of the Trac wiki to the Git repository/docs
-
-After this, our self-hosted Git repo will be flexible enough to allow contributors going through the contributor acceptance process be able to make branches and spin builders, but not merge to trunk (only core will be able to do this).
-
-
-Allow contributors to contribute code via GitHub
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-This would make our code hosted by GitHub (with a self-hosted mirror, Just In Case).
-
-- Set up Travis, for basic PR filtering, that runs Py2.7/3.3/3.4/3.5 tests + linters in the tox envs
-- Change the prerecieve triggers into tests (eg. checking for a topfile)
-- Write a bot so that committers + contribution process participants can say "please test", to run it on the multi-system Buildbot infra
-- Write a bot so that contributors can associate PRs with a Trac ticket
-- Write a plugin to allow Buildbot builds to show up on GitHub PRs as a status
-- Change GitHub to be the primary, set git.twistedmatrix.com to mirror
-- Change Trac to have direct links to the PRs?
-
-After this, our self-hosted Git repo will be a mirror to the GitHub primary. Core contributors have the 'merge bit', and can merge PRs. All other contributors issue PRs from personal forks. People working to be in core have the ability to spin builders for their and other PRs.
-
-
-Migrate off Trac
-~~~~~~~~~~~~~~~~
-
-According to correspondance with the GitHub team, migrating our tickets to GitHub Issues will not be possible in the near future:
-
-    You're right -- only users with push access can add labels currently. We don't comment on product plans or timelines publicly, so I can't say if/when such a feature might be available. I do agree with you that it would be a very useful feature, though. I'll pass your feedback to the team working on issues to consider, but I wouldn't expect this to be implemented in the near future.
-
-    In the meantime, there's perhaps a workaround you might consider. You could build an OAuth application and ask your contributors to sign in:
-
-    https://developer.github.com/v3/oauth/
-
-    That OAuth app would have a token stored internally from someone who has push access to the project (you might even create a special "machine" account for that purpose, which would never be removed from the project). When a contributor signs into the app, the app would list their issues and pull requests on the project and allow them to add labels to those via the API (using the internal token):
-
-    https://developer.github.com/v3/issues/#edit-an-issue
-
-    https://developer.github.com/v3/#authentication
-
-    https://github.com/settings/tokens
-
-    In other words, you would be exposing a single permission (editing the list of labels) from a user who has push access to the project to other users who do not have that access. And the way you would be doing that is a small webapp so that the token is kept secret. While the GitHub Web UI doesn't support your workflow regarding labels, you could use the API to build tools that do fit your workflow.
-
-
-Plan B: LIKE RIPPING OFF A BANDAID, THE GITHUB MIGRATION IS INEVITABLE
-======================================================================
-
-This plan takes elements of A, but does it all on one go, with a direct SVN -> GitHub migration.
-
-Objectives of Plan A
---------------------
-
-- Migrate to GitHub.
+- Replace the SVN primary code repo with a GitHub-hosted Git repo.
+- Migrate Trac from reading the SVN repo to reading GitHub one.
+- Set up logging in with GitHub.
 
 Plan
 ----
 
-Migrate to GitHub
-~~~~~~~~~~~~~~~~~
-
-- Doing a Git -> SVN format migration -- turning SVN commits into Git commits for `trunk`
-  - Potential tools are git-svn or ESR's reposurgeon (http://www.catb.org/~esr/reposurgeon/dvcs-migration-guide.html) -- reposurgeon seems to have better mapping, so it will give us a cleaner history
-- Make the base branch "master"
-- Push this repo to GitHub
-- Point Trac to the Git repo, synced with GitHub
-- Point Buildbot to GitHub's repo
-- Migrate the important parts of the Trac wiki to the Git repository/docs
-- Move Twisted into a src/ directory (https://hynek.me/articles/testing-packaging/)
-- Make all builder configurations into tox configs (usable on Travis later)
-- Turn the old precommit triggers into tests (eg. checking for a topfile)
-- Set up Travis, for basic PR filtering, that runs Py2.7/3.3/3.4/3.5 tests + linters in the tox envs
-- Write a bot so that committers + contribution process participants can say "please test", to run it on the multi-system Buildbot infra
-- Write a bot so that contributors can associate PRs with a Trac ticket
-- Change Trac to have direct links to the PRs?
-- Write a plugin to allow Buildbot builds to show up on GitHub PRs as a status
-- Set up a Git mirror on our infra, Just In Case
-
-This compresses many elements into one, but most of it should be locally testable, in virtual machines. Like a bandaid, it will have a long buildup but the actual pushing it to production will take a short amount of time.
+1. Do a Git -> SVN format migration -- turning SVN commits into Git commits for ``trunk`` (git-svn does this fine). Investigate trimming everything but tags and trunk/master.
+2. Make the base branch "master" (because everything assumes that these days)
+3. Push this 'staging' repo to GitHub, NOT under ``twisted/twisted``
+4. In a 'staging' Trac, install https://github.com/trac-hacks/trac-github, and then add the webhook that trac-github gives us to the staging repo)
+5. Commit some things to the staging github repo, make sure the staging trac picks them up, and it's propagated to Kenaan and such.
+6. Fix any issues with Kenaan/buildbot/other bits that used to assume SVN, SVN triggers, or SVN-esque branch names.
+   6.1. Make sure logging in with GitHub works.
+   6.2. Replace the SVN pre-commit triggers with a tox builder.
+   6.3. Make sure Kenaan puts sane things in IRC.
+7. Do a few common workflow things - make a branch, make sure it is added to the ticket, add some commits with 'refs' which will add messages to the ticket, merge it to master and make sure the ticket is closed. Revert the merge and make sure the ticket is re-opened.
+8. Pick a weekend where Amber isn't doing anything, send out warnings, queue up a ticket for testing
+9. Bring down ``svn.twistedmatrix.com``, and Trac for maint. on that weekend.
+10. Move the existing ``twisted/twisted`` repo, redo the format migration with most recent SVN trunk, push it up to ``twisted/twisted``.
+11. Install trac-github as on the staging on the prod trac, and set up the new ``twisted/twisted`` to connect to the prod webhook.
+12. Merge the ticket queued up for testing, make sure prod Trac knows about it
+13. Bring Trac out of maint, send out an announcement saying 'hey github is a thing now'.
