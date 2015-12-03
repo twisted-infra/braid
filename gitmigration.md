@@ -44,6 +44,5 @@
 - [ ] Disable commits to Subversion: http://stackoverflow.com/questions/2411122/how-to-freeze-entire-svn-repository-to-make-it-read-only
 - [ ] Install trac-GitHub as on the staging on the production trac, and set up ``twisted/twisted`` to connect to the production webhook.
 - [ ] Merge the ticket queued up for testing, make sure production Trac knows about it.
-- [ ] Bring Trac out of maintenance.
 - [ ] Send HEADSUP e-mail saying that GitHub migration is done, #68
 - [ ] Delete the ``twisted/twisted-staging`` repo.
