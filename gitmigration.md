@@ -23,19 +23,19 @@
 - [ ] In 'staging' Trac, install https://github.com/trac-hacks/trac-GitHub
 - [ ] In 'staging' GitHub repo add the webhook to poke the 'staging' Trac
 - [ ] Commit some things to the staging GitHub repo, make sure the staging trac picks them up, and it's propagated to Kenaan and such.
-- [ ] Make sure that existing Trac source links point to the old SVN repo, and new Git links link to GitHub.
+- [ ] Make sure that existing Trac changeset links go to the SVN repo viewer, and new Git changesets redirect from Trac to GitHub. https://github.com/twisted-infra/braid/issues/138
 
 ### Accounts ###
-- [ ] Make sure that all users who have SVN commit access have a GitHub account which can commit to the Twisted repository on GitHub, #158
+- [ ] Make sure that all users who have SVN commit access have a GitHub account which can commit to the Twisted repository on GitHub, https://github.com/twisted-infra/braid/issues/158
 
 ### Infrastructure ###
-- [ ] Migrate SVN commit hooks to GitHub, #141, #147
-- [ ] Update all buildbots to get code from GitHub, #73, #141
-- [ ] Change Kenaan IRC bot to monitor GitHub, #137
+- [ ] Migrate SVN commit hooks to GitHub, https://github.com/twisted-infra/braid/issues/141, https://github.com/twisted-infra/braid/issues/147
+- [ ] Update all buildbots to get code from GitHub, https://github.com/twisted-infra/braid/issues/73, https://github.com/twisted-infra/braid/issues/141
+- [ ] Change Kenaan IRC bot to monitor GitHub, https://github.com/twisted-infra/braid/issues/137
 
 ### Documentation ###
-- [ ] Update all wiki documentation to change all references to getting code from Subversion, to getting code from GitHub. , #159
-- [ ] Update Release Engineering documentation for doing a release from GitHub, #156
+- [ ] Update all wiki documentation to change all references to getting code from Subversion, to getting code from GitHub. https://github.com/twisted-infra/braid/issues/159
+- [ ] Update Release Engineering documentation for doing a release from GitHub, https://github.com/twisted-infra/braid/issues/156
 
 ### Migration schedule ###
 - [ ] Pick a weekend where Amber isn't doing anything, send out warnings, queue up a ticket for testing
