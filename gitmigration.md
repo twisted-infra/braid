@@ -4,8 +4,7 @@
 
 -  https://github.com/twisted/twisted will be the "repository of truth" for Twisted.
      - Twisted releases will be done from GitHub
-     - the Twisted developers who are now "core committers" for SVN, must be
-       given access to be "core committers" to https://github.com/twisted/twisted
+     - the Twisted developers who are now "core committers" for SVN, will be given access to be "core committers" to https://github.com/twisted/twisted . Committers to Twisted must have 2FA enabled, existing Twisted org members will get given access during the migration, but those that are not part of the Twisted org can be emailed with a mention that 2FA is required, and we can invite once that is set up.
 
 - Trac will still be used for filing tickets.  Filing issues in GitHub will be disabled.
 
