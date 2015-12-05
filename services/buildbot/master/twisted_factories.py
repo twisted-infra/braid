@@ -47,6 +47,10 @@ CEXT_DEPENDENCIES = [
 # Dependencies that don't work on CPython 3.3+
 EXTRA_DEPENDENCIES = [
     'soappy',
+]
+
+# Dependencies that don't work on Windows or Python 3.3+
+PY2_NONWIN_DEPENDENCIES = [
     'pysqlite',
 ]
 
@@ -367,7 +371,7 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
     def __init__(self, source, RemovePYCs=RemovePYCs, python="python",
                  trial="./bin/trial", virtualenv_module="virtualenv",
                  reactors=["select"], uncleanWarnings=False, platform="unix",
-                 dependencies=BASE_DEPENDENCIES + CEXT_DEPENDENCIES + EXTRA_DEPENDENCIES,
+                 dependencies=BASE_DEPENDENCIES + CEXT_DEPENDENCIES + PY2_NONWIN_DEPENDENCIES + EXTRA_DEPENDENCIES,
                  forceGarbageCollection=False, tests=None):
 
         TwistedBaseFactory.__init__(
@@ -532,7 +536,7 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
         ]
 
     def __init__(self, python, source, buildID=None, trial="./bin/trial",
-                 tests=None, dependencies=BASE_DEPENDENCIES + CEXT_DEPENDENCIES + EXTRA_DEPENDENCIES,
+                 tests=None, dependencies=BASE_DEPENDENCIES + CEXT_DEPENDENCIES + PY2_NONWIN_DEPENDENCIES + EXTRA_DEPENDENCIES,
                  platform='unix', RemovePYCs=RemovePYCs, uncleanWarnings=False):
 
         TwistedBaseFactory.__init__(
