@@ -47,6 +47,7 @@ CEXT_DEPENDENCIES = [
 # Dependencies that don't work on CPython 3.3+
 EXTRA_DEPENDENCIES = [
     'soappy',
+    'pysqlite',
 ]
 
 # Dependencies for running on Windows
