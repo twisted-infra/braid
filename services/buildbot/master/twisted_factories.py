@@ -46,6 +46,7 @@ CEXT_DEPENDENCIES = [
 EXTRA_DEPENDENCIES = [
     'soappy',
     'pyserial',
+    'pysqlite',
 ]
 
 # Dependencies for running on Windows
