@@ -37,6 +37,7 @@ BASE_DEPENDENCIES = [
     'pyasn1',
     'pyserial',
     'python-subunit',
+    'hyper',
 ]
 
 # Dependencies that don't work on PyPy
