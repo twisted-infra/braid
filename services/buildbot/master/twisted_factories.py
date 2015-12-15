@@ -396,12 +396,21 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
         )
 
         if symlinkGIFrom:
-            self.addStep(shell.ShellCommand, command=[
-                "ln", "-s", pathsep.join([symlinkGIFrom, "gi"]),
-                pathsep.join([self._virtualEnvPath, "lib", "*", "site-packages"])])
-            self.addStep(shell.ShellCommand, command=[
-                "ln", "-s", pathsep.join([symlinkGIFrom, "pygtkcompat"]),
-                pathsep.join([self._virtualEnvPath, "lib", "*", "site-packages"])])
+            pythonVer = list(filter(lambda _: 'python' in _,
+                                    symlinkGIFrom.split('/')))[0]
+
+            self.addStep(
+                shell.ShellCommand,
+                description="symlinking gi".split(" "),
+                command=[
+                    "ln", "-s", '/'.join([symlinkGIFrom, "gi"]),
+                    '/'.join([self._virtualEnvPath, "lib", pythonVer, "site-packages"])])
+            self.addStep(
+                shell.ShellCommand,
+                description="symlinking pygtkcompat".split(" "),
+                command=[
+                    "ln", "-s", '/'.join([symlinkGIFrom, "pygtkcompat"]),
+                    '/'.join([self._virtualEnvPath, "lib", pythonVer, "site-packages"])])
 
         self._reportVersions(virtualenv=True)
 
