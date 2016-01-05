@@ -26,6 +26,7 @@ Currently Supported Services
 
 Server Dependencies
 ===================
+
 braid currently assumes that it is being run against a ubuntu server (precise).
 
 It requires that the `universe` component be enabled, as well `sudo`.
@@ -145,4 +146,22 @@ It uses the address `172.16.255.140`, and there is a braid config named `vagrant
 vagrant up
 # Run the command
 fab config.vagrant COMMAND
+```
+
+Quick Start
+===========
+
+You need Vagrant and Ansible, as above.
+
+```shell
+vagrant up
+fab config.vagrant base.bootstrap
+fab config.vagrant t-web.install
+fab config.vagrant t-web.makeTestTLSKeys
+fab config.vagrant t-web.installTLSKeys
+fab config.vagrant trac.install
+fab config.vagrant trac.installTestData
+fab config.vagrant trac.getGithubMirror
+fab config.vagrant t-web.start
+fab config.vagrant trac.start
 ```

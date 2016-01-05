@@ -24,9 +24,6 @@ class Trac(service.Service):
             pip.install('psycopg2', python='system')
             self.update(_installDeps=True)
 
-            run('/bin/mkdir -p ~/svn')
-            run('/bin/ln -nsf ~/svn {}/trac-env/svn-repo'.format(self.configDir))
-
             run('/bin/mkdir -p ~/attachments')
             run('/bin/ln -nsf ~/attachments {}/trac-env/files/attachments'.format(
                 self.configDir))
@@ -56,6 +53,7 @@ class Trac(service.Service):
 
             pip.install('trac==1.0.9', python='system')
             pip.install('pygments==1.6', python='system')
+            pip.install('trac-github==2.1.4', python='system')
 
             if _installDeps:
                 pip.install('git+https://github.com/twisted-infra/twisted-trac-plugins.git', python='system')
@@ -86,6 +84,15 @@ class Trac(service.Service):
             run(".local/bin/trac-admin {}/trac-env wiki upgrade".format(self.configDir))
 
         self.task_restart()
+
+    def task_getGithubMirror(self, twistedName='twisted-staging'):
+        """
+        Get a GitHub mirror.
+        """
+        with settings(user=self.serviceUser):
+            run("git clone --mirror git://github.com/twisted/%s.git ~/twisted.git" % (twistedName,),
+                warn_only=True)
+            run("git --git-dir=/srv/trac/twisted.git remote update --prune")
 
 
     def task_dump(self, localfile, withAttachments=True):
@@ -199,12 +206,16 @@ class Trac(service.Service):
             # https://github.com/twisted-infra/trac-config/tree/master/trac-env
             try:
                 run('~/.local/bin/trac-admin '
-                    '/tmp/trac-init initenv TempTrac postgres://@/trac svn ""')
+                    '/tmp/trac-init initenv TempTrac postgres://@/trac git ""')
             finally:
                 run("rm -rf /tmp/trac-init")
 
             # Run an upgrade to add plugin specific database tables and columns.
             run('~/.local/bin/trac-admin config/trac-env upgrade --no-backup')
+
+    def task_giveAdmin(self, user):
+        with settings(user=self.serviceUser):
+            run("~/.local/bin/trac-admin {}/trac-env permission add {} TRAC_ADMIN".format(self.configDir, user))
 
 
 
