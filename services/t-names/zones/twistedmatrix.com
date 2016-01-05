@@ -13,6 +13,7 @@ subs = {
                'reality.', 'irc.', 'saph.',
                'java.', 'smtp.', 'mail.'],
     xpdev: ['xpdev.'],
+    jeb: ['staging.'],
 }
 
 zone = [
