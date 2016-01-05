@@ -7,15 +7,14 @@ It is adminstered using braid[1]. It is installed in ``/srv/trac`` as user trac.
 
 It uses the following directories:
 
-- ~/config - This repository.
-- ~/config/trac-env - Trac environment
-- ~/config/htpasswd - Trac passwords
-- ~/bin - commands to start and stop the server
-- ~/log - log files
-- ~/run - pid files
-- ~/attachments - trac attachments
-- ~/twisted.git - checkout of Twisted.
-- ~/website - containst a checkout of t-web
+- ``~/config`` - This repository.
+- ``~/config/trac-env`` - Trac environment
+- ``~/config/htpasswd`` - Trac passwords
+- ``~/bin`` - commands to start and stop the server
+- ``~/log`` - log files
+- ``~/run`` - pid files
+- ``~/attachments`` - trac attachments
+- ``~/twisted.git`` - checkout of Twisted.
 
 It uses https://github.com/twisted-infra/twisted-trac-plugins, TracAccountManager (from PyPI), DefaultCCPlugin (from Trac Hacks SVN), trac-github (from PyPI), and spam-filter (from Trac SVN).
 

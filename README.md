@@ -1,11 +1,10 @@
-A very work-in-progress library of fabric stuff for deploying twisted infrastrucutre.
-The immeidate goal is to be able to redeploy everything from cube onto dornkirk.
+This repo contains the scripts and configuration for getting parts of Twisted's infrstructure running.
 
 This package is a library of tools for deploying individual services.
 It also currently contains a fabfile for global configuration of dornkirk.
 
 The idea is that each individual service (e.g., t-names, www-data, trac,
-buildbot) will have a configuration repo with a fabfile that uses braid to
+buildbot) will have a configuration folder with a fabfile that uses braid to
 deploy itself on a given machine.
 
 
@@ -127,6 +126,7 @@ This is needed to create the necessary users, install additional packages and cr
 
 style-notes
 ===========
+
 Things that want to root want to be run with `sudo`, and files `put` with `use_sudo`.
 When dealing with things that want to be run as other users, `run` should be
 used, and a ssh connection as that user (with `settings(user='user')` or the like.
@@ -153,15 +153,19 @@ Quick Start
 
 You need Vagrant and Ansible, as above.
 
+These instructions are to get a VM provisioned by the Ansible scripts to have Trac on it. The available targets are `production` (for Dornkirk), `vagrant` (for local Vagrant VM), and `staging` (for Jeb, `staging.twistedmatrix.com`).
+
 ```shell
-vagrant up
-fab config.vagrant base.bootstrap
-fab config.vagrant t-web.install
-fab config.vagrant t-web.makeTestTLSKeys
-fab config.vagrant t-web.installTLSKeys
-fab config.vagrant trac.install
-fab config.vagrant trac.installTestData
-fab config.vagrant trac.getGithubMirror
-fab config.vagrant t-web.start
-fab config.vagrant trac.start
+vagrant up  # To get the config.vagrant target, if you want
+fab config.<target> base.bootstrap
+fab config.<target> t-web.install
+fab config.<target> t-web.makeTestTLSKeys
+fab config.<target> t-web.installTLSKeys
+fab config.<target> trac.install
+fab config.<target> trac.installTestData
+fab config.<target> trac.getGithubMirror
+fab config.<target> amptrac.install
+fab config.<target> kenaan.install
+fab config.<target> t-web.start
+fab config.<target> trac.start
 ```
