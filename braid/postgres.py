@@ -4,7 +4,7 @@ from pipes import quote
 
 
 def install():
-    package.install(['postgresql-9.1', 'postgresql-server-dev-9.1'])
+    package.install(['postgresql-9.3', 'postgresql-server-dev-9.3'])
 
 
 def _runQuery(query, database=None):

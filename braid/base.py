@@ -32,7 +32,7 @@ def bootstrap():
     # gcc is needed for 'pip install'
     package.install(['gcc', 'python-pip'])
     # For trac
-    package.install(['python-subversion', 'enscript'])
+    package.install(['python-subversion', 'enscript', 'subversion'])
     # For equivs
     package.install(['equivs'])
     # For buildbot/codespeed

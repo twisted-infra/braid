@@ -1,0 +1,5 @@
+- hosts: jeb
+  sudo: yes
+  roles:
+    - systemupdate
+    - requirements-debian

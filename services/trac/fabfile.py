@@ -214,6 +214,9 @@ class Trac(service.Service):
             run('~/.local/bin/trac-admin config/trac-env upgrade --no-backup')
 
     def task_giveAdmin(self, user):
+        """
+        Give Admin access to the user.
+        """
         with settings(user=self.serviceUser):
             run("~/.local/bin/trac-admin {}/trac-env permission add {} TRAC_ADMIN".format(self.configDir, user))
 

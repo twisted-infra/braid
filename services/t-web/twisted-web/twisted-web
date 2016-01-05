@@ -89,7 +89,7 @@ root.addHost('speed.twistedmatrix.com', proxy.ReverseProxyResource('localhost', 
 ### Other stuff
 ###
 
-root.addHost('staging.twistedmatrix.com', proxy.ReverseProxyResource('127.0.0.1', 9882, ''))
+#root.addHost('staging.twistedmatrix.com', proxy.ReverseProxyResource('127.0.0.1', 9882, ''))
 
 trac = proxy.ReverseProxyResource('127.0.0.1', 9881, '/trac')
 trac.putChild('chrome', static.File(websiteRoot.child('trac-files').path))

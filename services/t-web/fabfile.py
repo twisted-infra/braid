@@ -56,9 +56,9 @@ class TwistedWeb(service.Service):
         """
         Make some test TLS certs.
         """
-        local("openssl req -new -newkey rsa:2048 -nodes -keyout {key}".format(
+        local("openssl req -new -newkey rsa:4096 -nodes -keyout {key}".format(
             key=sibpath(__file__, 'TEST.key')))
-        local("openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout {key} -out {cert}".format(
+        local("openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:4096 -keyout {key} -out {cert}".format(
             key=sibpath(__file__, 'TEST.key'),
             cert=sibpath(__file__, 'twistedmatrix.com.crt')))
         local("cat {key} {cert} > {pem}".format(
