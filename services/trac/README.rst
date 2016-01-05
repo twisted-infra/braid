@@ -26,12 +26,14 @@ The GitHub post-commit hook is configured at https://github.com/twisted/twisted/
 
 The following fabric commands are available:
 
-- install - Create user and install configuration.
-- update - Updates the configuration and restarts the server.
-- start - Start server.
-- stop - Stop server.
-- restart - Restart the server.
-- dump:<dump-file> - Dump trac db and attachments
-- restore:<dump-file> - Restore trac db and attachments
-
-[1] https://github.com/twisted-infra/braid
+- ``install`` - Create user and install configuration.
+- ``installTestData`` - Makes a blank database for basic testing.
+- ``getGithubMirror:<reponame>`` - Get ``twisted/<reponame>`` from GitHub and put it at ``~/twisted.git``. It will be automatically updated by Trac afterwards.
+- ``update`` - Updates the configuration and restarts the server.
+- ``upgrade`` - Upgrades the Trac database.
+- ``start`` - Start server.
+- ``stop`` - Stop server.
+- ``restart`` - Restart the server.
+- ``giveAdmin:<user>`` - Gives super admin to the mentioned Trac user.
+- ``dump:<dump-file>`` - Dump trac db and attachments
+- ``restore:<dump-file>`` - Restore trac db and attachments
