@@ -4,7 +4,7 @@ from braid.api import sudo, task, put
 
 from twisted.python.filepath import FilePath
 
-from braid import pypy, service, authbind, git, package, bazaar, postgres
+from braid import pypy, service, authbind, git, package, postgres
 
 
 __all__ = ['bootstrap', 'sshConfig']
@@ -43,7 +43,6 @@ def bootstrap():
     pypy.install()
     authbind.install()
     git.install()
-    bazaar.install()
     postgres.install()
 
     sshConfig()
