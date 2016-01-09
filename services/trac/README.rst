@@ -22,6 +22,7 @@ This currently depends on the binaries (message, ticket) from Kenaan (another br
 
 A post-commit hook from GitHub updates the repository at ``~/twisted.git`` and notifies trac via a pb-server run from the monitor script.
 The GitHub post-commit hook is configured at https://github.com/twisted/twisted/settings/hooks, with a payload URL of ``https://twistedmatrix.com/trac/github``.
+More information about how the post-commit hook works is available in the `trac-github readme <https://github.com/trac-hacks/trac-github#post-commit-hook>`_.
 
 The following fabric commands are available:
 
