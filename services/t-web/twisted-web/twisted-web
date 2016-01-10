@@ -88,30 +88,9 @@ trac = proxy.ReverseProxyResource('127.0.0.1', 9881, '/trac')
 trac.putChild('chrome', static.File(websiteRoot.child('trac-files').path))
 tm.putChild('trac', trac)
 
-projects = Moved('https://twistedmatrix.com/trac/wiki/TwistedProjects')
-projects.putChild("", Moved('https://twistedmatrix.com/trac/wiki/TwistedProjects'))
-projects.putChild("index.html", Moved('https://twistedmatrix.com/trac/wiki/TwistedProjects'))
-
-for project in "conch", "core", "flow", "lore", "mail", "names", "news", "pair", "runner", "web", "web2", "words":
-    projects.putChild(project, Moved('https://twistedmatrix.com/trac/wiki/Twisted' + project.title()))
-
-# projects.processors = processors
-# projects.ignoreExt('.rpy')
-# tm.putChild('projects', projects)
-
 #user subdomains!
 root.addHost('radix.twistedmatrix.com', distrib.ResourceSubscription('unix', '/home/radix/.radix-web-server'))
 root.addHost('saph.twistedmatrix.com', distrib.ResourceSubscription('unix', '/home/saph/.twistd-web-pb'))
-
-#backwards compatibility:
-root.addHost('projects.twistedmatrix.com', twutil.ChildRedirector('https://twistedmatrix.com/trac/wiki/TwistedProjects'))
-
-
-# dancingsausage.net
-dsroot = static.File("/home/gus/public_html/dswj/")
-root.addHost("www.dancingsausage.net", dsroot)
-root.addHost("dancingsausage.net", dsroot)
-
 
 # Change this if you want default mime-type to be different:
 # default.defaultType = 'text/html'
