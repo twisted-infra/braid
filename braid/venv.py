@@ -14,7 +14,6 @@ class VirtualEnvironment(object):
             self._python = python
 
         self._location = location
-
         self._user = user
 
 
@@ -32,6 +31,7 @@ class VirtualEnvironment(object):
         self.install("pip")
         self.install("setuptools")
         self.install("wheel")
+
 
     def install(self, package):
         """
