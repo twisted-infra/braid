@@ -74,10 +74,6 @@ root.putChild('cgi-bin', twcgi.CGIDirectory('/usr/lib/cgi-bin'))
 
 root.addHost('buildbot.twistedmatrix.com', proxy.ReverseProxyResource('localhost', 8080, ''))
 
-# These old names shouldn't be used anymore.  Just redirect to the new locations for a while.
-tm.putChild('buildbot', twutil.Redirect('http://buildbot.twistedmatrix.com/waterfall'))
-tm.putChild('buildbot-supported', twutil.Redirect('http://buildbot.twistedmatrix.com/supported?branch=trunk'))
-
 ###
 ### Codespeed Speedcenter
 ###
@@ -88,12 +84,9 @@ root.addHost('speed.twistedmatrix.com', proxy.ReverseProxyResource('localhost', 
 ### Other stuff
 ###
 
-#root.addHost('staging.twistedmatrix.com', proxy.ReverseProxyResource('127.0.0.1', 9882, ''))
-
 trac = proxy.ReverseProxyResource('127.0.0.1', 9881, '/trac')
 trac.putChild('chrome', static.File(websiteRoot.child('trac-files').path))
 tm.putChild('trac', trac)
-
 
 projects = Moved('https://twistedmatrix.com/trac/wiki/TwistedProjects')
 projects.putChild("", Moved('https://twistedmatrix.com/trac/wiki/TwistedProjects'))
