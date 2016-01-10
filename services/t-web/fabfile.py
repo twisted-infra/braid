@@ -9,7 +9,7 @@ from fabric.api import run, settings, env, put, sudo, local
 from os import path
 from twisted.python.util import sibpath
 
-from braid import authbind, git, cron, archive, pip
+from braid import authbind, git, cron, archive
 from braid.twisted import service
 from braid.debian import equivs
 from braid.tasks import addTasks
@@ -38,7 +38,6 @@ class TwistedWeb(service.Service):
         equivs.installEquiv(self.serviceName, 'httpd')
 
         with settings(user=self.serviceUser):
-            pip.install('txsni', python='pypy')
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
             run('/bin/ln -nsf {}/start-maintenance {}/start-maintenance'.format(self.configDir, self.binDir))
             self.update()
@@ -91,6 +90,8 @@ class TwistedWeb(service.Service):
             run('mkdir -p ' + self.configDir)
             put(os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
+
+            self.venv.install_twisted()
 
 
     def task_update(self):
