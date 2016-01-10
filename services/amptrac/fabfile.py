@@ -25,10 +25,10 @@ class AmpTrac(service.Service):
 
         with settings(user=self.serviceUser):
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
-            self.update(_installDeps=True)
+            self.update()
             cron.install(self.serviceUser, '{}/crontab'.format(self.configDir))
 
-    def update(self, _installDeps=False):
+    def update(self):
         """
         Update config.
         """
@@ -38,15 +38,8 @@ class AmpTrac(service.Service):
                 os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
 
-            # amptrac needs an older pg8000
-            pip.install('pg8000==1.9.14')
-
-            amptracSource = 'git+https://github.com/twisted-infra/amptrac-server'
-            if _installDeps:
-                pip.install('{}'.format(amptracSource))
-            else:
-                pip.install('--no-deps --upgrade {}'.format(amptracSource))
-
+            self.venv.install_twisted()
+            self.venv.install('git+https://github.com/twisted-infra/amptrac-server')
 
     def task_update(self):
         """
