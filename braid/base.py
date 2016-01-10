@@ -4,7 +4,7 @@ from braid.api import sudo, task, put
 
 from twisted.python.filepath import FilePath
 
-from braid import pypy, service, authbind, git, package, postgres
+from braid import pypy, service, pip
 
 
 __all__ = ['bootstrap', 'sshConfig']
@@ -16,34 +16,11 @@ def bootstrap():
     Prepare the machine to be able to correctly install, configure and execute
     twisted services.
     """
-    sudo('apt-get update')
-
-    package.install(['sudo'])
-
     # Each service specific system user shall be added to the 'service' group
     sudo('/usr/sbin/groupadd -f --system service')
 
-    # pypy is installed with a tarball downloaded with wget.
-    package.install(['wget'])
-    # libssl-dev is needed for installing pyOpenSSL for PyPy.
-    package.install(['libssl-dev'])
-
-    package.install(['python2.7', 'python2.7-dev'])
-    # gcc is needed for 'pip install'
-    package.install(['gcc', 'python-pip'])
-    # For trac
-    package.install(['python-subversion', 'enscript', 'subversion'])
-    # For equivs
-    package.install(['equivs'])
-    # For buildbot/codespeed
-    package.install(['sqlite3'])
-    # Development and deployment
-    package.install(['python-virtualenv'])
-    package.install(['python-twisted', 'python-openssl'])
+    pip.install("/usr/bin/python2")
     pypy.install()
-    authbind.install()
-    git.install()
-    postgres.install()
 
     sshConfig()
 

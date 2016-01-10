@@ -5,10 +5,6 @@ from fabric.api import sudo, run, abort, quiet
 from braid import package, hasSudoCapabilities
 
 
-def install():
-    package.install(['authbind'])
-
-
 def allow(user, port):
     path = os.path.join('/etc/authbind/byport', str(port))
     needsUpdate = True

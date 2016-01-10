@@ -3,10 +3,6 @@ from fabric.api import run, cd, local, lcd, env
 from braid import package, fails
 
 
-def install():
-    package.install(['git'])
-
-
 def branch(url, destination):
     if fails('/usr/bin/test -d {}/.git'.format(destination)):
         run('/usr/bin/git clone {} {}'.format(url, destination))

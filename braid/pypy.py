@@ -37,8 +37,5 @@ def install():
 
     with cd('/opt'):
 
-        for url in pypyURL, pipURL:
-            sudo('/usr/bin/wget -nc {}'.format(url))
+        sudo('/usr/bin/wget -nc {}'.format(pypyURL))
         sudo('/bin/tar xf {}'.format(path.basename(pypyURL)))
-        sudo('~pypy/bin/pypy {}'.format(path.join('/opt/', path.basename(pipURL))), pty=False)
-        sudo('~pypy/bin/pip install Twisted[tls]==15.2.1')
