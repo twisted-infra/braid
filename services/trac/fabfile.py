@@ -4,7 +4,7 @@ import tempfile
 
 from fabric.api import abort, env, run, settings, put
 
-from braid import pip, postgres, cron, git, archive, utils
+from braid import postgres, cron, git, archive, utils
 from braid.twisted import service
 from braid.utils import confirm
 
@@ -14,15 +14,18 @@ __all__ = ['config']
 
 
 class Trac(service.Service):
+
+    python = "python2.7"
+
     def task_install(self):
         """
         Install trac.
         """
-        self.bootstrap(python='system')
+        self.bootstrap()
 
         with settings(user=self.serviceUser):
-            pip.install('psycopg2', python='system')
-            self.update(_installDeps=True)
+
+            self.update()
 
             run('/bin/mkdir -p ~/attachments')
             run('/bin/ln -nsf ~/attachments {}/trac-env/files/attachments'.format(
@@ -42,7 +45,7 @@ class Trac(service.Service):
         postgres.createDb('trac', 'trac')
 
 
-    def update(self, _installDeps=False):
+    def update(self):
         """
         Update trac config.
         """
@@ -51,19 +54,20 @@ class Trac(service.Service):
             put(os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
 
-            pip.install('trac==1.0.9', python='system')
-            pip.install('pygments==1.6', python='system')
-            pip.install('trac-github==2.1.4', python='system')
+            self.venv.install_twisted()
 
-            if _installDeps:
-                pip.install('git+https://github.com/twisted-infra/twisted-trac-plugins.git', python='system')
-            else:
-                pip.install('--no-deps --upgrade git+https://github.com/twisted-infra/twisted-trac-plugins.git', python='system')
-            pip.install('spambayes==1.1b2', python='system')
+            self.venv.install('psycopg2==2.6.1')
 
-            pip.install('TracAccountManager==0.4.4', python='system')
-            pip.install('svn+https://trac-hacks.org/svn/defaultccplugin/tags/0.2/', python='system')
-            pip.install('svn+https://svn.edgewall.org/repos/trac/plugins/1.0/spam-filter@14340', python='system')
+            self.venv.install('trac==1.0.9')
+            self.venv.install('pygments==1.6')
+            self.venv.install('trac-github==2.1.4')
+
+            self.venv.install('git+https://github.com/twisted-infra/twisted-trac-plugins.git')
+            self.venv.install('spambayes==1.1b2')
+
+            self.venv.install('TracAccountManager==0.4.4')
+            self.venv.install('svn+https://trac-hacks.org/svn/defaultccplugin/tags/0.2/')
+            self.venv.install('svn+https://svn.edgewall.org/repos/trac/plugins/1.0/spam-filter@14340')
 
 
     def task_update(self):
@@ -80,8 +84,8 @@ class Trac(service.Service):
         """
         with settings(user=self.serviceUser):
             self.update()
-            run(".local/bin/trac-admin {}/trac-env upgrade".format(self.configDir))
-            run(".local/bin/trac-admin {}/trac-env wiki upgrade".format(self.configDir))
+            run("~/virtualenv/bin/trac-admin {}/trac-env upgrade".format(self.configDir))
+            run("~/virtualenv/bin/trac-admin {}/trac-env wiki upgrade".format(self.configDir))
 
         self.task_restart()
 
@@ -170,20 +174,20 @@ class Trac(service.Service):
             # a throwaway trac-env directory because that comes from
             # https://github.com/twisted-infra/trac-config/tree/master/trac-env
             try:
-                run('~/.local/bin/trac-admin '
+                run('~/virtualenv/bin/trac-admin '
                     '/tmp/trac-init initenv TempTrac postgres://@/trac git ""')
             finally:
                 run("rm -rf /tmp/trac-init")
 
             # Run an upgrade to add plugin specific database tables and columns.
-            run('~/.local/bin/trac-admin config/trac-env upgrade --no-backup')
+            run('~/virtualenv/bin/trac-admin config/trac-env upgrade --no-backup')
 
     def task_giveAdmin(self, user):
         """
         Give Admin access to the user.
         """
         with settings(user=self.serviceUser):
-            run("~/.local/bin/trac-admin {}/trac-env permission add {} TRAC_ADMIN".format(self.configDir, user))
+            run("~/virtualenv/bin/trac-admin {}/trac-env permission add {} TRAC_ADMIN".format(self.configDir, user))
 
 
 

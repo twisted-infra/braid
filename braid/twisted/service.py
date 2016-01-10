@@ -2,7 +2,7 @@ from cStringIO import StringIO
 
 from fabric.api import settings, run, put
 
-from braid import pip, tasks, users
+from braid import pip, tasks, users, venv
 
 from twisted.python.filepath import FilePath
 
@@ -19,6 +19,7 @@ def _stripPrefix(f):
 
 class Service(tasks.Service):
 
+    python = "pypy"
     runDir = '~/run'
     logDir = '~/log'
     configDir = '~/config'
@@ -27,6 +28,9 @@ class Service(tasks.Service):
     def __init__(self, serviceName):
         self.serviceName = serviceName
         self.serviceUser = serviceName
+
+        self.venv = venv.VirtualEnvironment(user=self.serviceUser,
+                                            python=self.python)
 
 
     def _generateReadme(self):
@@ -45,13 +49,13 @@ class Service(tasks.Service):
         readmeContext['tasks'] = '\n'.join(tasks)
         return readmeFile.getContent().format(**readmeContext)
 
-    def bootstrap(self, python='pypy'):
+    def bootstrap(self):
         # Create the user only if it does not already exist
         users.createService(self.serviceUser)
 
         with settings(user=self.serviceUser):
-            # Install twisted
-            pip.install('twisted', python=python)
+
+            self.venv.create()
 
             # Create base directory setup
             run('/bin/mkdir -p {} {} {} {}'.format(
