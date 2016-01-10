@@ -26,5 +26,5 @@ tracResource = TracResource(reactor, threadpool, path.join(config, 'htpasswd'),
 htdocs = path.join(config, "trac-env/htdocs")
 attachments = path.join(config, "trac-env/attachments")
 root = RootResource(tracResource, htdocs, attachments)
-site = Site(root, path.expanduser("~/log/httpd.log"))
+site = Site(root, logPath=path.expanduser("~/log/httpd.log"))
 TCPServer(9881, site, interface="127.0.0.1").setServiceParent(application)

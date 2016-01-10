@@ -11,7 +11,7 @@ sys.path.insert(0, dirname(__file__))
 
 from monitor import TracMonitor
 
-TRAC_URL = 'https://twistedmatrix.com/trac/'
+TRAC_URL = 'http://127.0.0.1:9881/trac/'
 TRAC_TIMEOUT = 30
 CHECK_INTERVAL = 30
 
