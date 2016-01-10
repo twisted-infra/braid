@@ -42,8 +42,8 @@ class VirtualEnvironment(object):
         assert " " not in package, "Please make separate install calls"
 
         with settings(user=self._user):
-            run("{} -m pip install -q -U {}".format(
-                path.join(self._location, "bin", "python"), package))
+            run("{} -m pip install -U {}".format(
+                path.join(self._location, "bin", "python"), package), pty=False)
 
     def install_twisted(self):
         """

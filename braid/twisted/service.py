@@ -55,6 +55,8 @@ class Service(tasks.Service):
 
         with settings(user=self.serviceUser):
 
+            # Create a virtualenv in the service user's folder
+            # It'll be a PyPy venv by default, unless self.python is changed
             self.venv.create()
 
             # Create base directory setup
