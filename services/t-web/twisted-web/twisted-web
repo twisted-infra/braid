@@ -15,7 +15,6 @@ import sys, os
 sys.path.append(os.path.dirname(__file__))
 
 from moved import Moved
-from frackresource import getFrackResource
 
 class BugsRedirect(twutil.Redirect):
     isLeaf = False
@@ -102,9 +101,6 @@ projects.putChild("index.html", Moved('https://twistedmatrix.com/trac/wiki/Twist
 
 for project in "conch", "core", "flow", "lore", "mail", "names", "news", "pair", "runner", "web", "web2", "words":
     projects.putChild(project, Moved('https://twistedmatrix.com/trac/wiki/Twisted' + project.title()))
-
-# Frack is the future.
-tm.putChild('frack', getFrackResource(reactor))
 
 # projects.processors = processors
 # projects.ignoreExt('.rpy')
