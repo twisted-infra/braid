@@ -1,9 +1,3 @@
-# Perform an early import of svn.client because trac is going to want
-# to import it eventually, but by the time it does it, it will be in
-# danger of a deadlock.  Doing it here avoids the need to acquire the
-# import lock at some random later time when it will probably fail.
-from svn import client
-
 # Insert config dir into python path.
 import sys
 from os import path
