@@ -1,7 +1,3 @@
-# For more information and general comments on editing this file
-# please refer to README.Debian
-#
-
 from twisted.internet import reactor
 from twisted.web import script, static, server, distrib, twcgi, vhost, rewrite
 from twisted.web import util as twutil, proxy
