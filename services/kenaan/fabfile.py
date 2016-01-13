@@ -70,7 +70,7 @@ class Kenaan(service.Service):
         """
         with settings(user=self.serviceUser):
             filesToCopy = [
-                "_http.py", "alert", "alert.py",
+                "alert", "alert.py",
                 "commit_bot.py", "commit_bot.tac", "crontab", "message",
                 "message.py", "start", "ticket", "ticket.py"
             ]
