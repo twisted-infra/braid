@@ -27,7 +27,7 @@ class Kenaan(service.Service):
         with settings(user=self.serviceUser):
             self.venv.install('amptrac')
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
-            for bin in ['alert', 'commit', 'message', 'ticket']:
+            for bin in ['alert', 'message', 'ticket']:
                 run('/bin/ln -nsf {1}/{0} {2}/{0}'.format(bin, self.configDir, self.binDir))
             execute(self.update)
             cron.install(self.serviceUser, '{}/crontab'.format(self.configDir))
@@ -70,7 +70,7 @@ class Kenaan(service.Service):
         """
         with settings(user=self.serviceUser):
             filesToCopy = [
-                "_http.py", "alert", "alert.py", "commit", "commit.py",
+                "_http.py", "alert", "alert.py",
                 "commit_bot.py", "commit_bot.tac", "crontab", "message",
                 "message.py", "start", "ticket", "ticket.py"
             ]
