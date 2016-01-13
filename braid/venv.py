@@ -39,8 +39,6 @@ class VirtualEnvironment(object):
         matching version -- you should pin your dependencies if this is a
         concern.
         """
-        assert " " not in package, "Please make separate install calls"
-
         with settings(user=self._user):
             run("{} -m pip install -U {}".format(
                 path.join(self._location, "bin", "python"), package), pty=False)
