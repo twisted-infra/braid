@@ -37,9 +37,9 @@ class TenBoxesPerBuilder(HtmlResource):
 
     title = "Latest Build"
 
-    def __init__(self, categories=None):
+    def __init__(self, tags=None):
         HtmlResource.__init__(self)
-        self.categories = categories
+        self.tags = tags
 
 
     @defer.inlineCallbacks
@@ -55,7 +55,9 @@ class TenBoxesPerBuilder(HtmlResource):
         status = self.getStatus(req)
         authz = self.getAuthz(req)
 
-        builders = req.args.get("builder", status.getBuilderNames(categories=self.categories))
+        print(status)
+
+        builders = req.args.get("builder", status.getBuilderNames(tags=self.tags))
         branches = [b for b in req.args.get("branch", []) if b]
         if not branches:
             branches = ["trunk"]
@@ -78,7 +80,7 @@ class TenBoxesPerBuilder(HtmlResource):
             # XXX: Unsafe interpolation
             form(tags.button(type="button",
                 onclick="forceBranch(branch.value || %r, %r)"
-                        % (branches[0], self.categories,)
+                        % (branches[0], self.tags,)
                 )("Force"))
         tag(form)
 
@@ -140,12 +142,12 @@ class TenBoxesPerBuilder(HtmlResource):
 class TwistedWebStatus(html.WebStatus):
     def __init__(self, **kwargs):
         html.WebStatus.__init__(self, **kwargs)
-        self.putChild("boxes-supported", TenBoxesPerBuilder(categories=['supported']))
-        self.putChild("boxes-unsupported", TenBoxesPerBuilder(categories=['unsupported']))
-        self.putChild("boxes-all", TenBoxesPerBuilder(categories=['supported', 'unsupported']))
-        self.putChild("boxes-benchmark", TenBoxesPerBuilder(categories=['benchmark']))
-        self.putChild("supported", WaterfallStatusResource(categories=['supported']))
-        self.putChild("waterfall", WaterfallStatusResource(categories=['supported', 'unsupported']))
+        self.putChild("boxes-supported", TenBoxesPerBuilder(tags=['supported']))
+        self.putChild("boxes-unsupported", TenBoxesPerBuilder(tags=['unsupported']))
+        self.putChild("boxes-all", TenBoxesPerBuilder(tags=['supported', 'unsupported']))
+        self.putChild("boxes-benchmark", TenBoxesPerBuilder(tags=['benchmark']))
+        self.putChild("supported", WaterfallStatusResource(tags=['supported']))
+        self.putChild("waterfall", WaterfallStatusResource(tags=['supported', 'unsupported']))
 
         # These are are expensive, so disable them
         # http://trac.buildbot.net/ticket/2268

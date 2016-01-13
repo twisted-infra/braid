@@ -11,6 +11,9 @@ from braid.utils import confirm
 __all__ = ['config']
 
 class Buildbot(service.Service):
+
+    python = "python"
+
     def task_install(self):
         """
         Install buildbot.
@@ -18,7 +21,7 @@ class Buildbot(service.Service):
         self.bootstrap()
 
         with settings(user=self.serviceUser):
-            execute(self.update, _installDeps=True)
+            execute(self.update)
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
             run('/bin/mkdir -p ~/data')
             run('/bin/mkdir -p ~/data/build_products')
@@ -37,7 +40,7 @@ class Buildbot(service.Service):
             puts('Copying testing private.py to %s' % (targetPath,))
             run('/bin/cp private.py.sample private.py')
             puts('Migrating SQLite db.')
-            run('~/.local/bin/buildbot upgrade-master')
+            run('~/virtualenv/bin/buildbot upgrade-master')
             puts('Copying migrated state.sqlite db to ~/data')
             run('/bin/mkdir -p ~/data')
             run('/bin/cp state.sqlite ~/data')
@@ -51,7 +54,7 @@ class Buildbot(service.Service):
                 'buildbot@wolfwood.twistedmatrix.com:/git/buildbot-secrets',
                 '~/private')
 
-    def update(self, _installDeps=False):
+    def update(self):
         """
         Update
         """
@@ -61,15 +64,14 @@ class Buildbot(service.Service):
                 os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
             buildbotSource = os.path.join(self.configDir, 'buildbot-source')
-            git.branch('https://github.com/twisted-infra/buildbot', buildbotSource)
-            if _installDeps:
-                # sqlalchemy-migrate only works with a specific version of
-                # sqlalchemy.
-                pip.install('sqlalchemy==0.7.10 {}'.format(os.path.join(buildbotSource, 'master')),
-                        python='python')
-            else:
-                pip.install('--no-deps --upgrade {}'.format(os.path.join(buildbotSource, 'master')),
-                        python='python')
+            #git.branch('https://github.com/twisted-infra/buildbot', buildbotSource)
+
+            # sqlalchemy-migrate only works with a specific version of
+            # sqlalchemy.
+            self.venv.install('buildbot==0.9.0b5')
+            self.venv.install('buildbot-www==0.9.0b5')
+            self.venv.install('buildbot-waterfall-view')
+            self.venv.install('buildbot-console-view')
 
             if env.get('installPrivateData'):
                 self.task_updatePrivateData()

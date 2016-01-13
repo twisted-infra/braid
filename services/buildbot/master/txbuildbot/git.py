@@ -4,7 +4,7 @@ from twisted.internet import defer
 from buildbot.process import buildstep
 from buildbot.steps.source.git import Git
 from buildbot.steps.source import Source
-from buildbot.status.results import SUCCESS
+from buildbot.process.results import SUCCESS
 
 
 
@@ -47,8 +47,7 @@ class TwistedGit(Git):
           instead of the base revision number.
         """
         branch = mungeBranch(branch)
-        id = self.getRepository()
-        s = self.build.getSourceStamp(id)
+        s = self.build.getSourceStamp(self.codebase)
         if s.changes:
             latest_properties = s.changes[-1].properties
             if "git_revision" in latest_properties:
