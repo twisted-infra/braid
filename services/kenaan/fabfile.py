@@ -70,9 +70,9 @@ class Kenaan(service.Service):
         """
         with settings(user=self.serviceUser):
             filesToCopy = [
-                "alert", "alert.py",
-                "commit_bot.py", "commit_bot.tac", "crontab", "message",
-                "message.py", "start", "ticket", "ticket.py"
+                "alert", "alert.py", "commit_bot.py", "commit_bot.tac",
+                "crontab", "message", "message.py", "start",
+                "ticket", "ticket.py"
             ]
             run('mkdir -p ' + self.configDir)
 

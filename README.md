@@ -26,7 +26,7 @@ Currently Supported Services
 Server Dependencies
 ===================
 
-braid currently assumes that it is being run against a ubuntu server (precise).
+braid currently assumes that it is being run against an Ubuntu 14.04 server.
 
 It requires that the `universe` component be enabled, as well `sudo`.
 
