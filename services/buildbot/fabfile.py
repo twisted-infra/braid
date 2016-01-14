@@ -61,7 +61,15 @@ class Buildbot(service.Service):
         with settings(user=self.serviceUser):
             run('mkdir -p ' + self.configDir)
             put(
-                os.path.dirname(__file__) + '/*', self.configDir,
+                os.path.dirname(__file__) + '/master/*', self.configDir + "/master/",
+                mirror_local_mode=True)
+            run('mkdir -p ' + self.configDir + "/twisted_view")
+            run('mkdir -p ' + self.configDir + "/twisted_view/buildbot_twisted_view")
+            put(
+                os.path.dirname(__file__) + '/twisted_view/*.py', self.configDir + "/twisted_view/",
+                mirror_local_mode=True)
+            put(
+                os.path.dirname(__file__) + '/twisted_view/buildbot_twisted_view/*', self.configDir + "/twisted_view/buildbot_twisted_view/",
                 mirror_local_mode=True)
             buildbotSource = os.path.join(self.configDir, 'buildbot-source')
             #git.branch('https://github.com/twisted-infra/buildbot', buildbotSource)
@@ -72,6 +80,8 @@ class Buildbot(service.Service):
             self.venv.install('buildbot-www==0.9.0b5')
             self.venv.install('buildbot-waterfall-view')
             self.venv.install('buildbot-console-view')
+            with cd(self.configDir + '/twisted_view'):
+                self.venv.run('setup.py develop')
 
             if env.get('installPrivateData'):
                 self.task_updatePrivateData()

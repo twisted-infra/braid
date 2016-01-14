@@ -51,3 +51,7 @@ class VirtualEnvironment(object):
         self.install("pyOpenSSL==0.15.1")
         self.install("service_identity==14.0")
         self.install("txsni==0.1.5")
+
+    def run(self, arg):
+        with settings(user=self._user):
+            run("{} {}".format(path.join(self._location, "bin", "python"), arg))
