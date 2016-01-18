@@ -72,16 +72,30 @@ class Buildbot(service.Service):
                 os.path.dirname(__file__) + '/twisted_view/buildbot_twisted_view/*', self.configDir + "/twisted_view/buildbot_twisted_view/",
                 mirror_local_mode=True)
             buildbotSource = os.path.join(self.configDir, 'buildbot-source')
-            #git.branch('https://github.com/twisted-infra/buildbot', buildbotSource)
+            git.branch('https://github.com/buildbot/buildbot', buildbotSource)
 
-            # sqlalchemy-migrate only works with a specific version of
-            # sqlalchemy.
-            self.venv.install('buildbot==0.9.0b5')
-            self.venv.install('buildbot-www==0.9.0b5')
-            self.venv.install('buildbot-waterfall-view')
-            self.venv.install('buildbot-console-view')
+            with cd(buildbotSource):
+                run('npm install gulp')
+
+            self.venv.install("mock")
+
+            with cd(buildbotSource + "/pkg/"):
+                self.venv.run("setup.py install")
+
+            with cd(buildbotSource + "/master/"):
+                self.venv.run("setup.py install")
+
+            with cd(buildbotSource + "/www/base/"):
+                self.venv.run("setup.py install")
+
+            with cd(buildbotSource + "/www/waterfall_view/"):
+                self.venv.run("setup.py install")
+
+            with cd(buildbotSource + "/www/console_view/"):
+                self.venv.run("setup.py install")
+
             with cd(self.configDir + '/twisted_view'):
-                self.venv.run('setup.py develop')
+                self.venv.run('setup.py install')
 
             if env.get('installPrivateData'):
                 self.task_updatePrivateData()
@@ -101,6 +115,16 @@ class Buildbot(service.Service):
                 os.path.dirname(__file__) + '/master/master.cfg',
                 self.configDir + "/master/",
                 mirror_local_mode=True)
+
+            put(
+                os.path.dirname(__file__) + '/twisted_view/setup.py', self.configDir + "/twisted_view/setup.py",
+                mirror_local_mode=True)
+            put(
+                os.path.dirname(__file__) + '/twisted_view/buildbot_twisted_view/*', self.configDir + "/twisted_view/buildbot_twisted_view/",
+                mirror_local_mode=True)
+
+            with cd(self.configDir + '/twisted_view'):
+                self.venv.run('setup.py install')
 
             if env.get('installPrivateData'):
                 self.task_updatePrivateData()
