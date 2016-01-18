@@ -13,7 +13,7 @@ def mungeBranch(branch):
     Remove the leading prefix, that comes from svn branches.
     """
     if not branch:
-        return 'trunk'
+        return 'master'
 
     for cutoff in ['/branches/', 'branches/', '/']:
         if branch.startswith(cutoff):
@@ -23,9 +23,9 @@ def mungeBranch(branch):
 
 def isTrunk(branch):
     """
-    Is the branch trunk?
+    Is the branch master?
     """
-    return mungeBranch(branch) == 'trunk'
+    return mungeBranch(branch) == 'master'
 
 def isRelease(branch):
     """
@@ -58,7 +58,7 @@ class TwistedGit(Git):
 
 class MergeForward(Source):
     """
-    Merge with trunk.
+    Merge with master.
     """
     name = 'merge-forward'
     description = ['merging', 'forward']
@@ -66,7 +66,7 @@ class MergeForward(Source):
     haltOnFailure = True
 
 
-    def __init__(self, repourl, branch='trunk', **kwargs):
+    def __init__(self, repourl, branch='master', **kwargs):
         self.repourl = repourl
         self.branch = branch
         kwargs['env'] = {
@@ -106,7 +106,7 @@ class MergeForward(Source):
         return Source.finished(self, results)
 
     def _fetch(self):
-        return self._dovccmd(['fetch', self.repourl, 'trunk'])
+        return self._dovccmd(['fetch', self.repourl, 'master'])
 
     def _merge(self):
         return self._dovccmd(['merge',
