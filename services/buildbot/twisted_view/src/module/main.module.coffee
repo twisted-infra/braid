@@ -78,21 +78,16 @@ class Twisted extends Controller
            , (reason) ->
               console.log(reason)
 
-        actions = []
-        actions.push
-            caption: "Force build"
-            action: doForce
-        glTopbarContextualActionsService.setContextualActions(actions)
-
         @loading = true
         @builds.onChange = @changes.onChange = @buildrequests.onChange = @buildsets.onChange = @onChange
 
     onChange: (s) =>
-        # @todo: no way to know if there are no builds, or if its not yet loaded
+        # No builders, no top line.
         if @builders.length == 0
             return
         @loading = false
 
+        # Filter the builders per tag
         @filteredBuilders = {}
         @filteredBuildersList = []
 
@@ -101,13 +96,23 @@ class Twisted extends Controller
                 @filteredBuilders[builder.builderid] = builder
                 @filteredBuildersList.push(builder)
 
-        if @builds.length > 0 and @buildsets.length > 0
+        # If there's changes and builds, we can show them
+        if @changes.length > 0 and @builds.length > 0 and @buildsets.length > 0
             for build in @builds
                 @matchBuildWithChange(build)
 
-        if @buildrequests.length > 0 and @buildsets.length > 0
+        # If there's changes and build requests, we can show them
+        if @changes.length > 0 and @buildrequests.length > 0 and @buildsets.length > 0
             for request in @buildrequests
                 @matchRequestsWithChange(request)
+
+        # Only show "force build" if there's changes (since you can only force from a change)
+        actions = []
+        if @changes.length
+            actions.push
+                caption: "Force build"
+                action: doForce
+        glTopbarContextualActionsService.setContextualActions(actions)
 
         if @changes.length
             for change in @changes
