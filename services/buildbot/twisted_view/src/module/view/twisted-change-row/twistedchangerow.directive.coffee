@@ -18,10 +18,6 @@ class TwistedChangeRow extends Directive
 class _twistedchangeRow extends Controller
     constructor: ($scope, resultsService, @$modal) ->
         angular.extend this, resultsService
-        @infoIsCollapsed = true
-
-        $scope.$on 'showAllInfo', (event, value) =>
-            @infoIsCollapsed = value
 
         $scope.$watch 'width', (@width) =>
         $scope.$watch 'cellWidth', (@cellWidth) =>
@@ -42,10 +38,3 @@ class _twistedchangeRow extends Controller
             windowClass: 'modal-small'
             resolve:
                 selectedBuild: -> build
-
-    createFileLink: (file) ->
-        repository = @change.repository.replace('.git', '')
-        return "#{repository}/blob/#{@change.revision}/#{file}"
-
-    toggleInfo: ->
-        @infoIsCollapsed = !@infoIsCollapsed

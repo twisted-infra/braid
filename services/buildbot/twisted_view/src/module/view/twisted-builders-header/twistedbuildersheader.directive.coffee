@@ -10,7 +10,7 @@ class TwistedBuildersHeader extends Directive
             }
             templateUrl: 'twisted_view/views/twistedbuildersheader.html'
             controller: '_twistedbuildersHeaderController'
-            controllerAs: 'twistedbh'
+            controllerAs: 'bh'
         }
 
 class _twistedbuildersHeader extends Controller

@@ -28,7 +28,9 @@ setup(
     package_data={
         '': [
             'VERSION',
-            'static/*'
+            'static/img/*',
+            'static/*.js',
+            'static/*.css'
         ]
     },
     version='1',
