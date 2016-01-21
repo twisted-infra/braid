@@ -61,7 +61,11 @@ for slave in slaves:
 # Password for pb debug port
 debugPassword = "cd3dad27_0f84b396"
 
+codecov_twisted_token = "blah"
+
 # web status options
 # - default for testing deployments: port 8080 on localhost
 # - deployed version uses distrib_port at ~/webstatus.twistd-web-pb
 webOptions = { 'http_port': 'tcp:port=8080' }
+
+gitURL = "https://github.com/twisted/twisted-staging.git"
