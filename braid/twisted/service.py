@@ -96,9 +96,9 @@ class Service(tasks.Service):
             self.task_stop()
         self.task_start()
 
-    def task_log(self):
+    def task_log(self, n=20):
         """
         Tail the log of the service.
         """
         with settings(user=self.serviceUser):
-            run('/usr/bin/tail -f {}/twistd.log'.format(self.logDir))
+            run('/usr/bin/tail -f -n {} {}/twistd.log'.format(n, self.logDir))
