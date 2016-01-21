@@ -5,7 +5,7 @@
   action: locale_gen name=en_US.UTF-8
 
 - name: Install build requirements
-  action: apt pkg=build-essential,libffi-dev,libssl-dev,wget,git,subversion
+  action: apt pkg=build-essential,libffi-dev,libssl-dev,wget,git,subversion,libsqlite3-dev
 
 - name: Install Python
   action: apt pkg=python-dev
