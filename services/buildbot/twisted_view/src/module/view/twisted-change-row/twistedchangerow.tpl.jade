@@ -19,15 +19,12 @@
             div
                 span.build(ng-repeat="builder in builders | orderBy: 'name' track by builder.builderid"
                      ng-style="{'width': cr.cellWidth}", title="{{builder.name}}")
-                    span
-                       &nbsp;
 
-                    div(ng-repeat="request in cr.change.requestsPerBuilder[builder.builderid] track by $index| orderBy:'started_at'")
-                        .badge-status(ng-if='request.buildrequestid'
-                                      ng-class='pulse')
-                         | P
-                    a(ng-repeat="build in cr.change.buildsPerBuilder[builder.builderid] track by $index| orderBy:'started_at'")
-                        .badge-status(ng-if='build.buildid'
-                                      ng-class="cr.results2class(build, 'pulse')"
-                                      ng-click='cr.selectBuild(build)')
+                    div(ng-repeat="request in cr.change.requestsPerBuilder[builder.builderid] track by $index | orderBy:'-started_at'"
+                      ng-class="'results_PENDING'")
+                        | P
+
+                    a(ng-repeat="build in cr.change.buildsPerBuilder[builder.builderid] track by $index"
+                      ng-class="cr.results2class(build, 'pulse')"
+                      ng-click='cr.selectBuild(build)')
                             | {{ build.number }}

@@ -35,7 +35,7 @@ class State extends Config
             controllerAs: "c"
             templateUrl: "twisted_view/views/#{name}.html"
             name: name
-            url: "/#{name}?category&branch"
+            url: "/#{name}?branch&tag"
             data: cfg
 
         $stateProvider.state(state)
@@ -45,35 +45,30 @@ class Twisted extends Controller
         @buildLimit = 500
         @changeLimit = 10
         @dataAccessor =  dataService.open().closeOnDestroy(@$scope)
-
-        @$scope.builders = @builders = @dataAccessor.getBuilders()
-        @$scope.builders.queryExecutor.isFiltered = (v) ->
-            return not v.masterids? or v.masterids.length > 0
+        @topbar = glTopbarContextualActionsService
 
         if $stateParams.branch == undefined
-            _branch = 'master'
+            @branch = 'master'
         else
-            _branch = $stateParams.branch
+            @branch = $stateParams.branch
 
-        if $stateParams.category == undefined
-            _category = 'supported'
+        if $stateParams.tag == undefined
+            tag = @tag = 'supported'
         else
-            _category = $stateParams.category
+            tag = @tag = $stateParams.tag
 
-        @branch = _branch
-        @category = _category
-
-        @filteredBuilders = {}
-        @filteredBuildersList = []
+        @$scope.unfilteredBuilders = @unfilteredBuilders = @dataAccessor.getBuilders({tags__contains: tag})
+        @$scope.unfilteredBuilders.queryExecutor.isFiltered = (v) ->
+            return not v.masterids? or v.masterids.length > 0
 
         @$scope.builds = @builds = @dataAccessor.getBuilds({limit: @buildLimit, order: '-complete_at'})
-        @changes = changes = @dataAccessor.getChanges({limit: @changeLimit, order: '-when_timestamp', branch: _branch})
+        @changes = changes = @dataAccessor.getChanges({limit: @changeLimit, order: '-when_timestamp', branch: @branch})
         @buildrequests = @dataAccessor.getBuildrequests({limit: @buildLimit, order: '-submitted_at'})
         @buildsets = @dataAccessor.getBuildsets({limit: @buildLimit, order: '-submitted_at'})
 
-        doForce = ->
+        @doForce = ->
 
-           dataService.control('forceschedulers', 'force-' + _category, 'force', {revision: changes[0].sourcestamp.revision, branch: changes[0].sourcestamp.branch}).then (response) ->
+           dataService.control('forceschedulers', 'force-' + tag, 'force', {revision: changes[0].sourcestamp.revision, branch: changes[0].sourcestamp.branch}).then (response) ->
               console.log(response)
            , (reason) ->
               console.log(reason)
@@ -83,18 +78,20 @@ class Twisted extends Controller
 
     onChange: (s) =>
         # No builders, no top line.
-        if @builders.length == 0
+        if @unfilteredBuilders.length == 0
             return
         @loading = false
 
-        # Filter the builders per tag
-        @filteredBuilders = {}
-        @filteredBuildersList = []
+        @builders = []
+        for builder in @unfilteredBuilders
+            if $.inArray(@tag, builder.tags) != -1
+                @builders.push(builder)
 
-        for builder in @builders
-            if $.inArray(@category, builder.tags) != -1
-                @filteredBuilders[builder.builderid] = builder
-                @filteredBuildersList.push(builder)
+        # Wipe the requests/builds
+        if @changes.length > 0
+            for change in @changes
+                change.buildsPerBuilder = {}
+                change.requestsPerBuilder = {}
 
         # If there's changes and builds, we can show them
         if @changes.length > 0 and @builds.length > 0 and @buildsets.length > 0
@@ -111,8 +108,8 @@ class Twisted extends Controller
         if @changes.length
             actions.push
                 caption: "Force build"
-                action: doForce
-        glTopbarContextualActionsService.setContextualActions(actions)
+                action: @doForce
+        @topbar.setContextualActions(actions)
 
         if @changes.length
             for change in @changes
@@ -135,10 +132,6 @@ class Twisted extends Controller
     ###
     matchBuildWithChange: (build) =>
 
-        builder = @filteredBuilders[build.builderid]
-        if builder == undefined
-            return
-
         buildrequest = @buildrequests.get(build.buildrequestid)
         if not buildrequest?
             return
@@ -155,10 +148,6 @@ class Twisted extends Controller
 
     matchRequestsWithChange: (buildrequest) =>
 
-        builder = @filteredBuilders[buildrequest.builderid]
-        if builder == undefined
-            return
-
         buildset = @buildsets.get(buildrequest.buildsetid)
         if not buildset? or not buildset.sourcestamps?
             return
@@ -168,6 +157,10 @@ class Twisted extends Controller
                 change.requestsPerBuilder[buildrequest.builderid] ?= []
                 if change.sourcestamp.revision == sourcestamp.revision
                     if buildrequest not in change.requestsPerBuilder[buildrequest.builderid]
+                        if @builds.length > 0
+                            for build in change.buildsPerBuilder[buildrequest.builderid]
+                                if build.buildrequestid == buildrequest.buildrequestid
+                                    return
                         change.requestsPerBuilder[buildrequest.builderid].push(buildrequest)
 
     ###
@@ -175,5 +168,5 @@ class Twisted extends Controller
     ###
     setWidth: (width) ->
         @cellWidth = "50px"
-        @width = "#{(@filteredBuildersList.length + 1) * 50}px"
-        @widthInclusive = "#{(@filteredBuildersList.length + 1) * 50 + 250}px"
+        @width = "#{(@builders.length + 1) * 50}px"
+        @widthInclusive = "#{(@builders.length + 1) * 50 + 250}px"

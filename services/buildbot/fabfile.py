@@ -22,13 +22,15 @@ class Buildbot(service.Service):
 
         with settings(user=self.serviceUser):
             execute(self.update)
+            if not env.get('installPrivateData'):
+                execute(self.installTestData, force=True)
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
             run('/bin/mkdir -p ~/data')
             run('/bin/mkdir -p ~/data/build_products')
             run('/bin/ln -nsf ~/data/build_products {}/master/public_html/builds'.format(self.configDir))
             cron.install(self.serviceUser, '{}/crontab'.format(self.configDir))
 
-    def task_installTestData(self):
+    def task_installTestData(self, force=False):
         """
         Do test environment setup (with fake passwords, etc).
         """
@@ -54,7 +56,7 @@ class Buildbot(service.Service):
                 'buildbot@wolfwood.twistedmatrix.com:/git/buildbot-secrets',
                 '~/private')
 
-    def update(self):
+    def update(self, updateData=False):
         """
         Update
         """
@@ -99,8 +101,6 @@ class Buildbot(service.Service):
 
             if env.get('installPrivateData'):
                 self.task_updatePrivateData()
-            else:
-                execute(self.task_installTestData)
 
     def updatefast(self):
         """
@@ -114,6 +114,10 @@ class Buildbot(service.Service):
             put(
                 os.path.dirname(__file__) + '/master/master.cfg',
                 self.configDir + "/master/",
+                mirror_local_mode=True)
+            put(
+                os.path.dirname(__file__) + '/master/txbuildbot/lint.py',
+                self.configDir + "/master/txbuildbot/lint.py",
                 mirror_local_mode=True)
 
             put(
