@@ -8,52 +8,18 @@ from buildbot.process.results import SUCCESS
 
 
 
-def mungeBranch(branch):
-    """
-    Remove the leading prefix, that comes from svn branches.
-    """
-    if not branch:
-        return 'master'
-
-    for cutoff in ['/branches/', 'branches/', '/']:
-        if branch.startswith(cutoff):
-            branch = branch[len(cutoff):]
-            break
-    return branch
-
 def isTrunk(branch):
     """
     Is the branch master?
     """
-    return mungeBranch(branch) == 'master'
+    return branch == 'master'
+
 
 def isRelease(branch):
     """
     Is the branch a release branch?
     """
-    return mungeBranch(branch).startswith('releases/')
-
-
-class TwistedGit(Git):
-    """
-    Temporary support for the transitionary stage between SVN and Git.
-    """
-
-    def startVC(self, branch, revision, patch):
-        """
-        * If a branch name starts with /branches/, cut it off before referring
-          to it in git commands.
-        * If a "git_revision" property is provided in the Change, use it
-          instead of the base revision number.
-        """
-        branch = mungeBranch(branch)
-        s = self.build.getSourceStamp(self.codebase)
-        if s.changes:
-            latest_properties = s.changes[-1].properties
-            if "git_revision" in latest_properties:
-                revision = latest_properties["git_revision"]
-        return Git.startVC(self, branch, revision, patch)
-
+    return branch.startswith('releases/')
 
 
 class MergeForward(Source):
