@@ -146,15 +146,17 @@ class TwistedBaseFactory(BuildFactory):
                 ("ctypes", "ctypes", "ctypes.__version__"),
                 ("gtk", "gtk", "gtk.gtk_version"),
                 ("pygtk", "gtk", "gtk.pygtk_version"),
+                ("pygobject", "gi", "gi.version_info"),
                 ("pywin32", "win32api",
                  "win32api.GetFileVersionInfo(win32api.__file__, chr(92))['FileVersionLS'] >> 16"),
                 ("pyasn1", "pyasn1", "pyasn1.__version__"),
                 ("cffi", "cffi", "cffi.__version__"),
-                ],
+                ("constantly", "constantly", "constantly.__version__"),
+            ],
             pkg_resources=[
                 ("subunit", "subunit"),
                 ("zope.interface", "zope.interface"),
-                ])
+            ])
 
 
     def __init__(self, python, source, uncleanWarnings, trialTests=None,
@@ -374,7 +376,7 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
                  trial="./bin/trial", virtualenv_module="virtualenv",
                  reactors=["select"], uncleanWarnings=False, platform="unix",
                  dependencies=BASE_DEPENDENCIES + CEXT_DEPENDENCIES + PY2_NONWIN_DEPENDENCIES + EXTRA_DEPENDENCIES,
-                 forceGarbageCollection=False, tests=None):
+                 forceGarbageCollection=False, tests=None, symlinkGIFrom=None):
 
         TwistedBaseFactory.__init__(
             self,
@@ -393,6 +395,23 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
             description = "installing dependencies".split(" "),
             command=['python', '-m', 'pip', 'install'] + dependencies
         )
+
+        if symlinkGIFrom:
+            pythonVer = list(filter(lambda _: 'python' in _,
+                                    symlinkGIFrom.split('/')))[0]
+
+            self.addStep(
+                shell.ShellCommand,
+                description="symlinking gi".split(" "),
+                command=[
+                    "ln", "-s", '/'.join([symlinkGIFrom, "gi"]),
+                    '/'.join([self._virtualEnvPath, "lib", pythonVer, "site-packages"])])
+            self.addStep(
+                shell.ShellCommand,
+                description="symlinking pygtkcompat".split(" "),
+                command=[
+                    "ln", "-s", '/'.join([symlinkGIFrom, "pygtkcompat"]),
+                    '/'.join([self._virtualEnvPath, "lib", pythonVer, "site-packages"])])
 
         self._reportVersions(virtualenv=True)
 
