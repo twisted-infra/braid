@@ -1,16 +1,23 @@
-from fabric.api import run
+from fabric.api import run, cd, sudo
+
+from os import path
 
 from braid import info
 
+pipURL = 'https://bootstrap.pypa.io/get-pip.py'
 
-def install(package, python='pypy'):
-    pip = '/usr/bin/pip'
-    if python == 'pypy':
-        pip = '~pypy/bin/pip'
-    elif python == 'system':
-        #FIXME https://github.com/twisted-infra/braid/issue/5
-        if info.distroFamily() == 'fedora':
-            pip = '/usr/bin/pip-python'
-        else:
-            pip = '/usr/bin/pip'
-    run('{} install --user {}'.format(pip, package))
+
+def install(python):
+
+    with cd('/tmp'):
+        sudo('/usr/bin/wget -nc {}'.format(pipURL))
+
+    sudo("{python} {pipURL}".format(
+        python=python,
+        pipURL=path.join('/tmp/', path.basename(pipURL))))
+
+    # See https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
+    sudo("{} -m pip install -U ndg-httpsclient".format(python))
+
+    # Ensure we have the latest pip, virtualenv, setuptools, and wheel.
+    sudo("{} -m pip install -U pip virtualenv setuptools wheel".format(python))

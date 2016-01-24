@@ -14,6 +14,9 @@ __all__ = ['config']
 
 
 class Trac(service.Service):
+
+    python = "python2.7"
+
     def task_install(self):
         """
         Install trac.

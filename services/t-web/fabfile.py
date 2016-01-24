@@ -92,6 +92,8 @@ class TwistedWeb(service.Service):
             put(os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
 
+            self.venv.install_twisted()
+
 
     def task_update(self):
         """

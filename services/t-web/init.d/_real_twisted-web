@@ -11,7 +11,7 @@ more_args=--no_save
 #twistd=$HOME/.local/bin/twistd
 
 unset PYTHONPATH
-twistd=~pypy/bin/twistd
+twistd=$HOME/virtualenv/bin/twistd
 
 [ -r $WEBSITE_ROOT/default/twisted-web ] && . $WEBSITE_ROOT/default/twisted-web
 
@@ -27,7 +27,7 @@ case "$1" in
                           --reactor poll \
                           --pidfile=$pidfile --rundir=$rundir --python=$file\
                           --logfile=$logfile $more_args
-        echo "."	
+        echo "."
     ;;
 
     stop)
@@ -36,7 +36,7 @@ case "$1" in
         while [ -f $pidfile ] && /bin/kill -0 `cat $pidfile`; do \
                  echo -n "."; \
         done
-        echo " done."	
+        echo " done."
     ;;
 
     restart)
