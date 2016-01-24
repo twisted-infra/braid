@@ -1,2 +1,0 @@
-0.1.0:
- - Pass *blocking* sockets to subprocesses run by inetd
