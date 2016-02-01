@@ -3,7 +3,6 @@ Default configuration settings.
 """
 
 dornkirk = 'dornkirk.twistedmatrix.com'
-
 vagrant_address = '172.16.255.140'
 
 ENVIRONMENTS = {
@@ -22,5 +21,13 @@ ENVIRONMENTS = {
         },
         'user': 'root',
         'installPrivateData': False,
+    },
+    'buildbot': {
+        'hosts': ['buildbot.twistedmatrix.com'],
+        'roledefs': {
+            'nameserver': ['buildbot.twistedmatrix.com'],
+        },
+        'user': 'root',
+        'installPrivateData': True,
     }
 }
