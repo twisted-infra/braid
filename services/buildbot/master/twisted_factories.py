@@ -38,6 +38,7 @@ BASE_DEPENDENCIES = [
     'pyserial',
     'python-subunit',
     'constantly',
+    'cryptography',
 ]
 
 # Dependencies that don't work on PyPy
