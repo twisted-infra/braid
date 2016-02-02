@@ -137,4 +137,4 @@ class Buildbot(service.Service):
 
 
 
-addTasks(globals(), Buildbot('bb-master').getTasks())
+addTasks(globals(), Buildbot('bb-master').getTasks(role='buildbot'))
