@@ -152,6 +152,7 @@ class TwistedBaseFactory(BuildFactory):
                 ("pyasn1", "pyasn1", "pyasn1.__version__"),
                 ("cffi", "cffi", "cffi.__version__"),
                 ("constantly", "constantly", "constantly.__version__"),
+                ("cryptography", "cryptography", "cryptography.__version__"),
             ],
             pkg_resources=[
                 ("subunit", "subunit"),
