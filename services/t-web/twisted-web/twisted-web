@@ -1,7 +1,3 @@
-# For more information and general comments on editing this file
-# please refer to README.Debian
-#
-
 from twisted.internet import reactor
 from twisted.web import script, static, server, distrib, twcgi, vhost, rewrite
 from twisted.web import util as twutil, proxy
@@ -57,7 +53,7 @@ root.default = root.hosts['twistedmatrix.com']
 root.hosts['www.twistedmatrix.com'] = twutil.ChildRedirector('https://twistedmatrix.com/')
 tm = root.default
 
-tm.putChild('', twutil.Redirect('https://twistedmatrix.com/trac/'))
+tm.putChild('', twutil.Redirect('trac/'))
 
 # These are children no matter what domain you use
 root.putChild('mailman', twcgi.CGIDirectory('/usr/lib/cgi-bin'))

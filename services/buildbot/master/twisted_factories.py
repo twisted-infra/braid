@@ -10,9 +10,10 @@ from buildbot.process.factory import BuildFactory
 from buildbot.steps import shell, transfer
 from buildbot.steps.shell import ShellCommand
 from buildbot.process.properties import WithProperties
+from buildbot.steps.python_twisted import Trial
 
 from twisted_steps import ProcessDocs, ReportPythonModuleVersions, \
-    Trial, RemovePYCs, RemoveTrialTemp, LearnVersion, \
+    RemovePYCs, RemoveTrialTemp, LearnVersion, \
     SetBuildProperty
 
 from txbuildbot.lint import (

@@ -5,13 +5,16 @@
   action: locale_gen name=en_US.UTF-8
 
 - name: Install build requirements
-  action: apt pkg=build-essential,libffi-dev,libssl-dev,wget,git
+  action: apt pkg=build-essential,libffi-dev,libssl-dev,wget,git,subversion,libsqlite3-dev
 
 - name: Install Python
-  action: apt pkg=python-pip,python-virtualenv,python-dev
+  action: apt pkg=python-dev
 
-- name: Install Python dependencies
-  action: apt pkg=python-subversion,python-openssl,python-twisted
+- name: Install PostgreSQL
+  action: apt pkg=postgresql-9.3,postgresql-server-dev-9.3
+
+- name: Install authbind
+  action: apt pkg=authbind
 
 - name: Install other deps
   action: apt pkg=sqlite3,equivs,enscript

@@ -11,6 +11,9 @@ from braid.utils import confirm
 __all__ = ['config']
 
 class Buildbot(service.Service):
+
+    python = "python"
+
     def task_install(self):
         """
         Install buildbot.
@@ -18,14 +21,16 @@ class Buildbot(service.Service):
         self.bootstrap()
 
         with settings(user=self.serviceUser):
-            execute(self.update, _installDeps=True)
+            execute(self.update)
+            if not env.get('installPrivateData'):
+                execute(self.installTestData, force=True)
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
             run('/bin/mkdir -p ~/data')
             run('/bin/mkdir -p ~/data/build_products')
             run('/bin/ln -nsf ~/data/build_products {}/master/public_html/builds'.format(self.configDir))
             cron.install(self.serviceUser, '{}/crontab'.format(self.configDir))
 
-    def task_installTestData(self):
+    def task_installTestData(self, force=False):
         """
         Do test environment setup (with fake passwords, etc).
         """
@@ -37,7 +42,7 @@ class Buildbot(service.Service):
             puts('Copying testing private.py to %s' % (targetPath,))
             run('/bin/cp private.py.sample private.py')
             puts('Migrating SQLite db.')
-            run('~/.local/bin/buildbot upgrade-master')
+            run('~/virtualenv/bin/buildbot upgrade-master')
             puts('Copying migrated state.sqlite db to ~/data')
             run('/bin/mkdir -p ~/data')
             run('/bin/cp state.sqlite ~/data')
@@ -51,30 +56,51 @@ class Buildbot(service.Service):
                 'buildbot@wolfwood.twistedmatrix.com:/git/buildbot-secrets',
                 '~/private')
 
-    def update(self, _installDeps=False):
+    def update(self, updateData=False):
         """
         Update
         """
         with settings(user=self.serviceUser):
             run('mkdir -p ' + self.configDir)
             put(
-                os.path.dirname(__file__) + '/*', self.configDir,
+                os.path.dirname(__file__) + '/master/*', self.configDir + "/master/",
+                mirror_local_mode=True)
+            run('mkdir -p ' + self.configDir + "/twisted_view")
+            run('mkdir -p ' + self.configDir + "/twisted_view/buildbot_twisted_view")
+            put(
+                os.path.dirname(__file__) + '/twisted_view/*.py', self.configDir + "/twisted_view/",
+                mirror_local_mode=True)
+            put(
+                os.path.dirname(__file__) + '/twisted_view/buildbot_twisted_view/*', self.configDir + "/twisted_view/buildbot_twisted_view/",
                 mirror_local_mode=True)
             buildbotSource = os.path.join(self.configDir, 'buildbot-source')
-            git.branch('https://github.com/twisted-infra/buildbot', buildbotSource)
-            if _installDeps:
-                # sqlalchemy-migrate only works with a specific version of
-                # sqlalchemy.
-                pip.install('sqlalchemy==0.7.10 {}'.format(os.path.join(buildbotSource, 'master')),
-                        python='python')
-            else:
-                pip.install('--no-deps --upgrade {}'.format(os.path.join(buildbotSource, 'master')),
-                        python='python')
+            git.branch('https://github.com/buildbot/buildbot', buildbotSource)
+
+            with cd(buildbotSource):
+                run('npm install gulp')
+
+            self.venv.install("mock")
+
+            with cd(buildbotSource + "/pkg/"):
+                self.venv.run("setup.py install")
+
+            with cd(buildbotSource + "/master/"):
+                self.venv.run("setup.py install")
+
+            with cd(buildbotSource + "/www/base/"):
+                self.venv.run("setup.py install")
+
+            with cd(buildbotSource + "/www/waterfall_view/"):
+                self.venv.run("setup.py install")
+
+            with cd(buildbotSource + "/www/console_view/"):
+                self.venv.run("setup.py install")
+
+            with cd(self.configDir + '/twisted_view'):
+                self.venv.run('setup.py install')
 
             if env.get('installPrivateData'):
                 self.task_updatePrivateData()
-            else:
-                execute(self.task_installTestData)
 
     def updatefast(self):
         """
@@ -89,6 +115,20 @@ class Buildbot(service.Service):
                 os.path.dirname(__file__) + '/master/master.cfg',
                 self.configDir + "/master/",
                 mirror_local_mode=True)
+            put(
+                os.path.dirname(__file__) + '/master/txbuildbot/lint.py',
+                self.configDir + "/master/txbuildbot/lint.py",
+                mirror_local_mode=True)
+
+            put(
+                os.path.dirname(__file__) + '/twisted_view/setup.py', self.configDir + "/twisted_view/setup.py",
+                mirror_local_mode=True)
+            put(
+                os.path.dirname(__file__) + '/twisted_view/buildbot_twisted_view/*', self.configDir + "/twisted_view/buildbot_twisted_view/",
+                mirror_local_mode=True)
+
+            with cd(self.configDir + '/twisted_view'):
+                self.venv.run('setup.py install')
 
             if env.get('installPrivateData'):
                 self.task_updatePrivateData()

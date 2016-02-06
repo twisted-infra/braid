@@ -15,7 +15,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "dornkirk-staging" do |box|
   # Every Vagrant virtual environment requires a box to build off of.
-    box.vm.box = "ubuntu/precise64"
+    box.vm.box = "ubuntu/trusty64"
     box.vm.network :private_network, :ip => "172.16.255.140"
     box.vm.network "forwarded_port", guest: 22, host: 2522
   end

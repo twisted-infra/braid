@@ -4,62 +4,27 @@ from twisted.internet import defer
 from buildbot.process import buildstep
 from buildbot.steps.source.git import Git
 from buildbot.steps.source import Source
-from buildbot.status.results import SUCCESS
+from buildbot.process.results import SUCCESS
 
 
-
-def mungeBranch(branch):
-    """
-    Remove the leading prefix, that comes from svn branches.
-    """
-    if not branch:
-        return 'trunk'
-
-    for cutoff in ['/branches/', 'branches/', '/']:
-        if branch.startswith(cutoff):
-            branch = branch[len(cutoff):]
-            break
-    return branch
 
 def isTrunk(branch):
     """
-    Is the branch trunk?
+    Is the branch master?
     """
-    return mungeBranch(branch) == 'trunk'
+    return branch == 'master'
+
 
 def isRelease(branch):
     """
     Is the branch a release branch?
     """
-    return mungeBranch(branch).startswith('releases/')
-
-
-class TwistedGit(Git):
-    """
-    Temporary support for the transitionary stage between SVN and Git.
-    """
-
-    def startVC(self, branch, revision, patch):
-        """
-        * If a branch name starts with /branches/, cut it off before referring
-          to it in git commands.
-        * If a "git_revision" property is provided in the Change, use it
-          instead of the base revision number.
-        """
-        branch = mungeBranch(branch)
-        id = self.getRepository()
-        s = self.build.getSourceStamp(id)
-        if s.changes:
-            latest_properties = s.changes[-1].properties
-            if "git_revision" in latest_properties:
-                revision = latest_properties["git_revision"]
-        return Git.startVC(self, branch, revision, patch)
-
+    return branch.startswith('releases/')
 
 
 class MergeForward(Source):
     """
-    Merge with trunk.
+    Merge with master.
     """
     name = 'merge-forward'
     description = ['merging', 'forward']
@@ -67,7 +32,7 @@ class MergeForward(Source):
     haltOnFailure = True
 
 
-    def __init__(self, repourl, branch='trunk', **kwargs):
+    def __init__(self, repourl, branch='master', **kwargs):
         self.repourl = repourl
         self.branch = branch
         kwargs['env'] = {
@@ -107,7 +72,7 @@ class MergeForward(Source):
         return Source.finished(self, results)
 
     def _fetch(self):
-        return self._dovccmd(['fetch', self.repourl, 'trunk'])
+        return self._dovccmd(['fetch', self.repourl, 'master'])
 
     def _merge(self):
         return self._dovccmd(['merge',

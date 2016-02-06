@@ -13,6 +13,8 @@ __all__ = ['config']
 
 class Buildslave(service.Service):
 
+    python = 'python'
+
     serviceLocalDir = os.path.dirname(__file__)
 
     def task_install(self):
@@ -22,7 +24,6 @@ class Buildslave(service.Service):
         self.bootstrap()
 
         with settings(user=self.serviceUser):
-            pip.install('buildbot-slave', python='python')
             put(
                 os.path.join(self.serviceLocalDir, 'start'),
                 self.binDir,
@@ -34,6 +35,10 @@ class Buildslave(service.Service):
         Update configuration.
         """
         with settings(user=self.serviceUser):
+
+            self.venv.install('buildbot-slave==0.9.0b5')
+            self.venv.install('virtualenv')
+
             put(
                 os.path.join(self.serviceLocalDir, 'buildbot.tac'),
                 self.configDir)
