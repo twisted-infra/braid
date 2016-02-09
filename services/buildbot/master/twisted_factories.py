@@ -202,8 +202,7 @@ class TwistedBaseFactory(BuildFactory):
             # wheels on the fly and install them from user's cache.
             self.addStep(
                 shell.ShellCommand,
-                command = self.python + [
-                    "-m", virtualenv_module, '--clear', self._virtualEnvPath,
+                command = ['python', "-m", virtualenv_module, '--clear', self._virtualEnvPath,
                     ],
                 )
 
