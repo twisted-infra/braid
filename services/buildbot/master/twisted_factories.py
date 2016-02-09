@@ -126,7 +126,7 @@ class TwistedBaseFactory(BuildFactory):
     def _reportVersions(self, python=None, virtualenv=False):
         # Report the module versions
         if python == None:
-            python = self.python
+            python = ['python']
 
         if virtualenv:
             stepAdder = self.addVirtualEnvStep
@@ -202,7 +202,8 @@ class TwistedBaseFactory(BuildFactory):
             # wheels on the fly and install them from user's cache.
             self.addStep(
                 shell.ShellCommand,
-                command = ['python', "-m", virtualenv_module, '--clear', self._virtualEnvPath,
+                command = self.python + [
+                    "-m", virtualenv_module, '--clear', self._virtualEnvPath,
                     ],
                 )
 
@@ -210,7 +211,7 @@ class TwistedBaseFactory(BuildFactory):
             # Report the versions, since we're using the system ones. If it's a
             # virtualenv, it's up to the venv factory to report the versions
             # itself.
-            self._reportVersions()
+            self._reportVersions(python=self.python)
 
 
     def addTrialStep(self, virtualenv=False, **kw):
