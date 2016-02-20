@@ -11,6 +11,9 @@ from braid.utils import confirm
 __all__ = ['config']
 
 class Buildbot(service.Service):
+
+    python = 'python'
+
     def task_install(self):
         """
         Install buildbot.
@@ -68,7 +71,7 @@ class Buildbot(service.Service):
             if _installDeps:
                 # sqlalchemy-migrate only works with a specific version of
                 # sqlalchemy.
-                self.venv.install('sqlalchemy==0.7.10 {}'.format(os.path.join(buildbotSource, 'master')))
+                self.venv.install('sqlalchemy==0.7.10 sqlalchemy-migrate==0.7.2 {}'.format(os.path.join(buildbotSource, 'master')))
             else:
                 self.venv.install('--no-deps {}'.format(os.path.join(buildbotSource, 'master')))
 

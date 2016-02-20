@@ -15,17 +15,14 @@ slaves = [
 
     'egh-osx-1',
 
-    'hawkowl-debian7-py34',
-
     'tavendo-freebsd-10.1-amd64',
-
-    'tomprince-socrates-winxp-1',
 
     'rax-ubuntu1504-1',
     'rax-ubuntu1504-2',
     'rax-ubuntu1504-3',
 
     'rax-ubuntu1510-1',
+    'rax-ubuntu1510-2',
 
     'rax-debian8-1',
     'rax-debian8-2',
