@@ -31,6 +31,9 @@ from twisted.web.wsgi import WSGIResource
 from twisted.web.resource import Resource
 from twisted.internet import reactor
 
+import django
+django.setup()
+
 from django.core.handlers.wsgi import WSGIHandler
 
 
@@ -69,5 +72,5 @@ class VHostMonsterResource(Resource):
 application = Application("SpeedCenter")
 resource = VHostMonsterResource(
     WSGIResource(reactor, reactor.getThreadPool(), WSGIHandler()))
-site = Site(resource, os.path.expanduser('~/log/httpd.log'))
+site = Site(resource, logPath=os.path.expanduser('~/log/httpd.log'))
 TCPServer(8123, site, interface='127.0.0.1').setServiceParent(application)

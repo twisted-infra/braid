@@ -64,6 +64,7 @@ class Codespeed(service.Service):
                 mirror_local_mode=True)
 
             git.branch('https://github.com/tobami/codespeed.git', '~/codespeed')
+            self.venv.install_twisted()
             self.venv.install('-r ~/codespeed/requirements.txt')
 
             if env.get('installTestData'):
