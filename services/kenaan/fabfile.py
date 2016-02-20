@@ -25,7 +25,6 @@ class Kenaan(service.Service):
         self.bootstrap()
 
         with settings(user=self.serviceUser):
-            self.venv.install('amptrac')
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
             for bin in ['alert', 'commit', 'message', 'ticket']:
                 run('/bin/ln -nsf {1}/{0} {2}/{0}'.format(bin, self.configDir, self.binDir))
