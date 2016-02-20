@@ -8,6 +8,8 @@ from buildbot.process.buildstep import LogLineObserver, OutputProgressObserver
 from buildbot.process.buildstep import RemoteShellCommand, BuildStep
 from buildbot.steps.shell import ShellCommand, SetProperty
 
+from zlib import compress
+
 try:
     import cStringIO
     StringIO = cStringIO
@@ -721,7 +723,7 @@ class ReportPythonModuleVersions(ShellCommand):
         # Cannot have newlines in this code, or it isn't compatible on
         # both POSIX and Windows.  Also, quotes make things really
         # confusing, so don't have any literal quotes.
-        return 'from binascii import unhexlify; exec(unhexlify(b"%s"))' % (checks.encode('hex'),)
+        return 'from binascii import unhexlify; from zlib import decompress; exec(decompress(unhexlify(b"%s")))' % (compress(checks).encode('hex'),)
 
 
     def start(self):

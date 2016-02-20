@@ -27,7 +27,7 @@ application = service.Application('trac')
 # Setup trac server process monitor
 processMonitor = procmon.ProcessMonitor()
 processMonitor.addProcess('trac-server', [
-    'twistd',
+    expanduser('~/virtualenv/bin/twistd'),
     '--reactor', 'epoll',
     '--logfile', expanduser('~/log/trac-twistd.log'),
     '--pidfile', expanduser('~/run/trac-twistd.pid'),

@@ -13,6 +13,8 @@ __all__ = ['config']
 
 class Buildslave(service.Service):
 
+    python = 'python'
+
     serviceLocalDir = os.path.dirname(__file__)
 
     def task_install(self):
