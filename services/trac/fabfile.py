@@ -15,16 +15,16 @@ __all__ = ['config']
 
 class Trac(service.Service):
 
-    python = "python2.7"
+    python = "python"
 
     def task_install(self):
         """
         Install trac.
         """
-        self.bootstrap(python='system')
+        self.bootstrap(venv_site_packages=True)
 
         with settings(user=self.serviceUser):
-            pip.install('psycopg2', python='system')
+            self.venv.install('psycopg2')
             self.update(_installDeps=True)
 
             run('/bin/mkdir -p ~/svn')
@@ -57,18 +57,19 @@ class Trac(service.Service):
             put(os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
 
-            pip.install('trac==1.0.9', python='system')
-            pip.install('pygments==1.6', python='system')
+            self.venv.install_twisted()
+            self.venv.install('trac==1.0.10')
+            self.venv.install('pygments==1.6')
 
             if _installDeps:
-                pip.install('git+https://github.com/twisted-infra/twisted-trac-plugins.git', python='system')
+                self.venv.install('git+https://github.com/twisted-infra/twisted-trac-plugins.git')
             else:
-                pip.install('--no-deps --upgrade git+https://github.com/twisted-infra/twisted-trac-plugins.git', python='system')
-            pip.install('spambayes==1.1b2', python='system')
+                self.venv.install('--no-deps --upgrade git+https://github.com/twisted-infra/twisted-trac-plugins.git')
+            self.venv.install('spambayes==1.1b2')
 
-            pip.install('TracAccountManager==0.4.4', python='system')
-            pip.install('svn+https://trac-hacks.org/svn/defaultccplugin/tags/0.2/', python='system')
-            pip.install('svn+https://svn.edgewall.org/repos/trac/plugins/1.0/spam-filter@14340', python='system')
+            self.venv.install('TracAccountManager==0.4.4')
+            self.venv.install('svn+https://trac-hacks.org/svn/defaultccplugin/tags/0.2/')
+            self.venv.install('svn+https://svn.edgewall.org/repos/trac/plugins/1.0/spam-filter@14340')
 
 
     def task_update(self):
