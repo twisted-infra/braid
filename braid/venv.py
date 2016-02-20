@@ -17,14 +17,15 @@ class VirtualEnvironment(object):
         self._user = user
 
 
-    def create(self):
+    def create(self, site_packages=False):
         """
         Create the virtualenv. This uses "/usr/bin/env python2"'s virtualenv
         module.
         """
         with settings(user=self._user):
             run(("/usr/bin/env python2 -m virtualenv --clear "
-                 "-p {} {}").format(self._python, self._location))
+                 "-p {} {} {}").format(self._python, self._location,
+                                       '--system-site-packages' if site_packages else ''))
 
         # https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
         self.install("ndg-httpsclient")

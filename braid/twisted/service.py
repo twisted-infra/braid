@@ -49,7 +49,7 @@ class Service(tasks.Service):
         readmeContext['tasks'] = '\n'.join(tasks)
         return readmeFile.getContent().format(**readmeContext)
 
-    def bootstrap(self):
+    def bootstrap(self, venv_site_packages=False):
         # Create the user only if it does not already exist
         users.createService(self.serviceUser)
 
@@ -57,7 +57,7 @@ class Service(tasks.Service):
 
             # Create a virtualenv in the service user's folder
             # It'll be a PyPy venv by default, unless self.python is changed
-            self.venv.create()
+            self.venv.create(site_packages=venv_site_packages)
 
             # Create base directory setup
             run('/bin/mkdir -p {} {} {} {}'.format(

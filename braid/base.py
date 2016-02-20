@@ -29,17 +29,14 @@ def bootstrap():
     package.install(['libssl-dev'])
 
     package.install(['python2.7', 'python2.7-dev'])
-    # gcc is needed for 'pip install'
-    package.install(['gcc', 'python-pip'])
+    # gcc and svn is needed for 'pip install'
+    package.install(['gcc', 'subversion'])
     # For trac
-    package.install(['python-subversion', 'enscript'])
+    package.install(['enscript', 'python-subversion'])
     # For equivs
     package.install(['equivs'])
     # For buildbot/codespeed
     package.install(['sqlite3'])
-    # Development and deployment
-    package.install(['python-virtualenv'])
-    package.install(['python-twisted', 'python-openssl'])
     pypy.install()
     authbind.install()
     git.install()
