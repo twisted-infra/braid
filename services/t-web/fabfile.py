@@ -38,7 +38,6 @@ class TwistedWeb(service.Service):
         equivs.installEquiv(self.serviceName, 'httpd')
 
         with settings(user=self.serviceUser):
-            pip.install('txsni', python='pypy')
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
             run('/bin/ln -nsf {}/start-maintenance {}/start-maintenance'.format(self.configDir, self.binDir))
             self.update()
@@ -87,12 +86,12 @@ class TwistedWeb(service.Service):
         """
         Update config.
         """
+        self.venv.install_twisted()
+
         with settings(user=self.serviceUser):
             run('mkdir -p ' + self.configDir)
             put(os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
-
-            self.venv.install_twisted()
 
 
     def task_update(self):
