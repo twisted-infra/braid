@@ -126,7 +126,7 @@ class TwistedBaseFactory(BuildFactory):
     def _reportVersions(self, python=None, virtualenv=False):
         # Report the module versions
         if python == None:
-            python = self.python
+            python = ['python']
 
         if virtualenv:
             stepAdder = self.addVirtualEnvStep
@@ -151,6 +151,7 @@ class TwistedBaseFactory(BuildFactory):
                 ("pyasn1", "pyasn1", "pyasn1.__version__"),
                 ("cffi", "cffi", "cffi.__version__"),
                 ("constantly", "constantly", "constantly.__version__"),
+                ("cryptography", "cryptography", "cryptography.__version__"),
             ],
             pkg_resources=[
                 ("subunit", "subunit"),
@@ -210,7 +211,7 @@ class TwistedBaseFactory(BuildFactory):
             # Report the versions, since we're using the system ones. If it's a
             # virtualenv, it's up to the venv factory to report the versions
             # itself.
-            self._reportVersions()
+            self._reportVersions(python=self.python)
 
 
     def addTrialStep(self, virtualenv=False, **kw):
