@@ -38,6 +38,7 @@ BASE_DEPENDENCIES = [
     'pyserial',
     'python-subunit',
     'constantly',
+    'appdirs',
 ]
 
 # Dependencies that don't work on PyPy
