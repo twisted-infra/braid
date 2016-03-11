@@ -31,7 +31,7 @@ def isRelease(branch):
     """
     Is the branch a release branch?
     """
-    return mungeBranch(branch).startswith('releases/')
+    return mungeBranch(branch).startswith('release-')
 
 
 class TwistedGit(Git):
