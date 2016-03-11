@@ -21,11 +21,13 @@ def mungeBranch(branch):
             break
     return branch
 
+
 def isTrunk(branch):
     """
     Is the branch trunk?
     """
     return mungeBranch(branch) == 'trunk'
+
 
 def isRelease(branch):
     """
