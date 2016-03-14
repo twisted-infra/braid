@@ -683,7 +683,7 @@ class TwistedCheckerBuildFactory(TwistedBaseFactory):
         )
         self.addVirtualEnvStep(
             shell.ShellCommand,
-            command=['pip', 'install', 'twistedchecker==0.4.0'])
+            command=['pip', 'install', 'virtualenv', 'tox'])
         self.addVirtualEnvStep(CheckCodesByTwistedChecker, want_stderr=False)
 
 

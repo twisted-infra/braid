@@ -260,7 +260,8 @@ class CheckCodesByTwistedChecker(LintStep):
     involved in the lastest build.
     """
     name = 'run-twistedchecker'
-    command = ['twistedchecker', Property('test-case-name', default='twisted')]
+    command = ['tox', '-r', '-e', 'twistedchecker',
+               Property('test-case-name', default='twisted')]
     description = ["checking", "codes"]
     descriptionDone = ["check", "results"]
     prefixModuleName = "************* Module "
@@ -378,7 +379,8 @@ class PyFlakes(LintStep):
     Run the pyflakes tox environment over the code.
     """
     name = 'pyflakes'
-    command = ['tox', '-e', 'pyflakes', Property('test-case-name', default='')]
+    command = ['tox', '-r', '-e', 'pyflakes',
+               Property('test-case-name', default='')]
     description = ["running", "pyflakes"]
     descriptionDone = ['pyflakes']
 
