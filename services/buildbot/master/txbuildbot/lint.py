@@ -290,9 +290,7 @@ class CheckCodesByTwistedChecker(LintStep):
         warnings = {}
         currentModule = None
         warningsCurrentModule = []
-        for line in StringIO.StringIO(logText):
-            # Mostly get rid of the trailing \n
-            line = line.strip("\n")
+        for line in filterTox(logText):
             if line.startswith(cls.prefixModuleName):
                 # Save results for previous module
                 if currentModule:
@@ -389,14 +387,10 @@ class PyFlakes(LintStep):
     @classmethod
     def computeErrors(cls, logText):
         warnings = set()
-        for line in StringIO.StringIO(logText):
-            # Mostly get rid of the trailing \n
-            line = line.strip("\n")
-            # We only want pyflakes output
-            if line.startswith("twisted/"):
-                error = PyFlakesError.fromLine(line)
-                if error:
-                    warnings.add(error)
+        for line in filterTox(logText):
+            error = PyFlakesError.fromLine(line)
+            if error:
+                warnings.add(error)
         return {'pyflakes': warnings}
 
 
@@ -409,3 +403,27 @@ class PyFlakes(LintStep):
         if self.worse:
             return WARNINGS
         return SUCCESS
+
+
+def filterTox(logText):
+    """
+    Filter out the tox output for lint tox envs -- where there's only one
+    command.
+    """
+    toxStatus = 'NOT_STARTED'
+
+    for line in StringIO.StringIO(logText):
+
+        if " runtests: commands[0] | " in line:
+            # Tox has started, further lines should be read
+            toxStatus = 'STARTED'
+
+        elif "ERROR: InvocationError:" in line:
+            # Tox is finished
+            toxStatus = 'FINISHED'
+
+        elif '___ summary ___' in line:
+            toxStatus = 'FINISHED'
+
+        elif toxStatus == 'STARTED':
+            yield line.strip("\n")
