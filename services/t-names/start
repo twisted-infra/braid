@@ -3,7 +3,7 @@
 Z=~/config/zones
 export PYTHONPATH=$PYTHONPATH:$Z
 
-authbind --deep ~pypy/bin/twistd \
+authbind --deep ~/virtualenv/bin/twistd \
     --logfile ~/log/twistd.log \
     --pidfile ~/run/twistd.pid \
     dns \

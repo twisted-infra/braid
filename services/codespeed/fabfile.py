@@ -24,14 +24,13 @@ class Codespeed(service.Service):
         Install codespeed, a benchmark reporting tool
         """
         # Bootstrap a new service environment
-        self.bootstrap(python='system')
+        self.bootstrap()
 
         self.update()
 
         with settings(user=self.serviceUser):
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
             run('mkdir -p ~/data')
-            pip.install('-r ~/codespeed/requirements.txt', python='system')
             execute(self.update)
             cron.install(self.serviceUser, '{}/crontab'.format(self.configDir))
             self.task_generateSecretKey()
@@ -65,6 +64,8 @@ class Codespeed(service.Service):
                 mirror_local_mode=True)
 
             git.branch('https://github.com/tobami/codespeed.git', '~/codespeed')
+            self.venv.install_twisted()
+            self.venv.install('-r ~/codespeed/requirements.txt')
 
             if env.get('installTestData'):
                 exceute(self.task_installTestData)
@@ -77,7 +78,7 @@ class Codespeed(service.Service):
             path = '~/config:~/codespeed/'
             run('PYTHONPATH={} '
                 'DJANGO_SETTINGS_MODULE=twistedcodespeed.local_settings '
-                '~/.local/bin/django-admin.py {}'.format(path, ' '.join(args)))
+                '~/virtualenv/bin/django-admin.py {}'.format(path, ' '.join(args)))
 
     def task_installTestData(self):
         """

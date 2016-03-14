@@ -15,17 +15,14 @@ slaves = [
 
     'egh-osx-1',
 
-    'hawkowl-debian7-py34',
-
     'tavendo-freebsd-10.1-amd64',
-
-    'tomprince-socrates-winxp-1',
 
     'rax-ubuntu1504-1',
     'rax-ubuntu1504-2',
     'rax-ubuntu1504-3',
 
     'rax-ubuntu1510-1',
+    'rax-ubuntu1510-2',
 
     'rax-debian8-1',
     'rax-debian8-2',
@@ -35,6 +32,9 @@ slaves = [
 
     'fedora-fedora22-1',
     'fedora-fedora22-2',
+
+    'fedora-fedora23-1',
+    'fedora-fedora23-2',
 
     'fedora-rhel7-1',
     'fedora-rhel7-2',
@@ -48,7 +48,7 @@ slaves += ['rackspace-ubuntu-12.04-%d' % (i,) for i in range(1,3)]
 bot_info = {}
 # Generate slaves with default password and no notification for checkconfig
 for slave in slaves:
-	bot_info[slave]=('passwd',[])
+    bot_info[slave]=('passwd',[])
 
 # Password for irc bot
 # Doesn't connect to irc if not present
@@ -60,6 +60,8 @@ for slave in slaves:
 
 # Password for pb debug port
 debugPassword = "cd3dad27_0f84b396"
+
+codecov_twisted_token = 'invalid'
 
 # web status options
 # - default for testing deployments: port 8080 on localhost

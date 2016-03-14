@@ -111,9 +111,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.staticfiles',
     'codespeed',
-    'south',
 )
-SOUTH_TESTS_MIGRATE = False
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASEDIR, "sitestatic")
