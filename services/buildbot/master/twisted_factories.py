@@ -703,7 +703,7 @@ class PyFlakesBuildFactory(TwistedBaseFactory):
         )
         self.addVirtualEnvStep(
             shell.ShellCommand,
-            command=['pip', 'install', 'pyflakes'])
+            command=['pip', 'install', 'virtualenv', 'tox'])
         self.addVirtualEnvStep(PyFlakes)
 
 

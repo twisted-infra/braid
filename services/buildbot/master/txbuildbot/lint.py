@@ -373,13 +373,14 @@ class PyFlakesError(util.FancyEqMixin, object):
         return ("<PyFlakesError file=%s line=%d text=%r>" %
             (self.file, int(self.line), self.text))
 
+
+
 class PyFlakes(LintStep):
     """
-    Run TwistedChecker over source codes to check for new warnings
-    involved in the lastest build.
+    Run the pyflakes tox environment over the code.
     """
     name = 'pyflakes'
-    command = ['pyflakes', Property('test-case-name', default='twisted')]
+    command = ['tox', '-e', 'pyflakes', Property('test-case-name', default='')]
     description = ["running", "pyflakes"]
     descriptionDone = ['pyflakes']
 
@@ -387,19 +388,22 @@ class PyFlakes(LintStep):
 
     @classmethod
     def computeErrors(cls, logText):
-        warnings = set() 
+        warnings = set()
         for line in StringIO.StringIO(logText):
             # Mostly get rid of the trailing \n
             line = line.strip("\n")
-            error = PyFlakesError.fromLine(line)
-            if error:
-                warnings.add(error)
-        return {'pyflakes':warnings}
+            # We only want pyflakes output
+            if line.startswith("twisted/"):
+                error = PyFlakesError.fromLine(line)
+                if error:
+                    warnings.add(error)
+        return {'pyflakes': warnings}
 
 
     @classmethod
     def formatErrors(cls, newErrors):
         return map(str, sorted(newErrors['pyflakes']))
+
 
     def evaluateCommand(self, cmd):
         if self.worse:
