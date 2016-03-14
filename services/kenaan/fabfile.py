@@ -25,7 +25,6 @@ class Kenaan(service.Service):
         self.bootstrap()
 
         with settings(user=self.serviceUser):
-            pip.install('amptrac')
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
             for bin in ['alert', 'commit', 'message', 'ticket']:
                 run('/bin/ln -nsf {1}/{0} {2}/{0}'.format(bin, self.configDir, self.binDir))
@@ -75,6 +74,8 @@ class Kenaan(service.Service):
                 "message.py", "start", "ticket", "ticket.py"
             ]
             run('mkdir -p ' + self.configDir)
+
+            self.venv.install("amptrac")
 
             for f in filesToCopy:
                 put(os.path.join(os.path.dirname(__file__), f), self.configDir,

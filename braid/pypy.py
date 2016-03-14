@@ -5,25 +5,24 @@ from fabric.api import cd, task, sudo, abort
 from braid import info
 from braid.utils import fails
 
+pypyVersion = "4.0.1"
+
 pypyURLs = {
-    'x86_64': 'https://bitbucket.org/pypy/pypy/downloads/pypy-2.6.0-linux64.tar.bz2',
-    'x86': 'https://bitbucket.org/pypy/pypy/downloads/pypy-2.6.0-linux.tar.bz2',
+    'x86_64': 'https://bitbucket.org/pypy/pypy/downloads/pypy-{version}-linux64.tar.bz2',
+    'x86': 'https://bitbucket.org/pypy/pypy/downloads/pypy-{version}-linux.tar.bz2',
     }
 pypyDirs = {
-    'x86_64': '/opt/pypy-2.6.0-linux64',
-    'x86': '/opt/pypy-2.6.0-linux',
+    'x86_64': '/opt/pypy-{version}-linux64',
+    'x86': '/opt/pypy-{version}-linux',
     }
-
-pipURL = 'https://bootstrap.pypa.io/get-pip.py'
-
 
 @task
 def install():
     arch = info.arch()
     if re.match('i?86', arch):
         arch = 'x86'
-    pypyURL = pypyURLs.get(arch)
-    pypyDir = pypyDirs.get(arch)
+    pypyURL = pypyURLs.get(arch).format(version=pypyVersion)
+    pypyDir = pypyDirs.get(arch).format(version=pypyVersion)
     if pypyURL is None or pypyDir is None:
         abort("Can't install pypy on unknown architecture.")
 
@@ -37,8 +36,5 @@ def install():
 
     with cd('/opt'):
 
-        for url in pypyURL, pipURL:
-            sudo('/usr/bin/wget -nc {}'.format(url))
+        sudo('/usr/bin/wget -nc {}'.format(pypyURL))
         sudo('/bin/tar xf {}'.format(path.basename(pypyURL)))
-        sudo('~pypy/bin/pypy {}'.format(path.join('/opt/', path.basename(pipURL))), pty=False)
-        sudo('~pypy/bin/pip install Twisted[tls]==15.2.1')

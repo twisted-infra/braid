@@ -35,6 +35,7 @@ class TwistedNames(service.Service):
         Update config.
         """
         with settings(user=self.serviceUser):
+            self.venv.install_twisted()
             run('mkdir -p ' + self.configDir)
             put(
                 os.path.dirname(__file__) + '/*', self.configDir,
