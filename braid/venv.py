@@ -48,8 +48,8 @@ class VirtualEnvironment(object):
         """
         Install Twisted and its dependencies.
         """
-        self.install("Twisted==15.5")
-        self.install("pyOpenSSL==0.15.1")
+        self.install("Twisted==16.0")
+        self.install("pyOpenSSL==16.0")
         self.install("service_identity==14.0")
         self.install("txsni==0.1.5")
 
