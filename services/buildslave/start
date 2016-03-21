@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PATH=~/.local/bin:$PATH
+PATH=~/virtualenv/bin:$PATH
 
 twistd \
 	--logfile ~/log/twistd.log \
