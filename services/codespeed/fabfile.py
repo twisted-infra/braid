@@ -5,7 +5,7 @@ from StringIO import StringIO
 import os
 import random
 
-from fabric.api import execute, run, settings, env, put
+from fabric.api import execute, run, settings, env, put, cd
 
 from braid import git, cron, pip, archive, utils, package
 from braid.twisted import service
@@ -64,6 +64,9 @@ class Codespeed(service.Service):
                 mirror_local_mode=True)
 
             git.branch('https://github.com/tobami/codespeed.git', '~/codespeed')
+            with cd("~/codespeed"):
+                run("git checkout 9893b87de02bdc1ea6256207de5cc010b095b3a5")
+                run("git reset --hard")
             self.venv.install_twisted()
             self.venv.install('-r ~/codespeed/requirements.txt')
 

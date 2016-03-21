@@ -32,7 +32,8 @@ from twisted.web.resource import Resource
 from twisted.internet import reactor
 
 import django
-django.setup()
+if hasattr(django, "setup"):
+    django.setup()
 
 from django.core.handlers.wsgi import WSGIHandler
 
