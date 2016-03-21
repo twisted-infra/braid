@@ -101,6 +101,7 @@ class MergeForward(Source):
         d.addCallbacks(self.finished, self.checkDisconnect)
         d.addErrback(self.failed)
 
+
     def finished(self, results):
         if results == SUCCESS:
             self.step_status.setText(['merge', 'forward'])
@@ -108,21 +109,26 @@ class MergeForward(Source):
             self.step_status.setText(['merge', 'forward', 'failed'])
         return Source.finished(self, results)
 
+
     def _fetch(self):
         return self._dovccmd(['fetch', self.repourl, 'trunk'])
+
 
     def _merge(self):
         return self._dovccmd(['merge',
                               '--no-ff', '--no-stat',
                               'FETCH_HEAD'])
 
+
     def _getPreviousVersion(self):
         return self._dovccmd(['rev-parse', 'HEAD~1'],
                               collectStdout=True)
 
+
     def _getMergeBase(self):
         return self._dovccmd(['merge-base', 'HEAD', 'FETCH_HEAD'],
                               collectStdout=True)
+
 
     def _setLintVersion(self, version):
         self.setProperty("lint_revision", version.strip(), "merge-forward")
