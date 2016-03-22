@@ -41,8 +41,8 @@ class VirtualEnvironment(object):
         concern.
         """
         with settings(user=self._user):
-            run("{} -m pip install -U {}".format(
-                path.join(self._location, "bin", "python"), package), pty=False)
+            pip = path.join(self._location, "bin", "pip")
+            run("{} install -U {}".format(pip, package), pty=False)
 
     def install_twisted(self):
         """
