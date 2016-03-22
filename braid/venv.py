@@ -28,8 +28,8 @@ class VirtualEnvironment(object):
                                        '--system-site-packages' if site_packages else ''))
 
         # https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
-        self.install("ndg-httpsclient")
         self.install("pip")
+        self.install("requests[security]")
         self.install("setuptools")
         self.install("wheel")
 
