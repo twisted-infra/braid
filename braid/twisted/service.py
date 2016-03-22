@@ -2,7 +2,7 @@ from cStringIO import StringIO
 
 from fabric.api import settings, run, put
 
-from braid import pip, tasks, users, venv
+from braid import tasks, users, venv
 
 from twisted.python.filepath import FilePath
 

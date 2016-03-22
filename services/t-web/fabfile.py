@@ -9,7 +9,7 @@ from fabric.api import run, settings, env, put, sudo, local
 from os import path
 from twisted.python.util import sibpath
 
-from braid import authbind, git, cron, archive, pip
+from braid import authbind, cron, archive
 from braid.twisted import service
 from braid.debian import equivs
 from braid.tasks import addTasks
