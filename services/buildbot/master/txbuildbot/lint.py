@@ -260,7 +260,8 @@ class CheckCodesByTwistedChecker(LintStep):
     involved in the lastest build.
     """
     name = 'run-twistedchecker'
-    command = ['twistedchecker', Property('test-case-name', default='twisted')]
+    command = ['tox', '-r', '-e', 'twistedchecker',
+               Property('test-case-name', default='twisted')]
     description = ["checking", "codes"]
     descriptionDone = ["check", "results"]
     prefixModuleName = "************* Module "
@@ -290,9 +291,7 @@ class CheckCodesByTwistedChecker(LintStep):
         warnings = {}
         currentModule = None
         warningsCurrentModule = []
-        for line in StringIO.StringIO(logText):
-            # Mostly get rid of the trailing \n
-            line = line.strip("\n")
+        for line in filterTox(logText):
             if line.startswith(cls.prefixModuleName):
                 # Save results for previous module
                 if currentModule:
@@ -373,13 +372,15 @@ class PyFlakesError(util.FancyEqMixin, object):
         return ("<PyFlakesError file=%s line=%d text=%r>" %
             (self.file, int(self.line), self.text))
 
+
+
 class PyFlakes(LintStep):
     """
-    Run TwistedChecker over source codes to check for new warnings
-    involved in the lastest build.
+    Run the pyflakes tox environment over the code.
     """
     name = 'pyflakes'
-    command = ['pyflakes', Property('test-case-name', default='twisted')]
+    command = ['tox', '-r', '-e', 'pyflakes',
+               Property('test-case-name', default='')]
     description = ["running", "pyflakes"]
     descriptionDone = ['pyflakes']
 
@@ -387,21 +388,44 @@ class PyFlakes(LintStep):
 
     @classmethod
     def computeErrors(cls, logText):
-        warnings = set() 
-        for line in StringIO.StringIO(logText):
-            # Mostly get rid of the trailing \n
-            line = line.strip("\n")
+        warnings = set()
+        for line in filterTox(logText):
             error = PyFlakesError.fromLine(line)
             if error:
                 warnings.add(error)
-        return {'pyflakes':warnings}
+        return {'pyflakes': warnings}
 
 
     @classmethod
     def formatErrors(cls, newErrors):
         return map(str, sorted(newErrors['pyflakes']))
 
+
     def evaluateCommand(self, cmd):
         if self.worse:
             return WARNINGS
         return SUCCESS
+
+
+def filterTox(logText):
+    """
+    Filter out the tox output for lint tox envs -- where there's only one
+    command.
+    """
+    toxStatus = 'NOT_STARTED'
+
+    for line in StringIO.StringIO(logText):
+
+        if " runtests: commands[0] | " in line:
+            # Tox has started, further lines should be read
+            toxStatus = 'STARTED'
+
+        elif "ERROR: InvocationError:" in line:
+            # Tox is finished
+            toxStatus = 'FINISHED'
+
+        elif '___ summary ___' in line:
+            toxStatus = 'FINISHED'
+
+        elif toxStatus == 'STARTED':
+            yield line.strip("\n")
