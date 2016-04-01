@@ -9,7 +9,6 @@ from buildbot.process.base import Build
 from buildbot.process.factory import BuildFactory
 from buildbot.steps import shell, transfer
 from buildbot.steps.shell import ShellCommand
-from buildbot.process.properties import WithProperties
 
 from twisted_steps import ProcessDocs, ReportPythonModuleVersions, \
     Trial, RemovePYCs, RemoveTrialTemp, LearnVersion, \
