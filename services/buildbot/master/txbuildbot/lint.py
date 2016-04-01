@@ -380,7 +380,7 @@ class PyFlakes(LintStep):
     """
     name = 'pyflakes'
     command = ['tox', '-r', '-e', 'pyflakes',
-               Property('test-case-name', default='')]
+               Property('test-case-name', default='twisted')]
     description = ["running", "pyflakes"]
     descriptionDone = ['pyflakes']
 
