@@ -371,8 +371,10 @@ class TwistedReactorsBuildFactory(TwistedBaseFactory):
 
 class TwistedToxBuildFactory(BuildFactory):
 
-    def __init__(self, source, toxEnv, allowSystemPackages=False,
+    def __init__(self, source, toxEnvs, allowSystemPackages=False,
                  platform="unix"):
+
+        BuildFactory.__init__(self, source)
 
         assert platform in ["unix", "windows"]
 
@@ -384,16 +386,19 @@ class TwistedToxBuildFactory(BuildFactory):
 
         self.addStep(
             shell.ShellCommand,
+            description="clearing virtualenv".split(" "),
             command = ["python", "-m", "virtualenv", '--clear', self._virtualEnvPath],
         )
 
         self.addVirtualEnvStep(
             shell.ShellCommand,
-            command=["python", "-m", "pip", "install", "tox"]
+            description="installing tox".split(" "),
+            command=["python", "-m", "pip", "install", "tox", "virtualenv"]
         )
 
-        self.addVirtualEnvStep(TrialTox,
-                               toxEnv=toxEnv)
+        for env in toxEnvs:
+            self.addVirtualEnvStep(TrialTox,
+                                   toxEnv=env)
 
 
     @property
