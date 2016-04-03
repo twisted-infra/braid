@@ -107,30 +107,39 @@ class TrialTox(ShellCommand):
     progressMetrics = ('output', 'tests', 'test.log')
     flunkOnFailure = True
 
-    def __init__(self, toxEnv=None, tests=[], commandNumber=0, **kwargs):
+    def __init__(self, toxEnv=None, reactor=None, tests=[], commandNumber=0,
+                 **kwargs):
 
         ShellCommand.__init__(self, **kwargs)
 
         self._toxEnv = toxEnv
         self._tests = tests
         self._commandNumber = commandNumber
+        self._reactor = reactor
 
         self.logfiles = {
             "test.log": "build/" + self._toxEnv + "/tmp/_trial_temp/test.log"
         }
 
     def start(self):
-
         self.command = ["tox", "-r", "-e", self._toxEnv] + self._tests
-
         ShellCommand.start(self)
+
 
     def rtext(self, fmt='%s'):
         return fmt % (self._toxEnv)
 
 
-    def commandComplete(self, cmd):
+    def setupEnvironment(self, cmd):
+        ShellCommand.setupEnvironment(self, cmd)
+        e = cmd.args['env']
+        if e is None:
+            cmd.args['env'] = {'TWISTED_REACTOR': self._reactor}
+        else:
+            cmd.args['env']['TWISTED_REACTOR'] = self._reactor
 
+
+    def commandComplete(self, cmd):
         # figure out all status, then let the various hook functions return
         # different pieces of it
 
@@ -211,13 +220,13 @@ class TrialTox(ShellCommand):
         self.text2 = [text2]
 
 
-
     def addTestResult(self, testname, results, text, tlog):
         if self.reactor is not None:
             testname = (self.reactor,) + testname
         tr = builder.TestResult(testname, results, text, logs={'log': tlog})
         #self.step_status.build.addTestResult(tr)
         self.build.build_status.addTestResult(tr)
+
 
     def createSummary(self, loog):
         output = "\n".join(filterTox(loog.getText(), commandNumber=self._commandNumber))
@@ -301,11 +310,15 @@ class TrialTox(ShellCommand):
             lines.sort()
             self.addCompleteLog("warnings", "".join(lines))
 
+
     def evaluateCommand(self, cmd):
         return self.results
 
+
     def getText(self, cmd, results):
         return self.text
+
+
     def getText2(self, cmd, results):
         return self.text2
 

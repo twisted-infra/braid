@@ -371,8 +371,8 @@ class TwistedReactorsBuildFactory(TwistedBaseFactory):
 
 class TwistedToxBuildFactory(BuildFactory):
 
-    def __init__(self, source, toxEnvs, allowSystemPackages=False,
-                 platform="unix"):
+    def __init__(self, source, toxEnvs, reactor="default",
+                 allowSystemPackages=False, platform="unix"):
 
         BuildFactory.__init__(self, source)
 
@@ -398,6 +398,7 @@ class TwistedToxBuildFactory(BuildFactory):
 
         for env in toxEnvs:
             self.addVirtualEnvStep(TrialTox,
+                                   reactor=reactor,
                                    toxEnv=env)
 
 
