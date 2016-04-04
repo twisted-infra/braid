@@ -107,7 +107,7 @@ class TrialTox(ShellCommand):
     progressMetrics = ('output', 'tests', 'test.log')
     flunkOnFailure = True
 
-    def __init__(self, toxEnv=None, reactor=None, tests=[], commandNumber=0,
+    def __init__(self, toxEnv, reactor, tests=[], commandNumber=0,
                  **kwargs):
 
         ShellCommand.__init__(self, **kwargs)
@@ -121,13 +121,19 @@ class TrialTox(ShellCommand):
             "test.log": "build/" + self._toxEnv + "/tmp/_trial_temp/test.log"
         }
 
+        self.name = self._reactor
+
+        self.description = ["testing", "(%s)" % self._reactor]
+        self.descriptionDone = ["tests"]
+
+
     def start(self):
-        self.command = ["tox", "-r", "-e", self._toxEnv] + self._tests
+        self.command = ["tox", "-r", "-e", self._toxEnv, "twisted.test.test_twistd"] + self._tests
         ShellCommand.start(self)
 
 
     def rtext(self, fmt='%s'):
-        return fmt % (self._toxEnv)
+        return fmt % (self._toxEnv + " TWISTED_REACTOR=" + self._reactor)
 
 
     def setupEnvironment(self, cmd):
