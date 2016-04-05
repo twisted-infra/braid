@@ -96,31 +96,6 @@ class TrialTestCaseCounter(LogLineObserver):
 
 UNSPECIFIED=() # since None is a valid choice
 
-
-class TrialTox(ShellCommand):
-    """
-    Run Trial inside a Tox environment.
-    """
-
-    def __init__(self, toxEnv=None, tests=[], **kwargs):
-
-        super(TrialTox, self).__init__(**kwargs)
-
-        self._toxEnv = toxEnv
-        self._tests = tests
-
-    def start(self):
-
-        self.command = ["tox", "-er", self._toxEnv] + tests
-
-        super(TrialTox, self).start()
-
-
-    def commandComplete(self, cmd):
-
-
-
-
 class Trial(ShellCommand):
     """I run a unit test suite using 'trial', a unittest-like testing
     framework that comes with Twisted. Trial is used to implement Twisted's

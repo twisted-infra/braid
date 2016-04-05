@@ -10,10 +10,9 @@ from buildbot.process.factory import BuildFactory
 from buildbot.steps import shell, transfer
 from buildbot.steps.shell import ShellCommand
 
-from twisted_steps import (
-    ProcessDocs, ReportPythonModuleVersions,
-    Trial, RemovePYCs, RemoveTrialTemp, LearnVersion,
-    SetBuildProperty, TrialTox)
+from twisted_steps import ProcessDocs, ReportPythonModuleVersions, \
+    Trial, RemovePYCs, RemoveTrialTemp, LearnVersion, \
+    SetBuildProperty
 
 from txbuildbot.lint import (
     CheckDocumentation,
@@ -367,71 +366,6 @@ class TwistedReactorsBuildFactory(TwistedBaseFactory):
             self.addTrialStep(
                 name=reactor, reactor=reactor, flunkOnFailure=True,
                 warnOnFailure=False)
-
-
-class TwistedToxBuildFactory(BuildFactory):
-
-    def __init__(self, source, toxEnv, allowSystemPackages=False,
-                 platform="unix"):
-
-        assert platform in ["unix", "windows"]
-
-        self._platform = platform
-        if platform == "unix":
-            self._path = posixpath
-        elif platform == "windows":
-            self._path = ntpath
-
-        self.addStep(
-            shell.ShellCommand,
-            command = ["python", "-m", "virtualenv", '--clear', self._virtualEnvPath],
-        )
-
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            command=["python", "-m", "pip", "install", "tox"]
-        )
-
-        self.addVirtualEnvStep(TrialTox,
-                               toxEnv=toxEnv)
-
-
-    @property
-    def _virtualEnvBin(self):
-        """
-        Path to the virtualenv bin folder.
-        """
-        if self._platform == "windows":
-            return self._path.join('..', 'venv', 'Scripts')
-        else:
-            return self._path.join('..', 'venv', 'bin')
-
-
-    @property
-    def _virtualEnvPath(self):
-        """
-        Path to the root virtualenv folder.
-        """
-        return self._path.join('..', 'venv')
-
-
-    def addVirtualEnvStep(self, step, **kwargs):
-        """
-        Add a step which is executed with virtualenv path.
-        """
-        # Update PATH environment so that the virtualenv is listed first.
-        env = kwargs.get('env', {})
-        path = env.get('PATH', '')
-
-        if self._path is ntpath:
-            pathsep = ";"
-        else:
-            pathsep = ":"
-
-        env['PATH'] = pathsep.join([self._virtualEnvBin, path, '${PATH}'])
-        kwargs['env'] = env
-        self.addStep(step, **kwargs)
-
 
 
 

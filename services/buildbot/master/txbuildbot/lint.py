@@ -1,15 +1,8 @@
-# Copyright (c) Twisted Matrix Laboratories.
-# See LICENSE for details.
-
 import itertools
-
 from twisted.python import log, util
-
 from buildbot.status.builder import SUCCESS, WARNINGS
 from buildbot.steps.shell import ShellCommand
 from buildbot.process.properties import Property
-
-from txbuildbot import filterTox
 
 try:
     import cStringIO
@@ -412,3 +405,27 @@ class PyFlakes(LintStep):
         if self.worse:
             return WARNINGS
         return SUCCESS
+
+
+def filterTox(logText):
+    """
+    Filter out the tox output for lint tox envs -- where there's only one
+    command.
+    """
+    toxStatus = 'NOT_STARTED'
+
+    for line in StringIO.StringIO(logText):
+
+        if " runtests: commands[0] | " in line:
+            # Tox has started, further lines should be read
+            toxStatus = 'STARTED'
+
+        elif "ERROR: InvocationError:" in line:
+            # Tox is finished
+            toxStatus = 'FINISHED'
+
+        elif '___ summary ___' in line:
+            toxStatus = 'FINISHED'
+
+        elif toxStatus == 'STARTED':
+            yield line.strip("\n")
