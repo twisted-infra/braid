@@ -108,6 +108,7 @@ class TrialTox(ShellCommand):
     flunkOnFailure = True
 
     def __init__(self, toxEnv, reactor, tests=[], commandNumber=0,
+                 allowSystemPackages=False,
                  **kwargs):
 
         ShellCommand.__init__(self, **kwargs)
@@ -116,6 +117,7 @@ class TrialTox(ShellCommand):
         self._tests = tests
         self._commandNumber = commandNumber
         self._reactor = reactor
+        self._systemPackages = allowSystemPackages
 
         self.logfiles = {
             "test.log": "build/" + self._toxEnv + "/tmp/_trial_temp/test.log"
@@ -128,7 +130,13 @@ class TrialTox(ShellCommand):
 
 
     def start(self):
-        self.command = ["tox", "-r", "-e", self._toxEnv, "twisted.test.test_twistd"] + self._tests
+        self.command = ["tox", "-r"]
+
+        if self._systemPackages:
+            self.command.append("--sitepackages")
+
+        self.command = self.command + ["-e", self._toxEnv, "twisted.test.test_twistd"] + self._tests
+
         ShellCommand.start(self)
 
 

@@ -374,7 +374,7 @@ class TwistedToxBuildFactory(BuildFactory):
     workdir = "Twisted"
 
     def __init__(self, source, toxEnv, reactors=["default"],
-                 allowSystemPackages=False, platform="unix"):
+                 allowSystemPackages=False, platform="unix", python="python"):
 
         BuildFactory.__init__(self, source)
 
@@ -389,7 +389,7 @@ class TwistedToxBuildFactory(BuildFactory):
         self.addStep(
             shell.ShellCommand,
             description="clearing virtualenv".split(" "),
-            command = ["python", "-m", "virtualenv", '--clear', self._virtualEnvPath],
+            command = [python, "-m", "virtualenv", '--clear', self._virtualEnvPath],
         )
 
         self.addVirtualEnvStep(
@@ -400,6 +400,7 @@ class TwistedToxBuildFactory(BuildFactory):
 
         for reactor in reactors:
             self.addVirtualEnvStep(TrialTox,
+                                   allowSystemPackages=allowSystemPackages,
                                    reactor=reactor,
                                    toxEnv=toxEnv)
 
@@ -445,7 +446,7 @@ class TwistedToxBuildFactory(BuildFactory):
 class TwistedToxCoverageBuildFactory(TwistedToxBuildFactory):
 
     def __init__(self, source, toxEnv, buildID, reactors=["default"],
-                 allowSystemPackages=False, platform="unix"):
+                 allowSystemPackages=False, platform="unix", python="python"):
 
         BuildFactory.__init__(self, source)
 
@@ -460,7 +461,8 @@ class TwistedToxCoverageBuildFactory(TwistedToxBuildFactory):
         self.addStep(
             shell.ShellCommand,
             description="clearing virtualenv".split(" "),
-            command = ["python", "-m", "virtualenv", '--clear', self._virtualEnvPath],
+            command = [python, "-m", "virtualenv", '--clear',
+                       self._virtualEnvPath],
         )
 
         self.addVirtualEnvStep(
@@ -478,6 +480,7 @@ class TwistedToxCoverageBuildFactory(TwistedToxBuildFactory):
 
         for reactor in reactors:
             self.addVirtualEnvStep(TrialTox,
+                                   allowSystemPackages=allowSystemPackages,
                                    reactor=reactor,
                                    toxEnv=toxEnv,
                                    commandNumber=1
@@ -884,9 +887,7 @@ class CheckManifestBuildFactory(TwistedBaseFactory):
         )
         self.addVirtualEnvStep(
             shell.ShellCommand,
-            command=['pip', 'install', 'check-manifest'])
+            command=['pip', 'install', 'virtualenv', 'tox'])
         self.addVirtualEnvStep(
             shell.ShellCommand,
-            command=["check-manifest", "--ignore",
-                     ("docs/historic/*,admin*,bin/admin*,"
-                      "twisted/topfiles/*.Old")])
+            command=["tox", "-e", "check-manifest"])
