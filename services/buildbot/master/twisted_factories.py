@@ -12,7 +12,7 @@ from buildbot.steps.shell import ShellCommand
 
 from twisted_steps import ProcessDocs, ReportPythonModuleVersions, \
     Trial, RemovePYCs, RemoveTrialTemp, LearnVersion, \
-    SetBuildProperty
+    SetBuildProperty, TrialTox
 
 from txbuildbot.lint import (
     CheckDocumentation,
