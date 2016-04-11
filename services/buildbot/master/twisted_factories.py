@@ -38,6 +38,8 @@ BASE_DEPENDENCIES = [
     'python-subunit',
     'constantly',
     'appdirs',
+    'h2',
+    'priority',
 ]
 
 # Dependencies that don't work on PyPy
