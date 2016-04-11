@@ -106,6 +106,7 @@ class TrialTox(ShellCommand):
     name = 'trial'
     progressMetrics = ('output', 'tests', 'test.log')
     flunkOnFailure = True
+    haltOnFailure = True
 
     def __init__(self, toxEnv, reactor, tests=[], commandNumber=0,
                  allowSystemPackages=False,
@@ -128,6 +129,8 @@ class TrialTox(ShellCommand):
         self.description = ["testing", "(%s)" % self._reactor]
         self.descriptionDone = ["tests"]
 
+        self.addLogObserver('stdio', TrialTestCaseCounter())
+
 
     def start(self):
         self.command = ["tox", "-r"]
@@ -135,7 +138,7 @@ class TrialTox(ShellCommand):
         if self._systemPackages:
             self.command.append("--sitepackages")
 
-        self.command = self.command + ["-e", self._toxEnv, "twisted.test.test_twistd"] + self._tests
+        self.command = self.command + ["-e", self._toxEnv] + self._tests
 
         ShellCommand.start(self)
 

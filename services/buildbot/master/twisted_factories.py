@@ -399,6 +399,7 @@ class TwistedToxBuildFactory(BuildFactory):
 
         for reactor in reactors:
             self.addVirtualEnvStep(TrialTox,
+                                   flunkOnFailure=True,
                                    allowSystemPackages=allowSystemPackages,
                                    reactor=reactor,
                                    toxEnv=toxEnv)
@@ -886,7 +887,9 @@ class CheckManifestBuildFactory(TwistedBaseFactory):
         )
         self.addVirtualEnvStep(
             shell.ShellCommand,
-            command=['pip', 'install', 'virtualenv', 'tox'])
+            command=['pip', 'install', 'check-manifest'])
         self.addVirtualEnvStep(
             shell.ShellCommand,
-            command=["tox", "-e", "check-manifest"])
+            command=["check-manifest", "--ignore",
+                     ("docs/historic/*,admin*,bin/admin*,"
+                      "twisted/topfiles/*.Old")])
