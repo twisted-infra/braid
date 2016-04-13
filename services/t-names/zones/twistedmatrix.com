@@ -2,6 +2,7 @@
 from twisted.names.authority import getSerial
 
 name = 'twistedmatrix.com'
+lists = 'lists.' + name
 
 from hosts import cube, dornkirk, jeb, tmtl, oloid, wolfwood, xpdev, planet, nameservers, addSubdomains, googleHosting
 
@@ -54,6 +55,18 @@ zone = [
     CNAME('glyph.twistedmatrix.com', 'writing.glyph.im', ttl='1D'),
     CNAME('secret.glyph.twistedmatrix.com', googleHosting, ttl='1D'),
     CNAME('labs.twistedmatrix.com', googleHosting, ttl='1D'),
+
+    TXT(lists, 'v=spf1 include:mailgun.org ~all'),
+    TXT('k1._domainkey.lists.twistedmatrix.com',
+        "k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDogNXfdPbfqy8IEeB4wClK"
+        "YIQyLy/BAn8SMDj7byepgpQGIHkviT4uJ61u1oTEEF5Wow/20Q/G1FlKk8sIANmJU7v/R"
+        "8r8ZMw6Rfs+/CKjxCtG6l2f+6cVsVWE8VmEA6DeUfjNt1ToMUYSyo0R0dRMhEFRucVN0r"
+        "9aV51ztuq6zQIDAQAB"),
+    CNAME('email.' + lists, 'mailgun.org'),
+
+    MX(lists, 10, 'mxa.mailgun.org', ttl=5 * 60),
+    MX(lists, 10, 'mxb.mailgun.org', ttl=5 * 60),
+
 ] + nameservers(name)
 
 addSubdomains(name, zone, subs)
