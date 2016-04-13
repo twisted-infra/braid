@@ -1,0 +1,14 @@
+#!/bin/bash
+
+Z=./zones
+export PYTHONPATH=$PYTHONPATH:$Z
+
+twistd -n \
+    dns \
+    --port 3535 \
+    --pyzone $Z/twistedmatrix.com \
+    --pyzone $Z/divunal.com \
+    --pyzone $Z/ynchrono.us \
+    --pyzone $Z/divmod.com \
+    --pyzone $Z/divmod.org \
+    --pyzone $Z/crookedsapling.us
