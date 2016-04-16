@@ -12,7 +12,7 @@ from buildbot.steps.shell import ShellCommand
 
 from twisted_steps import ProcessDocs, ReportPythonModuleVersions, \
     Trial, RemovePYCs, RemoveTrialTemp, LearnVersion, \
-    SetBuildProperty
+    SetBuildProperty, TrialTox
 
 from txbuildbot.lint import (
     CheckDocumentation,
@@ -38,6 +38,8 @@ BASE_DEPENDENCIES = [
     'python-subunit',
     'constantly',
     'appdirs',
+    'h2',
+    'priority',
 ]
 
 # Dependencies that don't work on PyPy
@@ -367,6 +369,174 @@ class TwistedReactorsBuildFactory(TwistedBaseFactory):
                 name=reactor, reactor=reactor, flunkOnFailure=True,
                 warnOnFailure=False)
 
+
+class TwistedToxBuildFactory(BuildFactory):
+
+    workdir = "Twisted"
+
+    def __init__(self, source, toxEnv, reactors=["default"],
+                 allowSystemPackages=False, platform="unix", python="python"):
+
+        BuildFactory.__init__(self, source)
+
+        tests = [WithProperties("%(test-case-name:~twisted)s")]
+
+        assert platform in ["unix", "windows"]
+
+        self._platform = platform
+        if platform == "unix":
+            self._path = posixpath
+        elif platform == "windows":
+            self._path = ntpath
+
+        self.addStep(
+            shell.ShellCommand,
+            description="clearing virtualenv".split(" "),
+            command = [python, "-m", "virtualenv", '--clear', self._virtualEnvPath],
+        )
+
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            description="installing tox".split(" "),
+            command=["python", "-m", "pip", "install", "tox", "virtualenv"]
+        )
+
+        for reactor in reactors:
+            self.addVirtualEnvStep(TrialTox,
+                                   tests=tests,
+                                   flunkOnFailure=True,
+                                   allowSystemPackages=allowSystemPackages,
+                                   reactor=reactor,
+                                   toxEnv=toxEnv)
+
+
+    @property
+    def _virtualEnvBin(self):
+        """
+        Path to the virtualenv bin folder.
+        """
+        if self._platform == "windows":
+            return self._path.join('..', 'venv', 'Scripts')
+        else:
+            return self._path.join('..', 'venv', 'bin')
+
+
+    @property
+    def _virtualEnvPath(self):
+        """
+        Path to the root virtualenv folder.
+        """
+        return self._path.join('..', 'venv')
+
+
+    def addVirtualEnvStep(self, step, **kwargs):
+        """
+        Add a step which is executed with virtualenv path.
+        """
+        # Update PATH environment so that the virtualenv is listed first.
+        env = kwargs.get('env', {})
+        path = env.get('PATH', '')
+
+        if self._path is ntpath:
+            pathsep = ";"
+        else:
+            pathsep = ":"
+
+        env['PATH'] = pathsep.join([self._virtualEnvBin, path, '${PATH}'])
+        kwargs['env'] = env
+        self.addStep(step, **kwargs)
+
+
+
+class TwistedToxCoverageBuildFactory(TwistedToxBuildFactory):
+
+    def __init__(self, source, toxEnv, buildID, reactors=["default"],
+                 allowSystemPackages=False, platform="unix", python="python"):
+
+        BuildFactory.__init__(self, source)
+
+        assert platform in ["unix", "windows"]
+
+        self._platform = platform
+        if platform == "unix":
+            self._path = posixpath
+        elif platform == "windows":
+            self._path = ntpath
+
+        self.addStep(
+            shell.ShellCommand,
+            description="clearing virtualenv".split(" "),
+            command = [python, "-m", "virtualenv", '--clear',
+                       self._virtualEnvPath],
+        )
+
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            description="installing tox".split(" "),
+            command=["python", "-m", "pip", "install", "tox", "virtualenv",
+                     "coverage"]
+        )
+
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            description="clearing coverage".split(" "),
+            command=["coverage", "erase"]
+        )
+
+        for reactor in reactors:
+            self.addVirtualEnvStep(TrialTox,
+                                   allowSystemPackages=allowSystemPackages,
+                                   reactor=reactor,
+                                   toxEnv=toxEnv,
+                                   commandNumber=1
+            )
+
+            self.addStep(
+                shell.ShellCommand,
+                description="copying coverage".split(" "),
+                command=["mv",
+                         "build/" + toxEnv + "/tmp/.coverage",
+                         "./.coverage." + reactor]
+            )
+
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            description = "run coverage combine".split(" "),
+            command=["python", "-m", "coverage", 'combine']
+        )
+
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            description = "run coverage html".split(" "),
+            command=["python", "-m", "coverage", 'html', '-d',
+                     'twisted-coverage','-i']
+        )
+
+        self.addStep(
+            transfer.DirectoryUpload,
+            workdir='Twisted',
+            slavesrc='twisted-coverage',
+            masterdest=WithProperties('build_products/twisted-coverage.py/twisted-' + buildID + '-coverage.py-r%(got_revision)s'),
+            url=WithProperties('/builds/twisted-coverage.py/twisted-' + buildID + '-coverage.py-r%(got_revision)s/'),
+            blocksize=2 ** 16,
+            compress='gz')
+
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            description = "run coverage xml".split(" "),
+            command=["python", "-m", "coverage", 'xml', '-o', 'coverage.xml',
+                     '-i'])
+
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            warnOnFailure=True,
+            description="upload to codecov".split(" "),
+            command=["codecov",
+                     "--token={}".format(private.codecov_twisted_token),
+                     "--build={}".format(buildID),
+                     WithProperties("--commit=%(got_revision)s")
+            ],
+        )
 
 
 class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):

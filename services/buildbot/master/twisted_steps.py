@@ -8,6 +8,8 @@ from buildbot.process.buildstep import LogLineObserver, OutputProgressObserver
 from buildbot.process.buildstep import RemoteShellCommand, BuildStep
 from buildbot.steps.shell import ShellCommand, SetProperty
 
+from txbuildbot import filterTox
+
 from zlib import compress
 
 try:
@@ -21,29 +23,34 @@ import re
 
 
 def countFailedTests(output):
-    # start scanning 50kb from the end, because there might be a few kb of
-    # import exception tracebacks between the total/time line and the errors
-    # line
-    chunk = output[-50000:]
+    """
+    Given a Twisted trial log, find out how many tests passed, failed, etc.
+    """
+    res = {
+        'total': None,
+        'failures': 0,
+        'errors': 0,
+        'skips': 0,
+        'expectedFailures': 0,
+        'unexpectedSuccesses': 0,
+    }
+
+    # Find the "Ran X tests" output
+    out = re.search(r'Ran (\d+) tests', l)
+    if out:
+        res['total'] = int(out.group(1))
+
+    chunk = output[out.start():]
     lines = chunk.split("\n")
-    lines.pop() # blank line at end
+
     # lines[-3] is "Ran NN tests in 0.242s"
     # lines[-2] is blank
     # lines[-1] is 'OK' or 'FAILED (failures=1, errors=12)'
     #  or 'FAILED (failures=1)'
-    #  or "PASSED (skips=N, successes=N)"  (for Twisted-2.0)
+    #  or "PASSED (skips=N, successes=N)"
     # there might be other lines dumped here. Scan all the lines.
-    res = {'total': None,
-           'failures': 0,
-           'errors': 0,
-           'skips': 0,
-           'expectedFailures': 0,
-           'unexpectedSuccesses': 0,
-           }
+
     for l in lines:
-        out = re.search(r'Ran (\d+) tests', l)
-        if out:
-            res['total'] = int(out.group(1))
         if (l.startswith("OK") or
             l.startswith("FAILED ") or
             l.startswith("PASSED")):
@@ -61,9 +68,10 @@ def countFailedTests(output):
             if out: res['expectedFailures'] = int(out.group(1))
             out = re.search(r'unexpectedSuccesses=(\d+)', l)
             if out: res['unexpectedSuccesses'] = int(out.group(1))
-            # successes= is a Twisted-2.0 addition, and is not currently used
             out = re.search(r'successes=(\d+)', l)
             if out: res['successes'] = int(out.group(1))
+
+            return res
 
     return res
 
@@ -95,6 +103,255 @@ class TrialTestCaseCounter(LogLineObserver):
 
 
 UNSPECIFIED=() # since None is a valid choice
+
+
+class TrialTox(ShellCommand):
+    """
+    Run Trial inside a Tox environment.
+    """
+    renderables = ["tests"]
+    name = 'trial'
+    progressMetrics = ('output', 'tests', 'test.log')
+    flunkOnFailure = True
+    haltOnFailure = True
+
+    def __init__(self, toxEnv, reactor, tests=[], commandNumber=0,
+                 allowSystemPackages=False,
+                 **kwargs):
+
+        ShellCommand.__init__(self, **kwargs)
+
+        self._toxEnv = toxEnv
+        self.tests = tests
+        self._commandNumber = commandNumber
+        self._reactor = reactor
+        self._systemPackages = allowSystemPackages
+
+        self.logfiles = {
+            "test.log": "build/" + self._toxEnv + "/tmp/_trial_temp/test.log"
+        }
+
+        self.name = self._reactor
+
+        self.description = ["testing", "(%s)" % self._reactor]
+        self.descriptionDone = ["tests"]
+
+        self.addLogObserver('stdio', TrialTestCaseCounter())
+
+
+    def start(self):
+        self.command = ["tox", "-r"]
+
+        if self._systemPackages:
+            self.command.append("--sitepackages")
+
+        self.command = self.command + ["-e", self._toxEnv] + self.tests
+
+        print(self.command)
+
+        ShellCommand.start(self)
+
+
+    def rtext(self, fmt='%s'):
+        return fmt % (self._toxEnv + " TWISTED_REACTOR=" + self._reactor)
+
+
+    def setupEnvironment(self, cmd):
+        ShellCommand.setupEnvironment(self, cmd)
+        e = cmd.args['env']
+        if e is None:
+            cmd.args['env'] = {'TWISTED_REACTOR': self._reactor}
+        else:
+            cmd.args['env']['TWISTED_REACTOR'] = self._reactor
+
+
+    def commandComplete(self, cmd):
+        # figure out all status, then let the various hook functions return
+        # different pieces of it
+
+        # 'cmd' is the original trial command, so cmd.logs['stdio'] is the
+        # trial output. We don't have access to test.log from here.
+        output = "\n".join(filterTox(cmd.logs['stdio'].getText(),
+                                     commandNumber=self._commandNumber))
+        print(output)
+        counts = countFailedTests(output + "\n")
+
+        print(counts)
+
+        total = counts['total']
+        failures, errors = counts['failures'], counts['errors']
+        parsed = (total != None)
+        text = []
+        text2 = ""
+
+        if cmd.rc == 0:
+            if parsed:
+                results = SUCCESS
+                if total:
+                    text += ["%d %s" % \
+                             (total,
+                              total == 1 and "test" or "tests"),
+                             "passed"]
+                else:
+                    text += ["no tests", "run"]
+            else:
+                results = FAILURE
+                text += ["testlog", "unparseable"]
+                text2 = "tests"
+        else:
+            # something failed
+            results = FAILURE
+            if parsed:
+                text.append("tests")
+                if failures:
+                    text.append("%d %s" % \
+                                (failures,
+                                 failures == 1 and "failure" or "failures"))
+                if errors:
+                    text.append("%d %s" % \
+                                (errors,
+                                 errors == 1 and "error" or "errors"))
+                count = failures + errors
+                text2 = "%d tes%s" % (count, (count == 1 and 't' or 'ts'))
+            else:
+                text += ["tests", "failed"]
+                text2 = "tests"
+
+        if counts['skips']:
+            text.append("%d %s" %  \
+                        (counts['skips'],
+                         counts['skips'] == 1 and "skip" or "skips"))
+        if counts['expectedFailures']:
+            text.append("%d %s" %  \
+                        (counts['expectedFailures'],
+                         counts['expectedFailures'] == 1 and "todo"
+                         or "todos"))
+            if 0: # TODO
+                results = WARNINGS
+                if not text2:
+                    text2 = "todo"
+
+        if 0:
+            # ignore unexpectedSuccesses for now, but it should really mark
+            # the build WARNING
+            if counts['unexpectedSuccesses']:
+                text.append("%d surprises" % counts['unexpectedSuccesses'])
+                results = WARNINGS
+                if not text2:
+                    text2 = "tests"
+
+        text.append(self.rtext('(%s)'))
+        if text2:
+            text2 = "%s %s" % (text2, self.rtext('(%s)'))
+
+        self.results = results
+        self.text = text
+        self.text2 = [text2]
+
+
+    def addTestResult(self, testname, results, text, tlog):
+        if self.reactor is not None:
+            testname = (self.reactor,) + testname
+        tr = builder.TestResult(testname, results, text, logs={'log': tlog})
+        #self.step_status.build.addTestResult(tr)
+        self.build.build_status.addTestResult(tr)
+
+
+    def createSummary(self, loog):
+        output = "\n".join(filterTox(loog.getText(), commandNumber=self._commandNumber))
+        problems = ""
+        sio = StringIO.StringIO(output)
+        warnings = {}
+        while 1:
+            line = sio.readline()
+            if line == "":
+                break
+            if line.find(" exceptions.DeprecationWarning: ") != -1:
+                # no source
+                warning = line # TODO: consider stripping basedir prefix here
+                warnings[warning] = warnings.get(warning, 0) + 1
+            elif (line.find(" DeprecationWarning: ") != -1 or
+                line.find(" UserWarning: ") != -1):
+                # next line is the source
+                warning = line + sio.readline()
+                warnings[warning] = warnings.get(warning, 0) + 1
+            elif line.find("Warning: ") != -1:
+                warning = line
+                warnings[warning] = warnings.get(warning, 0) + 1
+
+            if line.find("=" * 60) == 0 or line.find("-" * 60) == 0:
+                problems += line
+                problems += sio.read()
+                break
+
+        if problems:
+            self.addCompleteLog("problems", problems)
+            # now parse the problems for per-test results
+            pio = StringIO.StringIO(problems)
+            pio.readline() # eat the first separator line
+            testname = None
+            done = False
+            while not done:
+                while 1:
+                    line = pio.readline()
+                    if line == "":
+                        done = True
+                        break
+                    if line.find("=" * 60) == 0:
+                        break
+                    if line.find("-" * 60) == 0:
+                        # the last case has --- as a separator before the
+                        # summary counts are printed
+                        done = True
+                        break
+                    if testname is None:
+                        # the first line after the === is like:
+# EXPECTED FAILURE: testLackOfTB (twisted.test.test_failure.FailureTestCase)
+# SKIPPED: testRETR (twisted.test.test_ftp.TestFTPServer)
+# FAILURE: testBatchFile (twisted.conch.test.test_sftp.TestOurServerBatchFile)
+                        r = re.search(r'^([^:]+): (\w+) \(([\w\.]+)\)', line)
+                        if not r:
+                            # TODO: cleanup, if there are no problems,
+                            # we hit here
+                            continue
+                        result, name, case = r.groups()
+                        testname = tuple(case.split(".") + [name])
+                        results = {'SKIPPED': SKIPPED,
+                                   'EXPECTED FAILURE': SUCCESS,
+                                   'UNEXPECTED SUCCESS': WARNINGS,
+                                   'FAILURE': FAILURE,
+                                   'ERROR': FAILURE,
+                                   'SUCCESS': SUCCESS, # not reported
+                                   }.get(result, WARNINGS)
+                        text = result.lower().split()
+                        loog = line
+                        # the next line is all dashes
+                        loog += pio.readline()
+                    else:
+                        # the rest goes into the log
+                        loog += line
+                if testname:
+                    self.addTestResult(testname, results, text, loog)
+                    testname = None
+
+        if warnings:
+            lines = warnings.keys()
+            lines.sort()
+            self.addCompleteLog("warnings", "".join(lines))
+
+
+    def evaluateCommand(self, cmd):
+        return self.results
+
+
+    def getText(self, cmd, results):
+        return self.text
+
+
+    def getText2(self, cmd, results):
+        return self.text2
+
+
 
 class Trial(ShellCommand):
     """I run a unit test suite using 'trial', a unittest-like testing

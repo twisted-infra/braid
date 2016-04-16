@@ -66,6 +66,7 @@ class Buildbot(service.Service):
             git.branch('https://github.com/twisted-infra/buildbot', buildbotSource)
 
             self.venv.install_twisted()
+            self.venv.install("virtualenv")
 
             if _installDeps:
                 # sqlalchemy-migrate only works with a specific version of
