@@ -379,6 +379,8 @@ class TwistedToxBuildFactory(BuildFactory):
 
         BuildFactory.__init__(self, source)
 
+        tests = [WithProperties("%(test-case-name:~twisted)s")]
+
         assert platform in ["unix", "windows"]
 
         self._platform = platform
@@ -401,6 +403,7 @@ class TwistedToxBuildFactory(BuildFactory):
 
         for reactor in reactors:
             self.addVirtualEnvStep(TrialTox,
+                                   tests=tests,
                                    flunkOnFailure=True,
                                    allowSystemPackages=allowSystemPackages,
                                    reactor=reactor,

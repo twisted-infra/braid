@@ -23,29 +23,34 @@ import re
 
 
 def countFailedTests(output):
-    # start scanning 50kb from the end, because there might be a few kb of
-    # import exception tracebacks between the total/time line and the errors
-    # line
-    chunk = output[-50000:]
+    """
+    Given a Twisted trial log, find out how many tests passed, failed, etc.
+    """
+    res = {
+        'total': None,
+        'failures': 0,
+        'errors': 0,
+        'skips': 0,
+        'expectedFailures': 0,
+        'unexpectedSuccesses': 0,
+    }
+
+    # Find the "Ran X tests" output
+    out = re.search(r'Ran (\d+) tests', l)
+    if out:
+        res['total'] = int(out.group(1))
+
+    chunk = output[out.start():]
     lines = chunk.split("\n")
-    lines.pop() # blank line at end
+
     # lines[-3] is "Ran NN tests in 0.242s"
     # lines[-2] is blank
     # lines[-1] is 'OK' or 'FAILED (failures=1, errors=12)'
     #  or 'FAILED (failures=1)'
-    #  or "PASSED (skips=N, successes=N)"  (for Twisted-2.0)
+    #  or "PASSED (skips=N, successes=N)"
     # there might be other lines dumped here. Scan all the lines.
-    res = {'total': None,
-           'failures': 0,
-           'errors': 0,
-           'skips': 0,
-           'expectedFailures': 0,
-           'unexpectedSuccesses': 0,
-           }
+
     for l in lines:
-        out = re.search(r'Ran (\d+) tests', l)
-        if out:
-            res['total'] = int(out.group(1))
         if (l.startswith("OK") or
             l.startswith("FAILED ") or
             l.startswith("PASSED")):
@@ -63,9 +68,10 @@ def countFailedTests(output):
             if out: res['expectedFailures'] = int(out.group(1))
             out = re.search(r'unexpectedSuccesses=(\d+)', l)
             if out: res['unexpectedSuccesses'] = int(out.group(1))
-            # successes= is a Twisted-2.0 addition, and is not currently used
             out = re.search(r'successes=(\d+)', l)
             if out: res['successes'] = int(out.group(1))
+
+            return res
 
     return res
 
@@ -103,6 +109,7 @@ class TrialTox(ShellCommand):
     """
     Run Trial inside a Tox environment.
     """
+    renderables = ["tests"]
     name = 'trial'
     progressMetrics = ('output', 'tests', 'test.log')
     flunkOnFailure = True
@@ -115,7 +122,7 @@ class TrialTox(ShellCommand):
         ShellCommand.__init__(self, **kwargs)
 
         self._toxEnv = toxEnv
-        self._tests = tests
+        self.tests = tests
         self._commandNumber = commandNumber
         self._reactor = reactor
         self._systemPackages = allowSystemPackages
@@ -138,7 +145,9 @@ class TrialTox(ShellCommand):
         if self._systemPackages:
             self.command.append("--sitepackages")
 
-        self.command = self.command + ["-e", self._toxEnv] + self._tests
+        self.command = self.command + ["-e", self._toxEnv] + self.tests
+
+        print(self.command)
 
         ShellCommand.start(self)
 
@@ -164,7 +173,10 @@ class TrialTox(ShellCommand):
         # trial output. We don't have access to test.log from here.
         output = "\n".join(filterTox(cmd.logs['stdio'].getText(),
                                      commandNumber=self._commandNumber))
-        counts = countFailedTests(output)
+        print(output)
+        counts = countFailedTests(output + "\n")
+
+        print(counts)
 
         total = counts['total']
         failures, errors = counts['failures'], counts['errors']
