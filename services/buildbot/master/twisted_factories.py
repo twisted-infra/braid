@@ -404,7 +404,6 @@ class TwistedToxBuildFactory(BuildFactory):
         for reactor in reactors:
             self.addVirtualEnvStep(TrialTox,
                                    tests=tests,
-                                   flunkOnFailure=True,
                                    allowSystemPackages=allowSystemPackages,
                                    reactor=reactor,
                                    toxEnv=toxEnv)
@@ -453,6 +452,8 @@ class TwistedToxCoverageBuildFactory(TwistedToxBuildFactory):
     def __init__(self, source, toxEnv, buildID, reactors=["default"],
                  allowSystemPackages=False, platform="unix", python="python"):
 
+        tests = [WithProperties("%(test-case-name:~twisted)s")]
+
         BuildFactory.__init__(self, source)
 
         assert platform in ["unix", "windows"]
@@ -474,7 +475,7 @@ class TwistedToxCoverageBuildFactory(TwistedToxBuildFactory):
             shell.ShellCommand,
             description="installing tox".split(" "),
             command=["python", "-m", "pip", "install", "tox", "virtualenv",
-                     "coverage"]
+                     "coverage", "codecov"]
         )
 
         self.addVirtualEnvStep(
@@ -488,15 +489,7 @@ class TwistedToxCoverageBuildFactory(TwistedToxBuildFactory):
                                    allowSystemPackages=allowSystemPackages,
                                    reactor=reactor,
                                    toxEnv=toxEnv,
-                                   commandNumber=1
-            )
-
-            self.addStep(
-                shell.ShellCommand,
-                description="copying coverage".split(" "),
-                command=["mv",
-                         "build/" + toxEnv + "/tmp/.coverage",
-                         "./.coverage." + reactor]
+                                   commandNumber=2
             )
 
         self.addVirtualEnvStep(
@@ -763,6 +756,11 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
                     "--omit", ','.join(self.OMIT_PATHS),
                     "--branch"],
             warnOnFailure=False, virtualenv=True, trial=trial)
+
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            description = "run coverage combine".split(" "),
+            command=["python", "-m", "coverage", "combine"])
 
         self.addVirtualEnvStep(
             shell.ShellCommand,

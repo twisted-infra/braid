@@ -36,7 +36,7 @@ def countFailedTests(output):
     }
 
     # Find the "Ran X tests" output
-    out = re.search(r'Ran (\d+) tests', l)
+    out = re.search(r'Ran (\d+) tests', output)
     if out:
         res['total'] = int(out.group(1))
 
