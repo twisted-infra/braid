@@ -30,8 +30,7 @@ class VirtualEnvironment(object):
         # https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
         self.install("pip")
         self.install("requests[security]")
-        self.install("setuptools")
-        self.install("wheel")
+        self.install("setuptools wheel")
 
 
     def install(self, package):
@@ -48,10 +47,10 @@ class VirtualEnvironment(object):
         """
         Install Twisted and its dependencies.
         """
-        self.install("Twisted==16.0")
-        self.install("pyOpenSSL==16.0")
-        self.install("service_identity==14.0")
-        self.install("txsni==0.1.5")
+        self.install(("Twisted==16.1.1 "
+                      "pyOpenSSL==16.0 "
+                      "service_identity==14.0 "
+                      "txsni==0.1.5"))
 
     def run(self, arg):
         with settings(user=self._user):
