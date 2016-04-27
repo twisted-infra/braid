@@ -68,6 +68,7 @@ class Trac(service.Service):
             self.venv.install('spambayes==1.1b2')
 
             self.venv.install('TracAccountManager==0.4.4')
+            self.venv.install('https://github.com/twisted-infra/trac-github/archive/master.tar.gz requests_oauthlib==0.6.1')
             self.venv.install('svn+https://trac-hacks.org/svn/defaultccplugin/tags/0.2/')
             self.venv.install('svn+https://svn.edgewall.org/repos/trac/plugins/1.0/spam-filter@14340')
 
