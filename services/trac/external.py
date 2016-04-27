@@ -31,51 +31,7 @@ from twisted.web.static import File
 from twisted.web.resource import Resource
 
 
-
-class TwistedAuthenticator(trac.web.auth.BasicAuthentication):
-
-    def test(self, user, password):
-        # Re-load the password file because it might have changed since we loaded it.
-        self.check_reload()
-
-        the_hash = self.hash.get(user)
-        if the_hash is None:
-            return False
-
-        return trac.web.auth.BasicAuthentication.test(self, user, password)
-
-
-
-class AuthenticationMiddleware(object):
-
-    def __init__(self, application, auths):
-        self.application = application
-        self.auths = auths
-
-    def __call__(self, environ, start_response):
-        path_info = environ.get('PATH_INFO', '')
-        path_parts = filter(None, path_info.split('/'))
-        if path_parts and path_parts[0] == 'login':
-            env_name = path_parts[0]
-            if env_name:
-                auth = self.auths.get(env_name, self.auths.get('*'))
-                if auth:
-                    remote_user = auth.do_auth(environ, start_response)
-                    if not remote_user:
-                        return []
-                    environ['REMOTE_USER'] = remote_user
-        return self.application(environ, start_response)
-
-
-
 class TracMixin:
-    def middleware_auth(self, application):
-        auths = {
-            'twisted': TwistedAuthenticator(self.htpasswd, 'trac'),
-            '*': TwistedAuthenticator(self.htpasswd, 'trac')}
-        return AuthenticationMiddleware(
-            application, auths)
-
 
     def tracApplication(self, environ, start_response):
         """
@@ -114,8 +70,7 @@ class TracResource(WSGIResource, TracMixin):
         self.htpasswd = htpasswd
         self.path = path
         WSGIResource.__init__(
-            self, reactor, threadpool, self.middleware_auth(
-                self.tracApplication))
+            self, reactor, threadpool, self.tracApplication)
 
 
 
