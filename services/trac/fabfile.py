@@ -21,11 +21,8 @@ class Trac(service.Service):
         """
         Install trac.
         """
-        self.bootstrap(venv_site_packages=True)
-
         with settings(user=self.serviceUser):
-            self.venv.install('psycopg2')
-            self.update(_installDeps=True)
+            self.update()
 
             run('/bin/mkdir -p ~/svn')
             run('/bin/ln -nsf ~/svn {}/trac-env/svn-repo'.format(self.configDir))
@@ -45,23 +42,23 @@ class Trac(service.Service):
         postgres.createDb('trac', 'trac')
 
 
-    def update(self, _installDeps=False):
+    def update(self):
         """
         Update trac config.
         """
         with settings(user=self.serviceUser):
+            self.bootstrap(venv_site_packages=True)
+
             run('mkdir -p ' + self.configDir)
             put(os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
 
             self.venv.install_twisted()
+            self.venv.install('psycopg2==2.6.1')
             self.venv.install('trac==1.0.10')
             self.venv.install('pygments==1.6')
 
-            if _installDeps:
-                self.venv.install('git+https://github.com/twisted-infra/twisted-trac-plugins.git')
-            else:
-                self.venv.install('--no-deps --upgrade git+https://github.com/twisted-infra/twisted-trac-plugins.git')
+            self.venv.install('git+https://github.com/twisted-infra/twisted-trac-plugins.git')
 
             self.venv.install('spambayes==1.1b2')
             self.venv.install('trac-github==2.1.5 requests_oauthlib==0.6.1')
