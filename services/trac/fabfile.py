@@ -70,8 +70,9 @@ class Trac(service.Service):
         """
         Update config and restart.
         """
+        self.task_stop()
         self.update()
-        self.task_restart()
+        self.task_start()
 
 
     def task_upgrade(self):
