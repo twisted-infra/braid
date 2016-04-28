@@ -27,8 +27,7 @@ from twisted.python.threadpool import ThreadPool
 threadpool = ThreadPool(name="trac")
 reactor.callWhenRunning(threadpool.start)
 reactor.addSystemEventTrigger("during", "shutdown", threadpool.stop)
-tracResource = TracResource(reactor, threadpool, path.join(config, 'htpasswd'),
-                            path.join(config, 'trac-env'))
+tracResource = TracResource(reactor, threadpool, path.join(config, 'trac-env'))
 htdocs = path.join(config, "trac-env/htdocs")
 attachments = path.join(config, "trac-env/attachments")
 root = RootResource(tracResource, htdocs, attachments)

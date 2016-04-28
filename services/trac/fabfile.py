@@ -40,9 +40,6 @@ class Trac(service.Service):
 
             cron.install(self.serviceUser, '{}/crontab'.format(self.configDir))
 
-            # Create an empty password file if not present.
-            run('/usr/bin/touch config/htpasswd')
-
         # FIXME: Make these idempotent.
         postgres.createUser('trac')
         postgres.createDb('trac', 'trac')
@@ -65,10 +62,9 @@ class Trac(service.Service):
                 self.venv.install('git+https://github.com/twisted-infra/twisted-trac-plugins.git')
             else:
                 self.venv.install('--no-deps --upgrade git+https://github.com/twisted-infra/twisted-trac-plugins.git')
-            self.venv.install('spambayes==1.1b2')
 
-            self.venv.install('TracAccountManager==0.4.4')
-            self.venv.install('https://github.com/twisted-infra/trac-github/archive/master.tar.gz requests_oauthlib==0.6.1')
+            self.venv.install('spambayes==1.1b2')
+            self.venv.install('trac-github==2.1.5 requests_oauthlib==0.6.1')
             self.venv.install('svn+https://trac-hacks.org/svn/defaultccplugin/tags/0.2/')
             self.venv.install('svn+https://svn.edgewall.org/repos/trac/plugins/1.0/spam-filter@14340')
 
@@ -103,7 +99,6 @@ class Trac(service.Service):
                 postgres.dumpToPath('trac', temp)
 
                 files = {
-                    'htpasswd': 'config/htpasswd',
                     'db.dump': temp,
                 }
 
@@ -141,7 +136,6 @@ class Trac(service.Service):
             with settings(user=self.serviceUser):
                 with utils.tempfile() as temp:
                     files = {
-                        'htpasswd': 'config/htpasswd',
                         'db.dump': temp,
                     }
 

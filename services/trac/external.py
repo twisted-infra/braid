@@ -66,8 +66,7 @@ class RootResource(Resource):
 
 class TracResource(WSGIResource, TracMixin):
 
-    def __init__(self, reactor, threadpool, htpasswd, path):
-        self.htpasswd = htpasswd
+    def __init__(self, reactor, threadpool, path):
         self.path = path
         WSGIResource.__init__(
             self, reactor, threadpool, self.tracApplication)

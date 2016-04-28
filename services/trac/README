@@ -5,7 +5,6 @@ It uses the following directories
 
 ~/config - This repository.
 ~/config/trac-env - Trac environment
-~/config/htpasswd - Trac passwords
 ~/bin - commands to start and stop the server
 ~/log - log files
 ~/run - pid files
