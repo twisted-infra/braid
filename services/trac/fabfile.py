@@ -21,6 +21,8 @@ class Trac(service.Service):
         """
         Install trac.
         """
+        self.bootstrap(venv_site_packages=True)
+
         with settings(user=self.serviceUser):
             self.update()
 
@@ -47,7 +49,7 @@ class Trac(service.Service):
         Update trac config.
         """
         with settings(user=self.serviceUser):
-            self.bootstrap(venv_site_packages=True)
+            self.venv.create(site_packages=True)
 
             run('mkdir -p ' + self.configDir)
             put(os.path.dirname(__file__) + '/*', self.configDir,
