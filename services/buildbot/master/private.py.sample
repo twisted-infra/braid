@@ -17,6 +17,9 @@ slaves = [
 
     'tavendo-freebsd-10.1-amd64',
 
+    'rax-ubuntu1204-1',
+    'rax-ubuntu1204-2',
+
     'rax-ubuntu1504-1',
     'rax-ubuntu1504-2',
     'rax-ubuntu1504-3',
@@ -39,8 +42,6 @@ slaves = [
     'fedora-rhel7-1',
     'fedora-rhel7-2',
 ]
-
-slaves += ['rackspace-ubuntu-12.04-%d' % (i,) for i in range(1,3)]
 
 # Give each slave a default password.
 # Dictionary of tuples of password and list of emails
