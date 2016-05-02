@@ -5,14 +5,14 @@ from twisted.spread import pb
 import config
 
 # XXX Plugins or something, jeez stupid.
-import commit, ticket, alert, message
+import ticket, alert, message
 
-class Notifications(pb.Root, commit.RepositoryChangeListener, ticket.TicketChangeListener, alert.MuninAlertListener, message.MessageListener):
+class Notifications(pb.Root, ticket.TicketChangeListener, alert.MuninAlertListener, message.MessageListener):
     def __init__(self, proto):
         self.proto = proto
 
 
-class CommitBot(irc.IRCClient, commit.RepositoryChange, ticket.TicketChange, ticket.TicketReview, alert.MuninAlert, message.Message):
+class CommitBot(irc.IRCClient, ticket.TicketChange, ticket.TicketReview, alert.MuninAlert, message.Message):
 
     lineRate = config.LINE_RATE
 
