@@ -527,6 +527,7 @@ class TwistedToxCoverageBuildFactory(TwistedToxBuildFactory):
             command=["codecov",
                      "--token={}".format(private.codecov_twisted_token),
                      "--build={}".format(buildID),
+                     "--file=coverage.xml",
                      WithProperties("--commit=%(got_revision)s")
             ],
         )
@@ -791,6 +792,7 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
             command=["codecov",
                      "--token={}".format(private.codecov_twisted_token),
                      "--build={}".format(buildID),
+                     "--file=coverage.xml",
                      WithProperties("--commit=%(got_revision)s")
             ],
         )
