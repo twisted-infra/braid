@@ -346,30 +346,6 @@ class Win32RemovePYCs(ShellCommand):
     descriptionDone = ["remove", ".pycs"]
 
 
-
-class TwistedReactorsBuildFactory(TwistedBaseFactory):
-    treeStableTimer = 5*60
-
-    def __init__(self, source, RemovePYCs=RemovePYCs,
-                 python="python", compileOpts=[], compileOpts2=[],
-                 reactors=["select"], uncleanWarnings=True):
-        TwistedBaseFactory.__init__(self, python, source, uncleanWarnings)
-
-        assert isinstance(compileOpts, list)
-        assert isinstance(compileOpts2, list)
-        cmd = (self.python + compileOpts + ["setup.py", "build_ext"]
-               + compileOpts2 + ["-i"])
-
-        self.addStep(shell.Compile, command=cmd, warnOnFailure=True)
-
-        for reactor in reactors:
-            self.addStep(RemovePYCs)
-            self.addStep(RemoveTrialTemp, python=self.python)
-            self.addTrialStep(
-                name=reactor, reactor=reactor, flunkOnFailure=True,
-                warnOnFailure=False)
-
-
 class TwistedToxBuildFactory(BuildFactory):
 
     workdir = "Twisted"
@@ -488,6 +464,7 @@ class TwistedToxCoverageBuildFactory(TwistedToxBuildFactory):
             self.addVirtualEnvStep(TrialTox,
                                    allowSystemPackages=allowSystemPackages,
                                    reactor=reactor,
+                                   tests=tests,
                                    toxEnv=toxEnv,
                                    commandNumber=2
             )
