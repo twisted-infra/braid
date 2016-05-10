@@ -2,7 +2,6 @@ from twisted.python import log
 from twisted.internet import defer
 
 from buildbot.process import buildstep
-from buildbot.steps.source.git import Git
 from buildbot.steps.source import Source
 from buildbot.status.results import SUCCESS
 
@@ -34,29 +33,6 @@ def isRelease(branch):
     Is the branch a release branch?
     """
     return mungeBranch(branch).startswith('release-')
-
-
-class TwistedGit(Git):
-    """
-    Temporary support for the transitionary stage between SVN and Git.
-    """
-
-    def startVC(self, branch, revision, patch):
-        """
-        * If a branch name starts with /branches/, cut it off before referring
-          to it in git commands.
-        * If a "git_revision" property is provided in the Change, use it
-          instead of the base revision number.
-        """
-        branch = mungeBranch(branch)
-        id = self.getRepository()
-        s = self.build.getSourceStamp(id)
-        if s.changes:
-            latest_properties = s.changes[-1].properties
-            if "git_revision" in latest_properties:
-                revision = latest_properties["git_revision"]
-        return Git.startVC(self, branch, revision, patch)
-
 
 
 class MergeForward(Source):
