@@ -356,6 +356,8 @@ class TwistedToxBuildFactory(BuildFactory):
         BuildFactory.__init__(self, source)
 
         tests = [WithProperties("%(test-case-name:~twisted)s")]
+        if tests == ["twisted"]:
+            tests = []
 
         assert platform in ["unix", "windows"]
 
@@ -429,6 +431,9 @@ class TwistedToxCoverageBuildFactory(TwistedToxBuildFactory):
                  allowSystemPackages=False, platform="unix", python="python"):
 
         tests = [WithProperties("%(test-case-name:~twisted)s")]
+
+        if tests == ["twisted"]:
+            tests = []
 
         BuildFactory.__init__(self, source)
 
