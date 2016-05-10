@@ -47,7 +47,7 @@ class Trac(service.Service):
         Update trac config.
         """
         with settings(user=self.serviceUser):
-            self.venv.create(site_packages=True)
+            self.venv.create()
 
             run('mkdir -p ' + self.configDir)
             put(os.path.dirname(__file__) + '/*', self.configDir,
