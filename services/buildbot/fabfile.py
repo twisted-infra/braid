@@ -67,6 +67,7 @@ class Buildbot(service.Service):
 
             self.venv.install_twisted()
             self.venv.install("virtualenv")
+            self.venv.install("python-dateutil")
 
             if _installDeps:
                 # sqlalchemy-migrate only works with a specific version of
