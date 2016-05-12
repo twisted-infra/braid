@@ -3,8 +3,8 @@
 PATH=~/virtualenv/bin:$PATH
 
 basedir=~/src
-twistd \
+/usr/bin/authbind -- twistd \
 	--logfile ~/log/twistd.log \
 	--pidfile ~/run/twistd.pid \
 	--rundir ~/data \
-	--python ~/config/master/buildbot.tac
+	--python ~/config/buildbot.tac

@@ -1,0 +1,20 @@
+- name: Make service group
+  action: group name=service system=yes state=present
+
+- name: Copy over sshd_config
+  action: template src=sshd_config dest=/etc/ssh/sshd_config
+
+- name: Chown roots authorised keys to service
+  action: file path=/root/.ssh/authorized_keys group=service
+
+- name: Allow service group to open the root dir
+  action: file path=/root mode="go+X"
+
+- name: Allow service group to open the root ssh dir
+  action: file path=/root/.ssh mode="go+X"
+
+- name: Allow service group to open the authorized_keys file
+  action: file path=/root/.ssh/authorized_keys mode="g+r"
+
+- name: Restart ssh
+  action: service name=ssh state=restarted
