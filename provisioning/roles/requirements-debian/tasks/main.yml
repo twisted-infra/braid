@@ -14,4 +14,4 @@
   action: apt pkg=python-subversion,python-openssl,python-twisted
 
 - name: Install other deps
-  action: apt pkg=sqlite3,equivs,enscript
+  action: apt pkg=sqlite3,equivs,enscript,authbind

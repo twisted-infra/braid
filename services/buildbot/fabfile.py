@@ -2,7 +2,7 @@ import os
 
 from fabric.api import settings, run, env, execute, cd, put, puts, abort
 
-from braid import git, cron, archive, config
+from braid import git, cron, archive, config, authbind
 from braid.twisted import service
 from braid.tasks import addTasks
 from braid.utils import confirm
@@ -19,12 +19,16 @@ class Buildbot(service.Service):
         """
         self.bootstrap()
 
+        # Setup authbind
+        authbind.allow(self.serviceUser, 80)
+        authbind.allow(self.serviceUser, 443)
+
         with settings(user=self.serviceUser):
-            execute(self.update, _installDeps=True)
+            self.update(_installDeps=True)
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
             run('/bin/mkdir -p ~/data')
             run('/bin/mkdir -p ~/data/build_products')
-            run('/bin/ln -nsf ~/data/build_products {}/master/public_html/builds'.format(self.configDir))
+            run('/bin/ln -nsf ~/data/build_products {}/public_html/builds'.format(self.configDir))
             cron.install(self.serviceUser, '{}/crontab'.format(self.configDir))
 
     def task_installTestData(self):
@@ -53,21 +57,37 @@ class Buildbot(service.Service):
                 'buildbot@wolfwood.twistedmatrix.com:/git/buildbot-secrets',
                 '~/private')
 
+    def task_upgradeMaster(self):
+        """
+        Upgrade the master.
+        """
+        targetPath = os.path.join(self.configDir)
+        with settings(user=self.serviceUser), cd(targetPath):
+            run('~/virtualenv/bin/buildbot upgrade-master')
+            run('/bin/cp state.sqlite ~/data')
+
     def update(self, _installDeps=False):
         """
         Update
         """
         with settings(user=self.serviceUser):
             run('mkdir -p ' + self.configDir)
+            run('mkdir -p ~/data/certs')
+            run('touch ~/data/certs/buildbot.twistedmatrix.com.pem')
             put(
-                os.path.dirname(__file__) + '/*', self.configDir,
+                os.path.dirname(__file__) + '/crontab', self.configDir,
+                mirror_local_mode=True)
+            put(
+                os.path.dirname(__file__) + '/start', self.configDir,
+                mirror_local_mode=True)
+            put(
+                os.path.dirname(__file__) + '/master/*', self.configDir,
                 mirror_local_mode=True)
             buildbotSource = os.path.join(self.configDir, 'buildbot-source')
             git.branch('https://github.com/twisted-infra/buildbot', buildbotSource)
 
             self.venv.install_twisted()
-            self.venv.install("virtualenv")
-            self.venv.install("python-dateutil")
+            self.venv.install("virtualenv python-dateutil txacme")
 
             if _installDeps:
                 # sqlalchemy-migrate only works with a specific version of
@@ -79,7 +99,7 @@ class Buildbot(service.Service):
             if env.get('installPrivateData'):
                 self.task_updatePrivateData()
             else:
-                execute(self.task_installTestData)
+                self.task_installTestData()
 
     def updatefast(self):
         """
@@ -88,11 +108,11 @@ class Buildbot(service.Service):
         with settings(user=self.serviceUser):
             put(
                 os.path.dirname(__file__) + '/master/twisted_*',
-                self.configDir + "/master/",
+                self.configDir,
                 mirror_local_mode=True)
             put(
                 os.path.dirname(__file__) + '/master/master.cfg',
-                self.configDir + "/master/",
+                self.configDir,
                 mirror_local_mode=True)
 
             if env.get('installPrivateData'):
@@ -142,4 +162,4 @@ class Buildbot(service.Service):
 
 
 
-addTasks(globals(), Buildbot('bb-master').getTasks())
+addTasks(globals(), Buildbot('bb-master').getTasks(role='buildbot'))

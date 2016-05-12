@@ -4,17 +4,18 @@ from twisted.names.authority import getSerial
 name = 'twistedmatrix.com'
 lists = 'lists.' + name
 
-from hosts import cube, dornkirk, jeb, tmtl, oloid, wolfwood, xpdev, planet, nameservers, addSubdomains, googleHosting
+from hosts import cube, dornkirk, jeb, tmtl, oloid, wolfwood, xpdev, planet, nameservers, addSubdomains, googleHosting, buildbot
 
 subs = {
     cube: ['cube.'],
     wolfwood: ['cvs.', 'wolfwood.', 'svn.', 'git.', 'code.'],
     oloid: ['oloid.'],
-    dornkirk: ['dornkirk.', '', 'projects.', 'ftp.', 'www.', 'buildbot.', 'speed.',
+    dornkirk: ['dornkirk.', '', 'projects.', 'ftp.', 'www.', 'speed.',
                'reality.', 'irc.', 'saph.',
                'java.', 'smtp.', 'mail.'],
     xpdev: ['xpdev.'],
     jeb: ['staging.'],
+    buildbot: ['buildbot.'],
 }
 
 zone = [

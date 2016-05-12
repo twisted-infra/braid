@@ -6,3 +6,10 @@
   roles:
     - systemupdate
     - requirements-debian
+
+- hosts: buildbot
+  sudo: yes
+  roles:
+    - systemupdate
+    - ssh
+    - requirements-debian

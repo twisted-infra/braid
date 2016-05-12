@@ -1,0 +1,1 @@
+buildbot ansible_ssh_host=104.130.225.105 ansible_ssh_user=root

@@ -1,0 +1,28 @@
+X11Forwarding yes
+
+Subsystem sftp /usr/lib/openssh/sftp-server
+
+PasswordAuthentication no
+Protocol 2
+SyslogFacility AUTHPRIV
+ChallengeResponseAuthentication no
+UsePAM yes
+UseDNS no
+PrintMotd no
+
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_dsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key
+UsePrivilegeSeparation yes
+
+# Allow client to pass locale environment variables
+AcceptEnv LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES
+AcceptEnv LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT
+AcceptEnv LC_IDENTIFICATION LC_ALL LANGUAGE
+AcceptEnv XMODIFIERS
+AcceptEnv INPUTRC
+AcceptEnv BACKGROUND
+
+Match Group service
+AuthorizedKeysFile /root/.ssh/authorized_keys .ssh/authorized_keys
