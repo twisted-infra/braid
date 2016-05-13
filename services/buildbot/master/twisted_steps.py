@@ -147,8 +147,6 @@ class TrialTox(ShellCommand):
 
         self.command = self.command + ["-e", self._toxEnv] + self.tests
 
-        print(self.command)
-
         ShellCommand.start(self)
 
 
@@ -173,10 +171,7 @@ class TrialTox(ShellCommand):
         # trial output. We don't have access to test.log from here.
         output = "\n".join(filterTox(cmd.logs['stdio'].getText(),
                                      commandNumber=self._commandNumber))
-        print(output)
         counts = countFailedTests(output + "\n")
-
-        print(counts)
 
         total = counts['total']
         failures, errors = counts['failures'], counts['errors']

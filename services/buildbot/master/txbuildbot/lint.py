@@ -128,7 +128,7 @@ class LintStep(ShellCommand):
                 continue
             branch = build.getProperty("branch")
             revision = build.getProperty('got_revision')
-            if not branch:
+            if branch == "trunk":
                 count += 1
                 if revision == targetRevision:
                     log.msg(format="Found build %(number)d of trunk at %(revision)s",
