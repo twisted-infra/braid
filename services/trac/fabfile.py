@@ -55,7 +55,7 @@ class Trac(service.Service):
 
             self.venv.install_twisted()
             self.venv.install('psycopg2==2.6.1')
-            self.venv.install('trac==1.0.10')
+            self.venv.install('trac==1.0.11')
             self.venv.install('pygments==1.6')
 
             self.venv.install('git+https://github.com/twisted-infra/twisted-trac-plugins.git')
@@ -70,7 +70,10 @@ class Trac(service.Service):
         """
         Update config and restart.
         """
-        self.task_stop()
+        try:
+            self.task_stop()
+        except:
+            pass
         self.update()
         self.task_start()
 
