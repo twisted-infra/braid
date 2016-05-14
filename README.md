@@ -143,6 +143,10 @@ It uses the address `172.16.255.140`, and there is a braid config named `vagrant
 ```shell
 # Start the VM
 vagrant up
-# Run the command
+# In case you already have a VM, re-provision it using:
+vagrant provision
+# New VMs should be initialized using:
+fab config.vagrant base.bootstrap
+# Run the braid commands using:
 fab config.vagrant COMMAND
 ```

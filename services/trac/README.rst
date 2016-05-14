@@ -1,9 +1,16 @@
 Trac
 ====
 
-This is the configuration for twistedmatrix.com's trac installation.
+This is the configuration for twistedmatrix.com's Trac installation.
 
-It is adminstered using braid[1]. It is installed in ``/srv/trac`` as user trac.
+It requires that the `t-web` service to be started::
+
+    fab t-web.install
+    fab t-web.start
+
+It is installed in ``/srv/trac`` as user `trac`.
+
+Inside the `t-web` service, it is available at `http://server.name/trac/`
 
 It uses the following directories:
 
