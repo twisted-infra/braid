@@ -16,8 +16,8 @@ boson = '209.6.87.187'
 googleHosting = 'ghs.google.com'
 paper = '67.207.132.219'
 posterous = '66.216.125.32'
-tmtl = '198.101.153.251'
-oloid = '64.90.56.39'
+ns2 = '104.239.227.92'
+glyphIM = '172.99.77.232'
 dornkirk = '66.35.39.66'
 jeb = '162.242.246.197'
 buildbot = '104.130.225.105'
@@ -28,7 +28,7 @@ def nameservers(host, *addresses):
     Return NS records and A record glue for the given host.
     """
     if not addresses:
-        addresses = [dornkirk, tmtl]
+        addresses = [dornkirk, ns2]
     records = []
     for i, addr in enumerate(addresses):
         records.extend([
