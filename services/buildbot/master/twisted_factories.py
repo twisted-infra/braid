@@ -355,9 +355,8 @@ class TwistedToxBuildFactory(BuildFactory):
 
         BuildFactory.__init__(self, source)
 
-        tests = [WithProperties("%(test-case-name:~twisted)s")]
-        if tests == ["twisted"]:
-            tests = []
+        tests = [WithProperties("%(test-case-name:~)s")]
+        tests = []
 
         assert platform in ["unix", "windows"]
 
@@ -370,7 +369,13 @@ class TwistedToxBuildFactory(BuildFactory):
         self.addStep(
             shell.ShellCommand,
             description="clearing virtualenv".split(" "),
-            command = [python, "-m", "virtualenv", '--clear', self._virtualEnvPath],
+            command = [python, "-c", "import shutil; shutil.rmtree('" + self._virtualEnvPath + "', True)"],
+        )
+
+        self.addStep(
+            shell.ShellCommand,
+            description="making virtualenv".split(" "),
+            command = [python, "-m", "virtualenv", self._virtualEnvPath]
         )
 
         self.addVirtualEnvStep(
@@ -430,10 +435,8 @@ class TwistedToxCoverageBuildFactory(TwistedToxBuildFactory):
     def __init__(self, source, toxEnv, buildID, reactors=["default"],
                  allowSystemPackages=False, platform="unix", python="python"):
 
-        tests = [WithProperties("%(test-case-name:~twisted)s")]
-
-        if tests == ["twisted"]:
-            tests = []
+        tests = [WithProperties("%(test-case-name:~)s")]
+        tests = []
 
         BuildFactory.__init__(self, source)
 
@@ -448,8 +451,13 @@ class TwistedToxCoverageBuildFactory(TwistedToxBuildFactory):
         self.addStep(
             shell.ShellCommand,
             description="clearing virtualenv".split(" "),
-            command = [python, "-m", "virtualenv", '--clear',
-                       self._virtualEnvPath],
+            command = [python, "-c", "import shutil; shutil.rmtree('" + self._virtualEnvPath + "', True)"],
+        )
+
+        self.addStep(
+            shell.ShellCommand,
+            description="making virtualenv".split(" "),
+            command = [python, "-m", "virtualenv", self._virtualEnvPath]
         )
 
         self.addVirtualEnvStep(
