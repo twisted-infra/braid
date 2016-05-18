@@ -867,6 +867,28 @@ class PyFlakesBuildFactory(TwistedBaseFactory):
 
 
 
+class TopfileCheckerFactory(TwistedBaseFactory):
+    """
+    A build factory which checks for topfiles.
+    """
+
+    def __init__(self, source, python="python"):
+        TwistedBaseFactory.__init__(
+            self,
+            source=source,
+            python=python,
+            uncleanWarnings=False,
+            virtualenv=True,
+        )
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            command=['pip', 'install', 'virtualenv', 'tox'])
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            command=["tox", "-e", "topfile"])
+
+
+
 class CheckManifestBuildFactory(TwistedBaseFactory):
     """
     A build factory which checks the MANIFEST.in
