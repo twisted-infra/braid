@@ -3,8 +3,8 @@ from twisted.internet import defer
 
 from buildbot.process import buildstep
 from buildbot.steps.source import Source
+from buildbot.steps.source.git import Git
 from buildbot.status.results import SUCCESS
-
 
 
 def mungeBranch(branch):
@@ -35,6 +35,13 @@ def isRelease(branch):
     return mungeBranch(branch).startswith('release-')
 
 
+def isSafeBranch(branch):
+    """
+    Is this branch a safe branch? That is, is it on a real branch?
+    """
+    return not mungeBranch(branch).startswith('refs/pull')
+
+
 class MergeForward(Source):
     """
     Merge with trunk.
@@ -59,6 +66,10 @@ class MergeForward(Source):
 
 
     def startVC(self, branch, revision, patch):
+
+        if not isSafeBranch(branch):
+            raise ValueError("No building on pull requests.")
+
         self.stdio_log = self.addLog('stdio')
 
         self.step_status.setText(['merging', 'forward'])
@@ -128,3 +139,15 @@ class MergeForward(Source):
                 return cmd.rc
         d.addCallback(lambda _: evaluateCommand(cmd))
         return d
+
+
+class TwistedGit(Git):
+    """
+    Temporary support for the transitionary stage between SVN and Git.
+    """
+
+    def startVC(self, branch, revision, patch):
+        if not isSafeBranch(branch):
+            raise ValueError("No building on pull requests.")
+
+        return Git.startVC(self, branch, revision, patch)
