@@ -490,22 +490,6 @@ class TwistedToxCoverageBuildFactory(TwistedToxBuildFactory):
 
         self.addVirtualEnvStep(
             shell.ShellCommand,
-            description = "run coverage html".split(" "),
-            command=["python", "-m", "coverage", 'html', '-d',
-                     'twisted-coverage','-i']
-        )
-
-        self.addStep(
-            transfer.DirectoryUpload,
-            workdir='Twisted',
-            slavesrc='twisted-coverage',
-            masterdest=WithProperties('build_products/twisted-coverage.py/twisted-' + buildID + '-coverage.py-r%(got_revision)s'),
-            url=WithProperties('/builds/twisted-coverage.py/twisted-' + buildID + '-coverage.py-r%(got_revision)s/'),
-            blocksize=2 ** 16,
-            compress='gz')
-
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
             description = "run coverage xml".split(" "),
             command=["python", "-m", "coverage", 'xml', '-o', 'coverage.xml',
                      '-i'])
@@ -752,22 +736,6 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
             shell.ShellCommand,
             description = "run coverage combine".split(" "),
             command=["python", "-m", "coverage", "combine"])
-
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            description = "run coverage html".split(" "),
-            command=["python", "-m", "coverage", 'html', '-d',
-                     'twisted-coverage', '--omit', ','.join(OMIT), '-i']
-        )
-
-        self.addStep(
-            transfer.DirectoryUpload,
-            workdir='Twisted',
-            slavesrc='twisted-coverage',
-            masterdest=WithProperties('build_products/twisted-coverage.py/twisted-' + buildID + '-coverage.py-r%(got_revision)s'),
-            url=WithProperties('/builds/twisted-coverage.py/twisted-' + buildID + '-coverage.py-r%(got_revision)s/'),
-            blocksize=2 ** 16,
-            compress='gz')
 
         self.addVirtualEnvStep(
             shell.ShellCommand,
