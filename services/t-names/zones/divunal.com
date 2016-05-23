@@ -3,7 +3,7 @@ from twisted.names.authority import getSerial
 
 name = 'divunal.com'
 
-from hosts import dornkirk, tmtl, nameservers, addSubdomains
+from hosts import dornkirk, nameservers, addSubdomains
 
 subs = {
     dornkirk: [''],

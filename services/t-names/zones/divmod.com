@@ -1,8 +1,6 @@
 from twisted.names.authority import getSerial
 from twisted.names.dns import Name
 
-from hosts import tmtl
-
 subs = ['mail.']
 name = 'divmod.com'
 
@@ -51,6 +49,3 @@ zone = [
         "3eO7nYyIol7wIDAQAB"),
     CNAME("email.divmod.com", "mailgun.org"),
 ]
-
-for sub in subs:
-    zone.append(A(sub + name, tmtl, ttl="1H"))

@@ -1,11 +1,11 @@
 from twisted.names.authority import getSerial
 
-from hosts import addSubdomains, tmtl
+from hosts import addSubdomains, glyphIM
 
 name = 'divmod.org'
 subs = {
-     tmtl: ['www.', ''],
-     }
+    glyphIM: ['www.', ''],
+}
 
 zone = [
     SOA(
