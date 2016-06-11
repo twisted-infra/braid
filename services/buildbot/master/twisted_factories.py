@@ -200,14 +200,22 @@ class TwistedBaseFactory(BuildFactory):
         self.trialTests = trialTests
 
         if virtualenv:
-            # Each time we create a new virtualenv as latest pip can build
-            # wheels on the fly and install them from user's cache.
+            # Hopefully temporary workaround for --clear not working:
+            # https://github.com/pypa/virtualenv/issues/929
             self.addStep(
                 shell.ShellCommand,
                 command = self.python + [
-                    "-m", virtualenv_module, '--clear', self._virtualEnvPath,
-                    ],
-                )
+                    "-c", "import shutil, sys;"
+                    "shutil.rmtree(sys.argv[1], ignore_errors=True)",
+                    self._virtualEnvPath,
+                ]
+            )
+            self.addStep(
+                shell.ShellCommand,
+                command = self.python + [
+                    "-m", virtualenv_module, self._virtualEnvPath,
+                ]
+            )
 
         else:
             # Report the versions, since we're using the system ones. If it's a
