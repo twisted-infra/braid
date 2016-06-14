@@ -10,14 +10,6 @@ LINE_LENGTH = 400
 # Delay, in seconds, between IRC messages
 LINE_RATE = 1.0
 
-# Three-tuples of (repository path, filename expression, channel) defining
-# the rules for announcing commit messages.
-COMMIT_RULES = [
-    ('/svn/Twisted', '.*', ['#twisted', '#twisted-dev']),
-    ('/svn/Twisted', '.*/(twisted|doc)/web2?/.*', ['#twisted.web', '#twisted-dev']),
-    ('/svn/WebSite', '.*', ['#twisted', '#twisted-dev']),
-    ('/svn', 'pypy/.*', ['#pypy'])]
-
 # Two-tuples of (tracker URL, channel) defining the rules for announcing
 # ticket changes.
 TICKET_RULES = [
