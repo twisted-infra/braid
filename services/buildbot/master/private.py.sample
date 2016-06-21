@@ -59,11 +59,17 @@ debugPassword = "cd3dad27_0f84b396"
 codecov_twisted_token = 'invalid'
 
 
+#
+# For testing, get a Personal Access Token
+# https://github.com/settings/tokens
+#
+#
+# For production get a OAuth Token.
 # GitHub OAuth Application for Builbot Status is here:
 # https://github.com/organizations/twisted/settings/applications/373261
 #
 # If you disable the 2-way-auth you can get a OAuth token for this application
-# by using this command
+# by using this command:
 #
 # curl -u YOUR_USERNAME -d '{
 #     "scopes": ["repo:status"],
