@@ -150,3 +150,6 @@ fab config.vagrant base.bootstrap
 # Run the braid commands using:
 fab config.vagrant COMMAND
 ```
+
+For example, after running `fab config.vagrant trac.update` you can access the
+Trac instance at http://172.16.255.140/trac

@@ -44,7 +44,7 @@ class Trac(service.Service):
 
     def update(self):
         """
-        Update trac config.
+        Remove the current trac installation and reinstalls it.
         """
         with settings(user=self.serviceUser):
             self.venv.create()
@@ -68,7 +68,7 @@ class Trac(service.Service):
 
     def task_update(self):
         """
-        Update config and restart.
+        Stop, remove the current Trac installation, reinstalls it and start.
         """
         try:
             self.task_stop()
@@ -80,7 +80,8 @@ class Trac(service.Service):
 
     def task_upgrade(self):
         """
-        Run a Trac upgrade.
+        Remove the existing installation, re-install it and run a Trac
+        upgrade.
         """
         with settings(user=self.serviceUser):
             self.update()
