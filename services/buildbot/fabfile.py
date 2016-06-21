@@ -1,6 +1,6 @@
 import os
 
-from fabric.api import settings, run, env, execute, cd, put, puts, abort
+from fabric.api import settings, run, env, cd, put, puts, abort
 
 from braid import git, cron, archive, config, authbind
 from braid.twisted import service
@@ -148,7 +148,7 @@ class Buildbot(service.Service):
         self.task_restart()
 
 
-    def task_updatefast(self):
+    def task_reconfigure(self):
         """
         Update just the configuration and restart.
         """
