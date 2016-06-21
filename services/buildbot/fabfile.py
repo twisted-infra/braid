@@ -95,12 +95,13 @@ class Buildbot(service.Service):
             # For now we are using a buildbot eight HEAD due to a bug in
             # 0.8.12
             # https://github.com/buildbot/buildbot/pull/1924
-            #
-            # eight-twisted-fork is for now vanilla upstream
+            # A forked branch is still used to control its version.
+            # If changes are required to this branch it should use a name
+            # other than `eight` to reduce confusion.
             git.branch(
                 url='https://github.com/twisted-infra/buildbot',
                 destination=buildbotSource,
-                branch='eight-twisted-fork',
+                branch='eight',
                 )
 
             self.venv.install_twisted()
