@@ -200,14 +200,22 @@ class TwistedBaseFactory(BuildFactory):
         self.trialTests = trialTests
 
         if virtualenv:
-            # Each time we create a new virtualenv as latest pip can build
-            # wheels on the fly and install them from user's cache.
+            # Hopefully temporary workaround for --clear not working:
+            # https://github.com/pypa/virtualenv/issues/929
             self.addStep(
                 shell.ShellCommand,
                 command = self.python + [
-                    "-m", virtualenv_module, '--clear', self._virtualEnvPath,
-                    ],
-                )
+                    "-c", "import shutil, sys;"
+                    "shutil.rmtree(sys.argv[1], ignore_errors=True)",
+                    self._virtualEnvPath,
+                ]
+            )
+            self.addStep(
+                shell.ShellCommand,
+                command = self.python + [
+                    "-m", virtualenv_module, self._virtualEnvPath,
+                ]
+            )
 
         else:
             # Report the versions, since we're using the system ones. If it's a
@@ -355,9 +363,8 @@ class TwistedToxBuildFactory(BuildFactory):
 
         BuildFactory.__init__(self, source)
 
-        tests = [WithProperties("%(test-case-name:~twisted)s")]
-        if tests == ["twisted"]:
-            tests = []
+        tests = [WithProperties("%(test-case-name:~)s")]
+        tests = []
 
         assert platform in ["unix", "windows"]
 
@@ -370,7 +377,13 @@ class TwistedToxBuildFactory(BuildFactory):
         self.addStep(
             shell.ShellCommand,
             description="clearing virtualenv".split(" "),
-            command = [python, "-m", "virtualenv", '--clear', self._virtualEnvPath],
+            command = [python, "-c", "import shutil; shutil.rmtree('" + self._virtualEnvPath + "', True)"],
+        )
+
+        self.addStep(
+            shell.ShellCommand,
+            description="making virtualenv".split(" "),
+            command = [python, "-m", "virtualenv", self._virtualEnvPath]
         )
 
         self.addVirtualEnvStep(
@@ -430,10 +443,8 @@ class TwistedToxCoverageBuildFactory(TwistedToxBuildFactory):
     def __init__(self, source, toxEnv, buildID, reactors=["default"],
                  allowSystemPackages=False, platform="unix", python="python"):
 
-        tests = [WithProperties("%(test-case-name:~twisted)s")]
-
-        if tests == ["twisted"]:
-            tests = []
+        tests = [WithProperties("%(test-case-name:~)s")]
+        tests = []
 
         BuildFactory.__init__(self, source)
 
@@ -448,8 +459,13 @@ class TwistedToxCoverageBuildFactory(TwistedToxBuildFactory):
         self.addStep(
             shell.ShellCommand,
             description="clearing virtualenv".split(" "),
-            command = [python, "-m", "virtualenv", '--clear',
-                       self._virtualEnvPath],
+            command = [python, "-c", "import shutil; shutil.rmtree('" + self._virtualEnvPath + "', True)"],
+        )
+
+        self.addStep(
+            shell.ShellCommand,
+            description="making virtualenv".split(" "),
+            command = [python, "-m", "virtualenv", self._virtualEnvPath]
         )
 
         self.addVirtualEnvStep(
@@ -479,22 +495,6 @@ class TwistedToxCoverageBuildFactory(TwistedToxBuildFactory):
             description = "run coverage combine".split(" "),
             command=["python", "-m", "coverage", 'combine']
         )
-
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            description = "run coverage html".split(" "),
-            command=["python", "-m", "coverage", 'html', '-d',
-                     'twisted-coverage','-i']
-        )
-
-        self.addStep(
-            transfer.DirectoryUpload,
-            workdir='Twisted',
-            slavesrc='twisted-coverage',
-            masterdest=WithProperties('build_products/twisted-coverage.py/twisted-' + buildID + '-coverage.py-r%(got_revision)s'),
-            url=WithProperties('/builds/twisted-coverage.py/twisted-' + buildID + '-coverage.py-r%(got_revision)s/'),
-            blocksize=2 ** 16,
-            compress='gz')
 
         self.addVirtualEnvStep(
             shell.ShellCommand,
@@ -747,22 +747,6 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
 
         self.addVirtualEnvStep(
             shell.ShellCommand,
-            description = "run coverage html".split(" "),
-            command=["python", "-m", "coverage", 'html', '-d',
-                     'twisted-coverage', '--omit', ','.join(OMIT), '-i']
-        )
-
-        self.addStep(
-            transfer.DirectoryUpload,
-            workdir='Twisted',
-            slavesrc='twisted-coverage',
-            masterdest=WithProperties('build_products/twisted-coverage.py/twisted-' + buildID + '-coverage.py-r%(got_revision)s'),
-            url=WithProperties('/builds/twisted-coverage.py/twisted-' + buildID + '-coverage.py-r%(got_revision)s/'),
-            blocksize=2 ** 16,
-            compress='gz')
-
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
             description = "run coverage xml".split(" "),
             command=["python", "-m", "coverage", 'xml', '-o', 'coverage.xml',
                      '--omit', ','.join(OMIT), '-i'])
@@ -856,6 +840,28 @@ class PyFlakesBuildFactory(TwistedBaseFactory):
             shell.ShellCommand,
             command=['pip', 'install', 'virtualenv', 'tox'])
         self.addVirtualEnvStep(PyFlakes)
+
+
+
+class TopfileCheckerFactory(TwistedBaseFactory):
+    """
+    A build factory which checks for topfiles.
+    """
+
+    def __init__(self, source, python="python"):
+        TwistedBaseFactory.__init__(
+            self,
+            source=source,
+            python=python,
+            uncleanWarnings=False,
+            virtualenv=True,
+        )
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            command=['pip', 'install', 'virtualenv', 'tox'])
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            command=["tox", "-e", "topfile"])
 
 
 

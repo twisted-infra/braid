@@ -75,7 +75,7 @@ class Kenaan(service.Service):
             ]
             run('mkdir -p ' + self.configDir)
 
-            self.venv.install("amptrac")
+            self.venv.install("git+https://github.com/twisted-infra/amptrac.git")
 
             for f in filesToCopy:
                 put(os.path.join(os.path.dirname(__file__), f), self.configDir,

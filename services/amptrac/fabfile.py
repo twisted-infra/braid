@@ -39,6 +39,7 @@ class AmpTrac(service.Service):
                 mirror_local_mode=True)
 
             self.venv.install_twisted()
+            self.venv.install('git+https://github.com/twisted-infra/amptrac.git')
             self.venv.install('git+https://github.com/twisted-infra/amptrac-server')
 
     def task_update(self):
