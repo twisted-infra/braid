@@ -2,7 +2,6 @@ import time
 
 from buildbot.status.web.base import HtmlResource, map_branches, build_get_class, path_to_builder, path_to_build
 from buildbot.status.builder import SUCCESS, WARNINGS, FAILURE, SKIPPED, EXCEPTION, RETRY
-from buildbot.status.web.waterfall import WaterfallStatusResource
 from buildbot.status import html
 from buildbot.util import formatInterval
 
@@ -137,15 +136,18 @@ class TenBoxesPerBuilder(HtmlResource):
                 row(tags.td(class_="LastBuild box")("no build"))
         defer.returnValue((yield flattenString(req, tag)))
 
+
+
 class TwistedWebStatus(html.WebStatus):
+    """
+    Customization of the resources available via the webstatus.
+    """
     def __init__(self, **kwargs):
         html.WebStatus.__init__(self, **kwargs)
         self.putChild("boxes-supported", TenBoxesPerBuilder(categories=['supported']))
         self.putChild("boxes-unsupported", TenBoxesPerBuilder(categories=['unsupported']))
         self.putChild("boxes-all", TenBoxesPerBuilder(categories=['supported', 'unsupported']))
         self.putChild("boxes-benchmark", TenBoxesPerBuilder(categories=['benchmark']))
-        self.putChild("supported", WaterfallStatusResource(categories=['supported']))
-        self.putChild("waterfall", WaterfallStatusResource(categories=['supported', 'unsupported']))
 
         # These are are expensive, so disable them
         # http://trac.buildbot.net/ticket/2268

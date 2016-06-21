@@ -7,7 +7,10 @@ def install():
     package.install(['git'])
 
 
-def branch(url, destination):
+def branch(url, destination, branch=None):
+    """
+    Clone a git repo at `destination` from `url`.
+    """
     if fails('/usr/bin/test -d {}/.git'.format(destination)):
         run('/usr/bin/git clone {} {}'.format(url, destination))
     else:
@@ -15,7 +18,12 @@ def branch(url, destination):
         # https://github.com/twisted-infra/braid/issues/5
         with cd(destination):
             run('/usr/bin/git fetch origin')
-            run('/usr/bin/git reset --hard origin')
+
+            if branch:
+                reset_branch = 'origin/%s' % (branch,)
+            else:
+                reset_branch = 'origin'
+            run('/usr/bin/git reset --hard %s' % (reset_branch,))
 
 
 def push(source, destination):

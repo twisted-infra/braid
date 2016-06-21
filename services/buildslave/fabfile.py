@@ -1,6 +1,6 @@
 import os
 
-from fabric.api import settings, execute, put
+from fabric.api import settings, execute, put, run
 
 from braid.twisted import service
 from braid.tasks import addTasks
@@ -16,7 +16,7 @@ class Buildslave(service.Service):
 
     def task_install(self):
         """
-        Install buildslave for testing.
+        Install buildslave for testing and the required dependencies.
         """
         self.bootstrap()
 
@@ -27,6 +27,7 @@ class Buildslave(service.Service):
                 self.binDir,
                 mirror_local_mode=True)
             execute(self.update)
+        run('apt-get install libsqlite3-dev')
 
     def update(self, _installDeps=False):
         """
