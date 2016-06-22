@@ -10,7 +10,6 @@ from twisted.web.util import Redirect
 from twisted.internet import defer
 
 from twisted.web.template import tags, flattenString
-from twisted.web.resource import Resource
 
 _backgroundColors = {
     SUCCESS: "green",

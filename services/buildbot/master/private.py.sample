@@ -10,37 +10,31 @@
 # This is the list of currently configured slaves
 slaves = [
     'vagrant-testing',
-    'bot-glyph-1',
-    'bot-glyph-6',
 
     'egh-osx-1',
 
-    'tavendo-freebsd-10.1-amd64',
+    "bot-glyph-1",
+    "bot-glyph-6",
+    "tavendo-freebsd-10.1-amd64",
 
-    'rax-ubuntu1204-1',
-    'rax-ubuntu1204-2',
+    "fedora-fedora22-1",
+    "fedora-fedora22-2",
+    "fedora-fedora23-1",
+    "fedora-fedora23-2",
+    "fedora-rhel7-1",
+    "fedora-rhel7-2",
 
-    'rax-ubuntu1504-1',
-    'rax-ubuntu1504-2',
-    'rax-ubuntu1504-3',
+    "osuosl-osx10.6",
 
-    'rax-ubuntu1510-1',
-    'rax-ubuntu1510-2',
+    "rax-ubuntu1204-1",
+    "rax-ubuntu1204-2",
+    "rax-ubuntu1604-1",
+    "rax-ubuntu1604-2",
+    "rax-ubuntu1604-3",
+    "rax-debian8-1",
+    "rax-debian8-2",
 
-    'rax-debian8-1',
-    'rax-debian8-2',
-
-    'fedora-fedora21-1',
-    'fedora-fedora21-2',
-
-    'fedora-fedora22-1',
-    'fedora-fedora22-2',
-
-    'fedora-fedora23-1',
-    'fedora-fedora23-2',
-
-    'fedora-rhel7-1',
-    'fedora-rhel7-2',
+    "github",
 ]
 
 # Give each slave a default password.

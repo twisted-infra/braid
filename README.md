@@ -151,5 +151,11 @@ fab config.vagrant base.bootstrap
 fab config.vagrant COMMAND
 ```
 
-For example, after running `fab config.vagrant trac.update` you can access the
-Trac instance at http://172.16.255.140/trac
+The following ports are in use on the Vagrant VM, listed here for easy
+discovery and to avoid conflicts:
+
+* 80 - Twisted Web
+* 8000 - Buildmaster redirection placeholder (port 80 in production)
+* 8080 - Buildmaster WebStatus
+* 9936 - Buildmaster PB listener
+* 9987 - Buildmaster slave listener

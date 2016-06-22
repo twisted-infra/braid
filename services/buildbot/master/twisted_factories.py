@@ -17,7 +17,6 @@ from twisted_steps import ProcessDocs, ReportPythonModuleVersions, \
 from txbuildbot.lint import (
     CheckDocumentation,
     CheckCodesByTwistedChecker,
-    PyFlakes,
 )
 
 import private
@@ -354,7 +353,36 @@ class Win32RemovePYCs(ShellCommand):
     descriptionDone = ["remove", ".pycs"]
 
 
+
+class ToxBuildFactory(TwistedBaseFactory):
+    """
+    A build factory which executes a list of tox environments.
+    """
+
+    def __init__(self, source, tox_environments, python="python"):
+        TwistedBaseFactory.__init__(
+            self,
+            source=source,
+            python=python,
+            uncleanWarnings=False,
+            virtualenv=True,
+        )
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            command=['pip', 'install', 'virtualenv', 'tox'],
+            )
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            command=["tox", "-e"] + [','.join(tox_environments)],
+            )
+
+
+
 class TwistedToxBuildFactory(BuildFactory):
+    """
+    A build factor for running the tests in a virtual environment which is set
+    up using tox.
+    """
 
     workdir = "Twisted"
 
@@ -820,48 +848,6 @@ class TwistedCheckerBuildFactory(TwistedBaseFactory):
             shell.ShellCommand,
             command=['pip', 'install', 'virtualenv', 'tox'])
         self.addVirtualEnvStep(CheckCodesByTwistedChecker, want_stderr=False)
-
-
-
-class PyFlakesBuildFactory(TwistedBaseFactory):
-    """
-    A build factory which just runs PyFlakes over the specified source.
-    """
-
-    def __init__(self, source, python="python"):
-        TwistedBaseFactory.__init__(
-            self,
-            source=source,
-            python=python,
-            uncleanWarnings=False,
-            virtualenv=True,
-        )
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            command=['pip', 'install', 'virtualenv', 'tox'])
-        self.addVirtualEnvStep(PyFlakes)
-
-
-
-class TopfileCheckerFactory(TwistedBaseFactory):
-    """
-    A build factory which checks for topfiles.
-    """
-
-    def __init__(self, source, python="python"):
-        TwistedBaseFactory.__init__(
-            self,
-            source=source,
-            python=python,
-            uncleanWarnings=False,
-            virtualenv=True,
-        )
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            command=['pip', 'install', 'virtualenv', 'tox'])
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            command=["tox", "-e", "topfile"])
 
 
 

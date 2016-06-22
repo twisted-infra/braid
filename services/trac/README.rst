@@ -32,3 +32,5 @@ The GitHub webhook is configured at https://github.com/twisted/twisted/settings/
 More information about how the post-commit hook works is available in the `trac-github readme <https://github.com/trac-hacks/trac-github#post-commit-hook>`_.
 
 Use `fab -l` to check the available commands.
+
+Trac is available inside the Vagrant VM at http://172.16.255.140/trac

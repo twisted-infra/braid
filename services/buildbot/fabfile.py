@@ -1,6 +1,6 @@
 import os
 
-from fabric.api import settings, run, env, execute, cd, put, puts, abort
+from fabric.api import settings, run, env, cd, put, puts, abort
 
 from braid import git, cron, archive, config, authbind
 from braid.twisted import service
@@ -19,7 +19,8 @@ class Buildbot(service.Service):
         """
         self.bootstrap()
 
-        # Setup authbind
+        # Setup authbind to be used by HTTP to HTTPS redirection and by
+        # the HTTPS proxy.
         authbind.allow(self.serviceUser, 80)
         authbind.allow(self.serviceUser, 443)
 
@@ -38,8 +39,14 @@ class Buildbot(service.Service):
         if env.get('environment') == 'production':
            abort("Don't use testInit in production.")
 
-        targetPath = os.path.join(self.configDir, 'master')
+        targetPath = os.path.join(self.configDir)
         with settings(user=self.serviceUser), cd(targetPath):
+            # Copy the new private data for testing.
+            put(
+                os.path.dirname(__file__) + '/master/private.py.sample',
+                self.configDir,
+                mirror_local_mode=True)
+
             puts('Copying testing private.py to %s' % (targetPath,))
             run('/bin/cp private.py.sample private.py')
             puts('Migrating SQLite db.')
@@ -68,7 +75,7 @@ class Buildbot(service.Service):
 
     def update(self, _installDeps=False):
         """
-        Update
+        Update the buildmaster environment.
         """
         with settings(user=self.serviceUser):
             run('mkdir -p ' + self.configDir)
@@ -84,7 +91,8 @@ class Buildbot(service.Service):
                 os.path.dirname(__file__) + '/master/*', self.configDir,
                 mirror_local_mode=True)
             buildbotSource = os.path.join(self.configDir, 'buildbot-source')
-            git.branch('https://github.com/twisted-infra/buildbot', buildbotSource)
+            git.branch(
+                'https://github.com/twisted-infra/buildbot', buildbotSource)
 
             self.venv.install_twisted()
             self.venv.install("virtualenv python-dateutil txacme")
@@ -92,14 +100,28 @@ class Buildbot(service.Service):
             if _installDeps:
                 # sqlalchemy-migrate only works with a specific version of
                 # sqlalchemy.
-                self.venv.install('sqlalchemy==0.7.10 sqlalchemy-migrate==0.7.2 {}'.format(os.path.join(buildbotSource, 'master')))
+                self.venv.install(
+                    'sqlalchemy==0.7.10 sqlalchemy-migrate==0.7.2 {}'.format(
+                        os.path.join(buildbotSource, 'master')))
             else:
-                self.venv.install('--no-deps {}'.format(os.path.join(buildbotSource, 'master')))
+                self.venv.install('--no-deps {}'.format(
+                    os.path.join(buildbotSource, 'master')))
 
             if env.get('installPrivateData'):
                 self.task_updatePrivateData()
+                redirector_port = 80
             else:
+                # Install test configuration.
                 self.task_installTestData()
+                redirector_port = 8000
+
+            # Update the buildbot application configuration to not use
+            # port 80 as it will conflict with the web service which run
+            # on the same machine in testing.
+            # This is also run in production to make sure that this command
+            # is functional.
+            run('sed -i s/80/%s/g ~/config/buildbot.tac' % (redirector_port,))
+
 
     def updatefast(self):
         """
@@ -120,15 +142,15 @@ class Buildbot(service.Service):
 
     def task_update(self):
         """
-        Update config and restart.
+        Update the environment and restart.
         """
         self.update()
         self.task_restart()
 
 
-    def task_updatefast(self):
+    def task_reconfigure(self):
         """
-        Update config and restart.
+        Update just the configuration and restart.
         """
         self.updatefast()
         self.task_restart()
