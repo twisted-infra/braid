@@ -1,6 +1,6 @@
 import os
 
-from fabric.api import settings, execute, put, run
+from fabric.api import settings, execute, put
 
 from braid.twisted import service
 from braid.tasks import addTasks
@@ -16,7 +16,9 @@ class Buildslave(service.Service):
 
     def task_install(self):
         """
-        Install buildslave for testing and the required dependencies.
+        Install the buildslave process for testing.
+
+        General system configuration should be done via Ansible.
         """
         self.bootstrap()
 
