@@ -27,7 +27,6 @@ class Buildslave(service.Service):
                 self.binDir,
                 mirror_local_mode=True)
             execute(self.update)
-        run('apt-get install libsqlite3-dev')
 
     def update(self, _installDeps=False):
         """
