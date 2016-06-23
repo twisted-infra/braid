@@ -1,3 +1,6 @@
 This is the configuration for Vagrant testing buildslave.
 
-It provides the standard commands.
+It provides the standard commands for setting up a slave in the Vagrant VM.
+
+Configuration that are non testing / Vagrant VM specific should be placed in
+the Ansible configuration.

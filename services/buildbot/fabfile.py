@@ -90,19 +90,31 @@ class Buildbot(service.Service):
             put(
                 os.path.dirname(__file__) + '/master/*', self.configDir,
                 mirror_local_mode=True)
+
             buildbotSource = os.path.join(self.configDir, 'buildbot-source')
+            # For now we are using a buildbot eight HEAD due to a bug in
+            # 0.8.12
+            # https://github.com/buildbot/buildbot/pull/1924
+            # A forked branch is still used to control its version.
+            # If changes are required to this branch it should use a name
+            # other than `eight` to reduce confusion.
             git.branch(
-                'https://github.com/twisted-infra/buildbot', buildbotSource)
+                url='https://github.com/twisted-infra/buildbot',
+                destination=buildbotSource,
+                branch='eight',
+                )
 
             self.venv.install_twisted()
-            self.venv.install("virtualenv python-dateutil txacme")
+            self.venv.install("virtualenv txacme")
 
             if _installDeps:
                 # sqlalchemy-migrate only works with a specific version of
                 # sqlalchemy.
+                buildbot_source = os.path.join(buildbotSource, 'master')
                 self.venv.install(
-                    'sqlalchemy==0.7.10 sqlalchemy-migrate==0.7.2 {}'.format(
-                        os.path.join(buildbotSource, 'master')))
+                    'sqlalchemy==0.7.10 sqlalchemy-migrate==0.7.2 txgithub '
+                    '{}'.format(
+                        buildbot_source))
             else:
                 self.venv.install('--no-deps {}'.format(
                     os.path.join(buildbotSource, 'master')))

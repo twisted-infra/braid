@@ -16,7 +16,9 @@ class Buildslave(service.Service):
 
     def task_install(self):
         """
-        Install buildslave for testing.
+        Install the buildslave process for testing.
+
+        General system configuration should be done via Ansible.
         """
         self.bootstrap()
 

@@ -157,5 +157,4 @@ discovery and to avoid conflicts:
 * 80 - Twisted Web
 * 8000 - Buildmaster redirection placeholder (port 80 in production)
 * 8080 - Buildmaster WebStatus
-* 9936 - Buildmaster PB listener
 * 9987 - Buildmaster slave listener
