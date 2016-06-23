@@ -97,7 +97,7 @@ class TenBoxesPerBuilder(HtmlResource):
 
             builds = sorted([
                     build for build in builder.getCurrentBuilds()
-                    if build.getSourceStamp().branch in map_branches(branches)
+                    if build.getSourceStamps()[0].branch in map_branches(branches)
                     ], key=lambda build: build.getNumber(), reverse=True)
 
             builds.extend(builder.generateFinishedBuilds(map_branches(branches),
