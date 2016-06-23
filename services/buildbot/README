@@ -25,3 +25,13 @@ You can attach the testing slave which servers all builders by running::
 
     fab config.vagrant buildslave.start
 
+To trigger a wehbook in the Vagrant VM, get a payload from GitHub
+https://github.com/twisted/twisted/settings/hooks/8337490, save it to a local
+file and push it using curl:
+
+    curl -H "Content-Type: application/json" \
+        -H "X-GitHub-Event: push" \
+        -H "X-Hub-Signature: sha1=someting-or-ignored" \
+        -X POST \
+        -d @payload \
+        http://172.16.255.140:8080/change_hook/github

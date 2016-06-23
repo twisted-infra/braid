@@ -58,6 +58,9 @@ debugPassword = "cd3dad27_0f84b396"
 
 codecov_twisted_token = 'invalid'
 
+# Secret used to sign hooks payload received from GitHub
+github_hook_secret = None
+
 # web status options
 # - default for testing deployments: port 8080 on localhost
 # - deployed version uses distrib_port at ~/webstatus.twistd-web-pb
