@@ -60,6 +60,9 @@ codecov_twisted_token = 'invalid'
 
 # Secret used to sign hooks payload received from GitHub
 github_hook_secret = None
+# When running in Vagrant VM you might not have access to the secret.
+# This is why the signature is disabled for testing.
+github_hook_strict = False
 
 # web status options
 # - default for testing deployments: port 8080 on localhost
