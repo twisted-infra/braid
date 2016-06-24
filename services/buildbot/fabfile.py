@@ -105,14 +105,14 @@ class Buildbot(service.Service):
                 )
 
             self.venv.install_twisted()
-            self.venv.install("virtualenv txacme")
+            self.venv.install("virtualenv txacme txgithub>=15.0.0")
 
             if _installDeps:
                 # sqlalchemy-migrate only works with a specific version of
                 # sqlalchemy.
                 buildbot_source = os.path.join(buildbotSource, 'master')
                 self.venv.install(
-                    'sqlalchemy==0.7.10 sqlalchemy-migrate==0.7.2 txgithub '
+                    'sqlalchemy==0.7.10 sqlalchemy-migrate==0.7.2 '
                     '{}'.format(
                         buildbot_source))
             else:

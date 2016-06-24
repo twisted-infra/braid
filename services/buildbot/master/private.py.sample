@@ -63,9 +63,8 @@ codecov_twisted_token = 'invalid'
 # For testing, get a Personal Access Token
 # https://github.com/settings/tokens
 #
-#
 # For production get a OAuth Token.
-# GitHub OAuth Application for Twisted Builbot Status is here:
+# GitHub OAuth Application for Twisted Buildbot Status is here:
 # https://github.com/organizations/twisted/settings/applications/373261
 #
 # If you disable the 2-way-auth you can get a OAuth token for this application
@@ -73,7 +72,7 @@ codecov_twisted_token = 'invalid'
 #
 # curl -u YOUR_USERNAME -d '{
 #     "scopes": ["repo:status"],
-#     "client_id": "YOUR-CLIEN"
+#     "client_id": "YOUR-CLIENT-ID"
 #     "client_secret": "SOME-SECRET"
 #    }' https://api.github.com/authorizations
 github_status_token = 'invalid-secret'
