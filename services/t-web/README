@@ -1,6 +1,6 @@
 This is the configuration for twistedmatrix.com's web server
 
-It is adminstered using braid[1]. It is installed in `/srv/t-web` as user t-web.
+It is installed in `/srv/t-web` as user `t-web`.
 It uses the following directories
 
 ~/config - This repository.

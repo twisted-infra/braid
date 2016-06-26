@@ -17,16 +17,11 @@ It uses the following directories:
 
 Note: http.log is located in ~/data
 
-The following fabric commands are available:
+The slave database used for testing from `master/private.py.sample` might
+get out of sync from the one used in production and which is hosted at
+`/srv/bb-master/private/private.py`.
 
-install - Create user and install configuration.
-installTestData - install fake private configuration and db
-  - This happens automatically if `installPrivateData` is set to False
-    in the fabric environment.
-update - Updates the configuration and restart server
-updatePrivateData - Updates `~/private`.
-  - This happens automatically if `installPrivateData` is set
-    in the fabric environment.
-start - Start server.
-stop - Stop server.
-restart - Restart the server.
+You can attach the testing slave which servers all builders by running::
+
+    fab config.vagrant buildslave.start
+

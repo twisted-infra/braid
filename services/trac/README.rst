@@ -1,9 +1,16 @@
 Trac
 ====
 
-This is the configuration for twistedmatrix.com's trac installation.
+This is the configuration for twistedmatrix.com's Trac installation.
 
-It is adminstered using braid[1]. It is installed in ``/srv/trac`` as user trac.
+It requires that the `t-web` service to be started::
+
+    fab t-web.install
+    fab t-web.start
+
+It is installed in ``/srv/trac`` as user `trac`.
+
+Inside the `t-web` service, it is available at `http://server.name/trac/`
 
 It uses the following directories:
 
@@ -24,16 +31,6 @@ A webhook from GitHub updates the repository at ``~/twisted.git`` and notifies t
 The GitHub webhook is configured at https://github.com/twisted/twisted/settings/hooks, with a payload URL of ``https://twistedmatrix.com/trac/github``.
 More information about how the post-commit hook works is available in the `trac-github readme <https://github.com/trac-hacks/trac-github#post-commit-hook>`_.
 
-The following fabric commands are available:
+Use `fab -l` to check the available commands.
 
-- ``install`` - Create user and install configuration.
-- ``installTestData`` - Makes a blank database for basic testing.
-- ``getGithubMirror:<reponame>`` - Get ``twisted/<reponame>`` from GitHub and put it at ``~/twisted.git``. It will be automatically updated by Trac afterwards.
-- ``update`` - Updates the configuration and restarts the server.
-- ``upgrade`` - Upgrades the Trac database.
-- ``start`` - Start server.
-- ``stop`` - Stop server.
-- ``restart`` - Restart the server.
-- ``giveAdmin:<user>`` - Gives super admin to the mentioned Trac user.
-- ``dump:<dump-file>`` - Dump trac db and attachments
-- ``restore:<dump-file>`` - Restore trac db and attachments
+Trac is available inside the Vagrant VM at http://172.16.255.140/trac

@@ -6,7 +6,7 @@ from buildbot.status import builder
 from buildbot.status.builder import SUCCESS, FAILURE, WARNINGS, SKIPPED
 from buildbot.process.buildstep import LogLineObserver, OutputProgressObserver
 from buildbot.process.buildstep import RemoteShellCommand, BuildStep
-from buildbot.steps.shell import ShellCommand, SetProperty
+from buildbot.steps.shell import ShellCommand, SetPropertyFromCommand
 
 from txbuildbot import filterTox
 
@@ -37,6 +37,13 @@ def countFailedTests(output):
 
     # Find the "Ran X tests" output
     out = re.search(r'Ran (\d+) tests', output)
+
+    if out is None:
+        # No report found. Most probably the test were not executed due to a
+        # high level error.
+        res['failures'] = 1
+        return res
+
     if out:
         res['total'] = int(out.group(1))
 
@@ -1032,7 +1039,7 @@ class RemoveTrialTemp(ShellCommand):
             "_trial_temp"]
 
 
-class LearnVersion(SetProperty):
+class LearnVersion(SetPropertyFromCommand):
     """
     Import a package and set a version property based on its version.
     """
@@ -1042,17 +1049,18 @@ class LearnVersion(SetProperty):
         'print __version__; ')
 
     def _extractVersion(self, rc, stdout, stderr):
-        # FIXME: SetProperty doesn't support using just stdout, so we write our
+        # FIXME: SetPropertyFromCommand doesn't support using just stdout, so we write our
         # own extraction function.
         return {'version': stdout.strip()}
 
     def __init__(self, python, package, **kw):
-        SetProperty.__init__(
+        SetPropertyFromCommand.__init__(
             self,
             name="check-%s-version" % package,
             description="checking %s version" % package,
             command=[python, '-c', self.src % dict(package=package)],
-            extract_fn=self._extractVersion, **kw)
+            extract_fn=self._extractVersion,
+            **kw)
 
         self.package = package
 
@@ -1060,7 +1068,7 @@ class LearnVersion(SetProperty):
         if 'version' in self.property_changes:
             return [ "%s version %s" % (self.package, self.property_changes['version']) ]
         else:
-            SetProperty.getText(self, cmd, results)
+            SetPropertyFromCommand.getText(self, cmd, results)
 
 
 class SetBuildProperty(BuildStep):

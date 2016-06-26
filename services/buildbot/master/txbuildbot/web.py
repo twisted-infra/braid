@@ -2,7 +2,6 @@ import time
 
 from buildbot.status.web.base import HtmlResource, map_branches, build_get_class, path_to_builder, path_to_build
 from buildbot.status.builder import SUCCESS, WARNINGS, FAILURE, SKIPPED, EXCEPTION, RETRY
-from buildbot.status.web.waterfall import WaterfallStatusResource
 from buildbot.status import html
 from buildbot.util import formatInterval
 
@@ -10,7 +9,6 @@ from twisted.web.util import Redirect
 from twisted.internet import defer
 
 from twisted.web.template import tags, flattenString
-from twisted.web.resource import Resource
 
 _backgroundColors = {
     SUCCESS: "green",
@@ -99,7 +97,7 @@ class TenBoxesPerBuilder(HtmlResource):
 
             builds = sorted([
                     build for build in builder.getCurrentBuilds()
-                    if build.getSourceStamp().branch in map_branches(branches)
+                    if build.getSourceStamps()[0].branch in map_branches(branches)
                     ], key=lambda build: build.getNumber(), reverse=True)
 
             builds.extend(builder.generateFinishedBuilds(map_branches(branches),
@@ -138,15 +136,18 @@ class TenBoxesPerBuilder(HtmlResource):
                 row(tags.td(class_="LastBuild box")("no build"))
         defer.returnValue((yield flattenString(req, tag)))
 
+
+
 class TwistedWebStatus(html.WebStatus):
+    """
+    Customization of the resources available via the webstatus.
+    """
     def __init__(self, **kwargs):
         html.WebStatus.__init__(self, **kwargs)
         self.putChild("boxes-supported", TenBoxesPerBuilder(categories=['supported']))
         self.putChild("boxes-unsupported", TenBoxesPerBuilder(categories=['unsupported']))
         self.putChild("boxes-all", TenBoxesPerBuilder(categories=['supported', 'unsupported']))
         self.putChild("boxes-benchmark", TenBoxesPerBuilder(categories=['benchmark']))
-        self.putChild("supported", WaterfallStatusResource(categories=['supported']))
-        self.putChild("waterfall", WaterfallStatusResource(categories=['supported', 'unsupported']))
 
         # These are are expensive, so disable them
         # http://trac.buildbot.net/ticket/2268

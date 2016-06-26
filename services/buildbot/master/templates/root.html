@@ -1,29 +1,44 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
-<title>Welcome to the Buildbot</title>
-</head>
+{% extends 'layout.html' %}
+{% import 'forms.html' as forms %}
 
-<body>
+{% block content %}
+{#
+This page is costomized on purspose to only present the links with are of use
+to Twisted and the remove any conditinal blocks which will never be executed.
+#}
 <h1>Welcome to the Buildbot!</h1>
 
+<div class="column">
+
 <ul>
-  <li>The <a href="boxes-supported?branch=trunk&num_builds=10">Latest
+  {% set item_class=cycler('alt', '') %}
+
+  <li class="{{ item_class.next() }}">The <a href="boxes-supported?branch=trunk&num_builds=10">Latest
   Builds</a> for each supported builder are here (or
   <a href="boxes-unsupported?branch=trunk&num_builds=10"> for unsupported builders</a>).
   </li>
+  <li class="{{ item_class.next() }}">All <a href="boxes-all?branch=trunk&num_builds=10">Latest
+  Builds are here</a>.
+  </li>
+  <li class="{{ item_class.next() }}">Benchmark <a href="boxes-benchmark?branch=trunk&num_builds=10">Latest
+  Builds are here</a>.
+  </li>
 
-  <li><a href="one_line_per_build">Recent Builds</a> are summarized here, one
+  <li class="{{ item_class.next() }}"><a href="builds/">Built Packages</a></li>
+
+  </br>
+
+
+  <li class="{{ item_class.next() }}"><a href="one_line_per_build">Recent Builds</a> are summarized here, one
   per line.</li>
 
-  <li><a href="buildslaves">Buildslave</a> information</li>
+  <li class="{{ item_class.next() }}"><a href="buildslaves">Buildslave</a> information</li>
 
-  <li><a href="builds/">Built Packages</a></li>
-
-  <br />
-  <li><a href="about">About this Buildbot</a></li>
+  <li class="{{ item_class.next() }}"><a href="about">About</a> this Buildbot</li>
 </ul>
 
 
-</body> </html>
+
+</div>
+
+{% endblock %}
