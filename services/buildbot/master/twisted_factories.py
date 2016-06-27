@@ -224,6 +224,20 @@ class TwistedBaseFactory(BuildFactory):
 
 
     def addTrialStep(self, virtualenv=False, **kw):
+        # In newer versions of Twisted, the trial
+        # script is not in the source tree, and is generated
+        # during the build.
+        # If we cannot find ./bin/trial, try to install it so
+        # we can use it by doing:
+        #
+        #  setup.py develop --script-dir ./bin
+        if not os.path.exists(kw['trial']):
+            trial_dir = os.path.dirname(kw['trial'])
+            if not trial_dir:
+                trial_dir = "."
+            cmd = ["python", "setup.py", "develop", "--script-dir", trial_dir]
+            self.addVirtualEnvStep(shell.Compile, command=cmd, warnOnFailure=True)
+
         if self.trialMode is not None:
             trialMode = self.trialMode
         else:
