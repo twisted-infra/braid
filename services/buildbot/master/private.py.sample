@@ -58,7 +58,30 @@ debugPassword = "cd3dad27_0f84b396"
 
 codecov_twisted_token = 'invalid'
 
-# Secret used to sign hooks payload received from GitHub
+#
+# GitHub Commit Status Update
+#
+# For testing, get a Personal Access Token
+# https://github.com/settings/tokens
+#
+# For production get a OAuth Token.
+# GitHub OAuth Application for Twisted Buildbot Status is here:
+# https://github.com/organizations/twisted/settings/applications/373261
+#
+# If you disable the 2-way-auth you can get a OAuth token for this application
+# by using this command:
+#
+# curl -u YOUR_USERNAME -d '{
+#     "scopes": ["repo:status"],
+#     "client_id": "YOUR-CLIENT-ID"
+#     "client_secret": "SOME-SECRET"
+#    }' https://api.github.com/authorizations
+github_status_token = 'invalid-secret'
+
+#
+# GitHub WebHooks
+#
+# Secret used to sign hooks payload received from GitHub.
 github_hook_secret = None
 # When running in Vagrant VM you might not have access to the secret.
 # This is why the signature is disabled for testing.
