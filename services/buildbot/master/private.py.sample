@@ -33,6 +33,7 @@ slaves = [
     "rax-ubuntu1604-3",
     "rax-debian8-1",
     "rax-debian8-2",
+    "rax-win2012r2-1",
 
     "github",
 ]
