@@ -469,7 +469,8 @@ class TwistedToxBuildFactory(BuildFactory):
 class TwistedToxCoverageBuildFactory(TwistedToxBuildFactory):
 
     def __init__(self, source, toxEnv, buildID, reactors=["default"],
-                 allowSystemPackages=False, platform="unix", python="python"):
+                 allowSystemPackages=False, platform="unix", python="python",
+                 env={}):
 
         tests = [WithProperties("%(test-case-name:~)s")]
         tests = []
@@ -515,7 +516,8 @@ class TwistedToxCoverageBuildFactory(TwistedToxBuildFactory):
                                    reactor=reactor,
                                    tests=tests,
                                    toxEnv=toxEnv,
-                                   commandNumber=2
+                                   commandNumber=2,
+                                   env=env,
             )
 
         self.addVirtualEnvStep(

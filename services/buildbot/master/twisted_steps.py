@@ -123,8 +123,7 @@ class TrialTox(ShellCommand):
     haltOnFailure = True
 
     def __init__(self, toxEnv, reactor, tests=[], commandNumber=0,
-                 allowSystemPackages=False,
-                 **kwargs):
+                 allowSystemPackages=False, **kwargs):
 
         ShellCommand.__init__(self, **kwargs)
 

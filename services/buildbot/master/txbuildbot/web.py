@@ -1,6 +1,7 @@
 import time
 
 from buildbot.status.web.base import HtmlResource, map_branches, build_get_class, path_to_builder, path_to_build
+from buildbot.status.web.hooks.github import GitHubEventHandler
 from buildbot.status.builder import SUCCESS, WARNINGS, FAILURE, SKIPPED, EXCEPTION, RETRY
 from buildbot.status import html
 from buildbot.util import formatInterval
@@ -153,3 +154,20 @@ class TwistedWebStatus(html.WebStatus):
         # http://trac.buildbot.net/ticket/2268
         self.putChild("grid", Redirect("boxes-supported"))
         self.putChild("tgrid", Redirect("boxes-supported"))
+
+
+
+class TwistedGitHubEventHandler(GitHubEventHandler):
+    """
+    Custom handling of GitHub hooks.
+    """
+
+    def handle_pull_request(self, payload):
+        """
+        For now triggering builds on PR is disabled.
+
+        The hook should not be called for non-push events, but this is here
+        as a fallback and to document that for now we don't want to execute
+        build on PRs as we don't trust the external contributors.
+        """
+        return [], 'git'
