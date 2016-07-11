@@ -146,7 +146,7 @@ class TrialTox(ShellCommand):
 
 
     def start(self):
-        self.command = ["tox", "-r"]
+        self.command = ["python", "-m", "tox", "-r"]
 
         if self._systemPackages:
             self.command.append("--sitepackages")
@@ -254,7 +254,6 @@ class TrialTox(ShellCommand):
         if self.reactor is not None:
             testname = (self.reactor,) + testname
         tr = builder.TestResult(testname, results, text, logs={'log': tlog})
-        #self.step_status.build.addTestResult(tr)
         self.build.build_status.addTestResult(tr)
 
 
