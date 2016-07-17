@@ -10,19 +10,11 @@ def filterTox(logText, commandNumber=0):
     Filter out the tox output for lint tox envs -- where there's only one
     command.
     """
-    toxStatus = 'NOT_STARTED'
+    toxStatus = 'STARTED'
 
     for line in StringIO(logText):
 
-        if " runtests: commands[" + str(commandNumber) + "] | " in line:
-            # Tox has started, further lines should be read
-            toxStatus = 'STARTED'
-
-        elif " runtests: commands[" + str(commandNumber + 1) + "] | " in line:
-            # The next command is running
-            toxStatus = 'FINISHED'
-
-        elif "ERROR: InvocationError:" in line:
+        if "ERROR: InvocationError:" in line:
             # Tox is finished
             toxStatus = 'FINISHED'
 

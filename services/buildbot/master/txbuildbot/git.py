@@ -98,13 +98,15 @@ class MergeForward(Source):
 
 
     def _fetch(self):
-        return self._dovccmd(['fetch', self.repourl, 'trunk'])
+        d = self._dovccmd(['remote', 'set-url', 'origin', self.repourl])
+        d.addCallback(lambda _: self._dovccmd(['fetch', 'origin']))
+        return d
 
 
     def _merge(self):
         return self._dovccmd(['merge',
                               '--no-ff', '--no-stat',
-                              'FETCH_HEAD'])
+                              'origin/trunk'])
 
 
     def _getPreviousVersion(self):
@@ -113,7 +115,7 @@ class MergeForward(Source):
 
 
     def _getMergeBase(self):
-        return self._dovccmd(['merge-base', 'HEAD', 'FETCH_HEAD'],
+        return self._dovccmd(['merge-base', 'HEAD', 'origin/trunk'],
                               collectStdout=True)
 
 
