@@ -168,7 +168,7 @@ class TrialTox(ShellCommand):
             cmd.args['env'] = {'TWISTED_REACTOR': self._reactor}
         else:
             cmd.args['env']['TWISTED_REACTOR'] = self._reactor
-        cmd.args.update(self._env)
+        cmd.args['env'].update(self._env)
 
 
     def commandComplete(self, cmd):
