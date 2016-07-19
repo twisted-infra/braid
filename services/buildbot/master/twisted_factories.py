@@ -14,10 +14,7 @@ from twisted_steps import ProcessDocs, ReportPythonModuleVersions, \
     Trial, RemovePYCs, RemoveTrialTemp, LearnVersion, \
     SetBuildProperty, TrialTox
 
-from txbuildbot.lint import (
-    CheckDocumentation,
-    CheckCodesByTwistedChecker,
-)
+from txbuildbot.lint import CheckDocumentation
 
 import private
 reload(private)
@@ -603,87 +600,6 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
 
 
 
-class TwistedJythonReactorsBuildFactory(TwistedBaseFactory):
-    treeStableTimer = 5*60
-
-    def __init__(self, source, RemovePYCs=RemovePYCs,
-                 compileOpts=[], compileOpts2=[], python="jython",
-                 reactors=["select"], uncleanWarnings=True):
-
-        TwistedBaseFactory.__init__(
-            self,
-            source=source,
-            python=python,
-            uncleanWarnings=False,
-            virtualenv=False,
-        )
-
-        # Download and build Jython
-        self.addStep(
-            shell.ShellCommand,
-            command=["rm", "-f", "master.tar.gz"]
-        )
-        self.addStep(
-            shell.ShellCommand,
-            command=["rm", "-rf", "jython-master"]
-        )
-
-        self.addStep(
-            shell.ShellCommand,
-            command=["wget", "https://github.com/jythontools/jython/archive/master.tar.gz"],
-        )
-
-        self.addStep(
-            shell.ShellCommand,
-            command=["tar", "-xvf", "master.tar.gz"]
-        )
-
-        self.addStep(
-            shell.ShellCommand,
-            warnOnFailure=True,
-            command=["ant", "-file", "jython-master/build.xml"]
-        )
-
-        # Run it again... because
-        self.addStep(
-            shell.ShellCommand,
-            warnOnFailure=True,
-            command=["ant", "-file", "jython-master/build.xml"]
-        )
-
-        python = "jython-master/dist/bin/jython"
-
-        self.addStep(
-            shell.ShellCommand,
-            command=["python", "-m", "virtualenv", "-p", python, self._virtualEnvPath]
-        )
-
-
-        self.addStep(
-            shell.ShellCommand,
-            description="Fixing permissions".split(" "),
-            command=["chmod", "+x", "../venv/bin/pip"]
-        )
-
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            description = "installing dependencies".split(" "),
-            command=['pip', 'install', 'zope.interface']
-        )
-
-        venvPython = [posixpath.join(self._virtualEnvBin, self.python[0])]
-
-        self._reportVersions(python=venvPython)
-
-        for reactor in reactors:
-            self.addStep(RemovePYCs)
-            self.addStep(RemoveTrialTemp, python=self.python)
-            self.addTrialStep(
-                name=reactor, reactor=reactor, flunkOnFailure=True,
-                warnOnFailure=False, virtualenv=True)
-
-
-
 class TwistedBdistFactory(TwistedBaseFactory):
     treeStableTimer = 5*60
 
@@ -834,26 +750,6 @@ class TwistedBenchmarksFactory(TwistedBaseFactory):
                 "twisted-benchmarks/speedcenter.py",
                 "--duration", "1", "--iterations", "30", "--warmup", "5",
                 "--url", "http://speed.twistedmatrix.com/result/add/json/"])
-
-
-
-class TwistedCheckerBuildFactory(TwistedBaseFactory):
-    """
-    Run twistedchecker check from an virtualenv.
-    """
-
-    def __init__(self, source, python="python2.7"):
-        TwistedBaseFactory.__init__(
-            self,
-            source=source,
-            python=python,
-            uncleanWarnings=False,
-            virtualenv=True,
-        )
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            command=['pip', 'install', 'virtualenv', 'tox'])
-        self.addVirtualEnvStep(CheckCodesByTwistedChecker, want_stderr=False)
 
 
 

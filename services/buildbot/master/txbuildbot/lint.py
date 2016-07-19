@@ -1,15 +1,12 @@
-import itertools
-from twisted.python import log, util
-from buildbot.status.builder import SUCCESS, WARNINGS
+from twisted.python import log
+from buildbot.status.builder import WARNINGS
 from buildbot.steps.shell import ShellCommand
-from buildbot.process.properties import Property
 
 try:
     import cStringIO
     StringIO = cStringIO
 except ImportError:
     import StringIO
-import re
 
 class LintStep(ShellCommand):
     """
@@ -216,127 +213,6 @@ class CheckDocumentation(LintStep):
             return ["api", "docs"]
         return ShellCommand.getText(self, cmd, results)
 
-
-class TwistedCheckerError(util.FancyEqMixin, object):
-    regex = re.compile(r"^(?P<type>[WCEFR]\d{4}):(?P<line>\s*\d+),(?P<indent>\d+):(?P<text>.*)")
-    compareAttributes = ('type', 'text')
-
-    def __init__(self, msg):
-        self.msg = msg
-        m = self.regex.match(msg)
-        if m:
-            d = m.groupdict()
-            self.type = d['type']
-            self.line = d['line']
-            self.indent = d['indent']
-            self.text = d['text']
-        else:
-            self.type = "UXXXX"
-            self.line = "9999"
-            self.indent = "9"
-            self.text = "Unparseable"
-            log.err(Exception, "unparseable")
-
-    def __hash__(self):
-        return hash((self.type, self.text))
-
-    def __str__(self):
-        return self.msg
-
-    def __cmp__(self, other):
-        return cmp(
-                (self.line, self.indent, self.type, self.text),
-                (other.line, other.indent, other.type, other.text),
-                )
-
-    def __repr__(self):
-        return ("<TwistedCheckerError type=%s line=%d indent=%d, text=%r>" %
-            (self.type, int(self.line), int(self.indent), self.text))
-
-
-class CheckCodesByTwistedChecker(LintStep):
-    """
-    Run TwistedChecker over source codes to check for new warnings
-    involved in the lastest build.
-    """
-    name = 'run-twistedchecker'
-    command = ['tox', '-r', '--hashseed=0', '-e', 'twistedchecker',
-               Property('test-case-name', default='twisted')]
-    description = ["checking", "codes"]
-    descriptionDone = ["check", "results"]
-    prefixModuleName = "************* Module "
-    regexLineStart = "^[WCEFR]\d{4}\:"
-
-    lintChecker = 'twistedchecker'
-
-
-    def evaluateCommand(self, cmd):
-        """
-        Called when command final status is required.
-        """
-        # twistedchecker will exit with non-zero on errors, but Twisted
-        # code is not yet clean so there will always be errors.
-        if self.worse:
-            return WARNINGS
-        if self.currentErrors:
-            return SUCCESS
-        else:
-            # If no errors were reported then fallback to command status
-            # code as the whole command might have fail to run.
-            return ShellCommand.evaluateCommand(self, cmd)
-
-
-    @classmethod
-    def computeErrors(cls, logText):
-        warnings = {}
-        currentModule = None
-        warningsCurrentModule = []
-        for line in filterTox(logText):
-            if line.startswith(cls.prefixModuleName):
-                # Save results for previous module
-                if currentModule:
-                    warnings[currentModule] = set(map(TwistedCheckerError, warningsCurrentModule))
-                # Initial results for current module
-                moduleName = line.replace(cls.prefixModuleName, "")
-                currentModule = moduleName
-                warningsCurrentModule = []
-            elif re.search(cls.regexLineStart, line):
-                warningsCurrentModule.append(line)
-            else:
-                if warningsCurrentModule:
-                    warningsCurrentModule[-1] += "\n" + line
-                else:
-                    log.msg("Bad result format for %s" % currentModule)
-        # Save warnings for last module
-        if currentModule:
-            warnings[currentModule] = set(map(TwistedCheckerError, warningsCurrentModule))
-        return warnings
-
-
-    @classmethod
-    def formatErrors(cls, newErrors):
-        allNewErrors = []
-        for modulename in sorted(newErrors.keys()):
-            allNewErrors.append(cls.prefixModuleName + modulename)
-            allNewErrors.extend(sorted(newErrors[modulename]))
-        return map(str, allNewErrors)
-
-    def processLogs(self, oldText, newText):
-        self.currentErrors = self.computeErrors(newText)
-        previousErrors = self.computeErrors(oldText)
-
-        newErrors = self.computeDifference(self.currentErrors, previousErrors)
-
-        if newErrors:
-            allNewErrors = self.formatErrors(newErrors)
-            self.addCompleteLog('new %s errors' % self.lintChecker, '\n'.join(allNewErrors))
-
-        for toplevel, modules in itertools.groupby(sorted(self.currentErrors.keys()), lambda k: ".".join(k.split(".")[0:2])):
-            modules = list(modules)
-            self.addCompleteLog("%s %s errors" % (self.lintChecker, toplevel),
-                    '\n'.join(self.formatErrors(dict([(module, self.currentErrors[module]) for module in modules]))))
-
-        return bool(newErrors)
 
 
 def filterTox(logText):
