@@ -351,30 +351,6 @@ class Win32RemovePYCs(ShellCommand):
 
 
 
-class ToxBuildFactory(TwistedBaseFactory):
-    """
-    A build factory which executes a list of tox environments.
-    """
-
-    def __init__(self, source, tox_environments, python="python"):
-        TwistedBaseFactory.__init__(
-            self,
-            source=source,
-            python=python,
-            uncleanWarnings=False,
-            virtualenv=True,
-        )
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            command=['pip', 'install', 'virtualenv', 'tox'],
-            )
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            command=["tox", "-e"] + [','.join(tox_environments)],
-            )
-
-
-
 class TwistedToxBuildFactory(BuildFactory):
     """
     A build factor for running the tests in a virtual environment which is set
@@ -750,27 +726,3 @@ class TwistedBenchmarksFactory(TwistedBaseFactory):
                 "twisted-benchmarks/speedcenter.py",
                 "--duration", "1", "--iterations", "30", "--warmup", "5",
                 "--url", "http://speed.twistedmatrix.com/result/add/json/"])
-
-
-
-class CheckManifestBuildFactory(TwistedBaseFactory):
-    """
-    A build factory which checks the MANIFEST.in
-    """
-
-    def __init__(self, source, python="python"):
-        TwistedBaseFactory.__init__(
-            self,
-            source=source,
-            python=python,
-            uncleanWarnings=False,
-            virtualenv=True,
-        )
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            command=['pip', 'install', 'check-manifest'])
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            command=["check-manifest", "--ignore",
-                     ("docs/historic/*,admin*,bin/admin*,"
-                      "twisted/topfiles/*.Old")])
