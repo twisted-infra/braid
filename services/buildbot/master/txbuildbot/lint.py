@@ -165,11 +165,7 @@ class CheckDocumentation(LintStep):
     documentation.
     """
     name = 'api-documentation'
-    command = (
-        'python',
-        'bin/admin/build-apidocs',
-        '.',
-        'apidocs')
+    command = ('tox', '-e', 'apidocs')
     description = ["checking", "api", "docs"]
     descriptionDone = ["api", "docs"]
 
