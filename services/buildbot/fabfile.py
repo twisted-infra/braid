@@ -60,9 +60,8 @@ class Buildbot(service.Service):
         Update private config.
         """
         with settings(user=self.serviceUser):
-            git.branch(
-                'buildbot@wolfwood.twistedmatrix.com:/git/buildbot-secrets',
-                '~/private')
+            put(os.path.dirname(__file__) + '/../../../twisted-infra-secret/buildmaster/private.py',
+                self.configDir + "/private.py")
 
     def task_upgradeMaster(self):
         """
