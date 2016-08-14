@@ -4,7 +4,7 @@ Support for amptrac.
 import os
 from fabric.api import put, run, settings
 
-from braid import cron, git, pip, postgres
+from braid import cron, postgres
 from braid.twisted import service
 from braid.tasks import addTasks
 
