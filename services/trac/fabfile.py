@@ -1,10 +1,8 @@
-import shutil
 import os
-import tempfile
 
 from fabric.api import abort, env, run, settings, put
 
-from braid import postgres, cron, git, archive, utils
+from braid import postgres, cron, archive, utils
 from braid.twisted import service
 from braid.utils import confirm
 

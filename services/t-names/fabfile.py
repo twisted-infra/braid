@@ -5,7 +5,7 @@ import os
 
 from fabric.api import execute, put, run, settings
 
-from braid import authbind, git, cron
+from braid import authbind, cron
 from braid.twisted import service
 
 from braid import config

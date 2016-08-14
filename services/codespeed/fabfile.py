@@ -7,7 +7,7 @@ import random
 
 from fabric.api import execute, run, settings, env, put, cd
 
-from braid import git, cron, pip, archive, utils, package
+from braid import git, cron, archive, utils
 from braid.twisted import service
 from braid.tasks import addTasks
 
@@ -71,7 +71,7 @@ class Codespeed(service.Service):
             self.venv.install('-r ~/codespeed/requirements.txt')
 
             if env.get('installTestData'):
-                exceute(self.task_installTestData)
+                execute(self.task_installTestData)
 
     def djangoAdmin(self, args):
         """

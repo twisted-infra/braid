@@ -8,7 +8,7 @@ from fabric.contrib import files
 from twisted.python.filepath import FilePath
 from twisted.python.util import sibpath
 
-from braid import git, cron, pip
+from braid import cron
 from braid.twisted import service
 
 # TODO: Move these somewhere else and make them easily extendable
