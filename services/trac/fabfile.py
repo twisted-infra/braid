@@ -52,8 +52,8 @@ class Trac(service.Service):
                 mirror_local_mode=True)
 
             self.venv.install_twisted()
-            self.venv.install('psycopg2==2.6.1')
-            self.venv.install('trac==1.0.11')
+            self.venv.install('psycopg2==2.6.2')
+            self.venv.install('trac==1.0.12')
             self.venv.install('pygments==1.6')
 
             self.venv.install('git+https://github.com/twisted-infra/twisted-trac-plugins.git')
