@@ -92,7 +92,7 @@ class TwistedTrial(Trial):
     recurse = False
     trialMode = TRIAL_FLAGS
     testpath = None
-    trial = "./bin/trial"
+    trial = "-m twisted.trial"
 
 
 
@@ -523,7 +523,7 @@ class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
     treeStableTimer = 5*60
 
     def __init__(self, source, RemovePYCs=RemovePYCs, python="python",
-                 trial="./bin/trial", virtualenv_module="virtualenv",
+                 trial="-m twisted.trial", virtualenv_module="virtualenv",
                  reactors=["select"], uncleanWarnings=False, platform="unix",
                  dependencies=BASE_DEPENDENCIES + CEXT_DEPENDENCIES + PY2_NONWIN_DEPENDENCIES + EXTRA_DEPENDENCIES,
                  forceGarbageCollection=False, tests=None, symlinkGIFrom=None):
@@ -629,7 +629,7 @@ class TwistedCoveragePyFactory(TwistedBaseFactory):
         '_trial_temp/*',
         ]
 
-    def __init__(self, python, source, buildID=None, trial="./bin/trial",
+    def __init__(self, python, source, buildID=None, trial="-m twisted.trial",
                  tests=None, dependencies=BASE_DEPENDENCIES + CEXT_DEPENDENCIES + PY2_NONWIN_DEPENDENCIES + EXTRA_DEPENDENCIES,
                  platform='unix', RemovePYCs=RemovePYCs, uncleanWarnings=False):
 
