@@ -718,6 +718,11 @@ class TwistedBenchmarksFactory(TwistedBaseFactory):
             description = "installing dependencies".split(" "),
             command=['pip', 'install'] + BASE_DEPENDENCIES + ["requests"])
 
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            description = "installing twisted".split(" "),
+            command=['pip', 'install', '.'])
+
         self._reportVersions(virtualenv=True)
 
         self.addVirtualEnvStep(
