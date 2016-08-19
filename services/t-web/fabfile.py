@@ -84,6 +84,15 @@ class TwistedWeb(service.Service):
             run('ln -s ~/ssl/www.twistedmatrix.com.pem ~/ssl/DEFAULT.pem')
 
 
+    def task_updateSoftware(self):
+        """
+        Update just the Twisted versions.
+        """
+        self.task_stop()
+        self.venv.install_twisted()
+        self.task_start()
+
+
     def update(self):
         """
         Update config.
