@@ -20,7 +20,7 @@
   </head>
   <body class="interface">
     {% block header -%}
-    <div class="header">    
+    <div class="header">
         <a href="{{ path_to_root or '.' }}">Home</a>
     {#
     The toplinks are customized to only include the links that we care.
@@ -29,11 +29,13 @@
 	- Builds
 	  <a href="{{ path_to_root }}boxes-supported?branch=trunk&num_builds=10">Supported</a>
 	  <a href="{{ path_to_root }}boxes-unsupported?branch=trunk&num_builds=10">Unsupported</a>
+    - <a href="{{ path_to_root }}builds/">Build files</a>
         - <a href="{{ path_to_root }}builders">Builders</a>
           <a href="{{ path_to_root }}one_line_per_build">Recent Builds</a>
           <a href="{{ path_to_root }}buildslaves">Buildslaves</a>
         - <a href="{{ path_to_root }}json/help">JSON API</a>
         - <a href="{{ path_to_root }}about">About</a>
+
     <div class="auth">
     {% if authz.authenticated(request) %}
     {{ authz.getUsernameHTML(request) }}

@@ -401,6 +401,7 @@ class TwistedToxBuildFactory(BuildFactory):
                                    reactor=reactor,
                                    toxEnv=toxEnv)
 
+        self._addAfterRunSteps()
 
     @property
     def _virtualEnvBin(self):
@@ -437,6 +438,13 @@ class TwistedToxBuildFactory(BuildFactory):
         env['PATH'] = pathsep.join([self._virtualEnvBin, path, '${PATH}'])
         kwargs['env'] = env
         self.addStep(step, **kwargs)
+
+
+    def _addAfterRunSteps(self):
+        """
+        To be overwritten by subclasses for adding custom steps after the
+        tox environments are done.
+        """
 
 
 
@@ -620,6 +628,26 @@ class TwistedBdistFactory(TwistedBaseFactory):
         return (
             "c:\\python%s\\python.exe" % (
                 pyVersion.replace('.', ''),))
+
+
+
+class TwistedToxDistPublishFactory(TwistedToxBuildFactory):
+    """
+    Run a tox environment and then upload all the files from the dist folder.
+    """
+    uploadBase = 'build_products/'
+
+    def _addAfterRunSteps(self):
+        """
+        See: TwistedToxBuildFactory.
+        """
+        self.addStep(
+            transfer.DirectoryUpload,
+            name='upload-whell',
+            slavesrc='dist/',
+            masterdest=self.uploadBase + 'twisted-packages/',
+            url='/build/twisted-packages/',
+            )
 
 
 

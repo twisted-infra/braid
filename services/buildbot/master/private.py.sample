@@ -21,6 +21,8 @@ slaves = [
     "fedora-fedora22-2",
     "fedora-fedora23-1",
     "fedora-fedora23-2",
+    "fedora-fedora24-1",
+    "fedora-fedora24-2",
     "fedora-rhel7-1",
     "fedora-rhel7-2",
 
