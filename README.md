@@ -124,6 +124,23 @@ Note, however, that while the previous actions did not require root privileges, 
 This is needed to create the necessary users, install additional packages and create the base environment.
 
 
+Managing secrets
+================
+
+A private repository, protected by `git secret` is used to store the sensitive
+data for the Twisted infrastructure.
+
+The private repository is located at:
+https://github.com/twisted-infra/twisted-infra-secret
+
+Since `git secret` don't support submodules, you will need to clone the
+`twisted-infra-secret` repo and `git secret reveal` it in a directory
+which is a sibling of the braid base clone directory.
+
+Make sure you pull and reveal the changes before running in production.
+Make sure you push and hide your changes mode in production.
+
+
 style-notes
 ===========
 Things that want to root want to be run with `sudo`, and files `put` with `use_sudo`.
