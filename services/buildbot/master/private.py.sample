@@ -73,7 +73,7 @@ codecov_twisted_token = 'invalid'
 #
 # curl -u YOUR_USERNAME -d '{
 #     "scopes": ["repo:status"],
-#     "client_id": "YOUR-CLIENT-ID"
+#     "client_id": "YOUR-CLIENT-ID",
 #     "client_secret": "SOME-SECRET"
 #    }' https://api.github.com/authorizations
 github_status_token = 'invalid-secret'
