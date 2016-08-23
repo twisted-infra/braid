@@ -370,7 +370,8 @@ class ToxBuildFactoryAbstract(BuildFactory):
 
         BuildFactory.__init__(self, source)
 
-        self._tests = [WithProperties("%(test-case-name:~)s")]
+        # Use the test-case-name property or fallback to 'twisted'.
+        self._tests = [WithProperties("%(test-case-name:~twisted)s")]
 
         assert platform in ["unix", "windows"]
 
