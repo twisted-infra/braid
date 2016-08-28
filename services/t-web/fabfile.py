@@ -156,7 +156,7 @@ class TwistedWeb(service.Service):
         It expects a tarball containing the following files:
         - Twisted<Subproject>-<release>.tar.bz2
         - Twisted-<release>.<ext> for all source/windows installers
-        - twisted-<release>-<hash>.txt for md5 and sha512
+        - twisted-<release>-<hash>.txt for sha512
         - doc - for narative documentation
         - api - for api documents
 
@@ -171,7 +171,7 @@ class TwistedWeb(service.Service):
 
         distPaths['doc'] = 'data/documentation/{}'.format(release)
         distPaths['api'] = 'data/documentation/{}/api'.format(release)
-        for hash in ['md5sums', 'shasums']:
+        for hash in ['shasums']:
             hashFile = 'twisted-{}-{}.txt'.format(release,hash)
             distPaths[hashFile] = 'data/releases/{}'.format(hashFile)
 
