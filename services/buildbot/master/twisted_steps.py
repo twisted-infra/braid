@@ -1060,6 +1060,7 @@ class LearnVersion(SetPropertyFromCommand):
             self,
             name="check-%s-version" % package,
             description="checking %s version" % package,
+            env={"PYTHONPATH": "src;src"},
             command=[python, '-c', self.src % dict(package=package)],
             extract_fn=self._extractVersion,
             **kw)
