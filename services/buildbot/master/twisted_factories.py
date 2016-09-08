@@ -636,9 +636,11 @@ class TwistedBdistFactory(TwistedBaseFactory):
         def transformVersion(build):
             return build.getProperty("version").split("+")[0].split("pre")[0]
         self.addStep(SetBuildProperty,
-            property_name='versionMsi', value=transformVersion)
+            property_name='versionWhl', value=transformVersion)
 
-        wheelPythonVersion = 'cp' + pyVersion.replace('.','') + '-none-' + arch.replace('-','_')
+        wheelPythonVersion = (
+            'cp' + pyVersion.replace('.','') +
+            '-cp' + pyVersion.replace('.','') 'm-' + arch.replace('-','_'))
         self.addStep(shell.ShellCommand,
                 name='build-whl',
                 description=['Build', 'wheel'],
@@ -648,7 +650,7 @@ class TwistedBdistFactory(TwistedBaseFactory):
         self.addStep(
             transfer.FileUpload,
             name='upload-whl',
-            slavesrc=WithProperties('dist/Twisted-%(versionMsi)s-' + wheelPythonVersion + '.whl'),
+            slavesrc=WithProperties('dist/Twisted-%(versionWhl)s-' + wheelPythonVersion + '.whl'),
             masterdest=WithProperties(
                 self.uploadBase + 'twisted-packages/Twisted-%(version)s-'
                 + wheelPythonVersion + '.whl'),
