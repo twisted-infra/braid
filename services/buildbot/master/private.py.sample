@@ -58,8 +58,6 @@ for slave in slaves:
 # Password for pb debug port
 debugPassword = "cd3dad27_0f84b396"
 
-codecov_twisted_token = 'invalid'
-
 #
 # GitHub Commit Status Update
 #
@@ -88,6 +86,12 @@ github_hook_secret = None
 # When running in Vagrant VM you might not have access to the secret.
 # This is why the signature is disabled for testing.
 github_hook_strict = False
+
+
+#
+# Codecov.io
+#
+codecov_twisted_token = 'invalid'
 
 # web status options
 # - default for testing deployments: port 8080 on localhost

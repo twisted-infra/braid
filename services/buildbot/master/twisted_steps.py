@@ -123,7 +123,7 @@ class TrialTox(ShellCommand):
     haltOnFailure = True
 
     def __init__(self, toxEnv, reactor, tests=[], commandNumber=0,
-                 allowSystemPackages=False, _env={}, **kwargs):
+                 allowSystemPackages=False, _env=None, **kwargs):
 
         ShellCommand.__init__(self, **kwargs)
 
@@ -143,6 +143,8 @@ class TrialTox(ShellCommand):
         self.descriptionDone = ["tests"]
 
         self.addLogObserver('stdio', TrialTestCaseCounter())
+        if _env is None:
+            _env = {}
         self._env = _env
 
 
