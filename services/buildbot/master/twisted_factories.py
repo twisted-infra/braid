@@ -352,21 +352,26 @@ class Win32RemovePYCs(ShellCommand):
 
 
 
-class TwistedToxBuildFactory(BuildFactory):
+class ToxBuildFactoryAbstract(BuildFactory):
     """
-    A build factor for running the tests in a virtual environment which is set
-    up using tox.
+    A build factor for running the things in a virtual environment which
+    is set up using tox.
     """
 
     workdir = "Twisted"
 
-    def __init__(self, source, toxEnv, reactors=["default"],
-                 allowSystemPackages=False, platform="unix", python="python"):
+    def __init__(self, source, toxEnv,
+        reactors=["default"],
+        allowSystemPackages=False,
+        platform="unix",
+        python="python",
+        env=None,
+            ):
 
         BuildFactory.__init__(self, source)
 
-        tests = [WithProperties("%(test-case-name:~)s")]
-        tests = []
+        # Use the test-case-name property or fallback to 'twisted'.
+        self._tests = [WithProperties("%(test-case-name:~twisted)s")]
 
         assert platform in ["unix", "windows"]
 
@@ -376,6 +381,13 @@ class TwistedToxBuildFactory(BuildFactory):
         elif platform == "windows":
             self._path = ntpath
 
+        self._toxEnv = toxEnv
+        self._env = env
+        self._reactors = reactors
+        self._allowSystemPackages = allowSystemPackages
+
+        # Workaround for virtualenv --clear issue.
+        # https://github.com/pypa/virtualenv/issues/929
         self.addStep(
             shell.ShellCommand,
             description="clearing virtualenv".split(" "),
@@ -394,14 +406,8 @@ class TwistedToxBuildFactory(BuildFactory):
             command=["python", "-m", "pip", "install", "tox", "virtualenv"]
         )
 
-        for reactor in reactors:
-            self.addVirtualEnvStep(TrialTox,
-                                   tests=tests,
-                                   allowSystemPackages=allowSystemPackages,
-                                   reactor=reactor,
-                                   toxEnv=toxEnv)
+        self._addRunSteps()
 
-        self._addAfterRunSteps()
 
     @property
     def _virtualEnvBin(self):
@@ -435,16 +441,44 @@ class TwistedToxBuildFactory(BuildFactory):
         else:
             pathsep = ":"
 
-        env['PATH'] = pathsep.join([self._virtualEnvBin, path, '${PATH}'])
+        env['PATH'] = pathsep.join([
+            self._virtualEnvBin,
+            self._path.join(self._virtualEnvPath, 'lib'),
+            path,
+            '${PATH}',
+            ])
         kwargs['env'] = env
         self.addStep(step, **kwargs)
 
 
-    def _addAfterRunSteps(self):
+    def _addRunSteps(self):
         """
-        To be overwritten by subclasses for adding custom steps after the
-        tox environments are done.
+        To be overwritten by subclasses for adding custom steps for
+        running the tox environment.
         """
+        raise NotImplementedError('_addRunSteps not implemented.')
+
+
+
+class TwistedToxBuildFactory(ToxBuildFactoryAbstract):
+    """
+    A build factor for running the tests in a virtual environment which is set
+    up using tox.
+    """
+
+    def _addRunSteps(self):
+        """
+        See: ToxBuildFactoryBase
+        """
+        for reactor in self._reactors:
+            self.addVirtualEnvStep(
+                TrialTox,
+                tests=self._tests,
+                allowSystemPackages=self._allowSystemPackages,
+                reactor=reactor,
+                toxEnv=self._toxEnv,
+                _env=self._env,
+                )
 
 
 
@@ -631,16 +665,23 @@ class TwistedBdistFactory(TwistedBaseFactory):
 
 
 
-class TwistedToxDistPublishFactory(TwistedToxBuildFactory):
+class TwistedToxDistPublishFactory(ToxBuildFactoryAbstract):
     """
     Run a tox environment and then upload all the files from the dist folder.
     """
     uploadBase = 'build_products/'
 
-    def _addAfterRunSteps(self):
+    def _addRunSteps(self):
         """
-        See: TwistedToxBuildFactory.
+        See: ToxBuildFactoryAbstract.
         """
+        self.addVirtualEnvStep(
+            shell.ShellCommand,
+            description='run step',
+            command=[
+                'python', '-m', 'tox', '-r', '-e', self._toxEnv]
+        )
+
         self.addStep(
             transfer.DirectoryUpload,
             name='upload-whell',
