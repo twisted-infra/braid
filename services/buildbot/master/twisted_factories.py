@@ -397,7 +397,8 @@ class ToxBuildFactoryAbstract(BuildFactory):
         self.addStep(
             shell.ShellCommand,
             description="making virtualenv".split(" "),
-            command = [python, "-m", "virtualenv", self._virtualEnvPath]
+            command = [python, "-m", "virtualenv", "--clear",
+                       self._virtualEnvPath]
         )
 
         self.addVirtualEnvStep(
@@ -510,7 +511,8 @@ class TwistedToxCoverageBuildFactory(TwistedToxBuildFactory):
         self.addStep(
             shell.ShellCommand,
             description="making virtualenv".split(" "),
-            command = [python, "-m", "virtualenv", self._virtualEnvPath]
+            command = [python, "-m", "virtualenv", "--clear",
+                       self._virtualEnvPath]
         )
 
         self.addVirtualEnvStep(
