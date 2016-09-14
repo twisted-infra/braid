@@ -681,11 +681,11 @@ class TwistedToxDistPublishFactory(ToxBuildFactoryAbstract):
 
         self.addStep(
             transfer.DirectoryUpload,
-            name='upload-whell',
+            name='upload-wheel',
             slavesrc='dist/',
             masterdest=self.uploadBase + 'twisted-packages/',
-            url='/build/twisted-packages/',
-            )
+            url='/builds/twisted-packages/',
+        )
 
 
 
