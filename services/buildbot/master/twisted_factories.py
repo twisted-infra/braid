@@ -449,9 +449,8 @@ class ToxBuildFactoryAbstract(BuildFactory):
             '${PATH}',
             ])
 
-        # Hacky: add in codecov options for tox
-        env['CODECOV_OPTIONS'] = WithProperties(
-            "--file=coverage.xml --commit=%(got_revision)s")
+        env['VCS_COMMIT_ID'] = WithProperties("%(got_revision)s")
+        env['CODECOV_OPTIONS'] = "--file=coverage.xml"
 
         kwargs['env'] = env
         self.addStep(step, **kwargs)
