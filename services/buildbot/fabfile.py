@@ -123,7 +123,13 @@ class Buildbot(service.Service):
         """
         with settings(user=self.serviceUser):
             put(
-                os.path.dirname(__file__) + '/master/*', self.configDir,
+                os.path.dirname(__file__) + '/master/*.cfg', self.configDir,
+                mirror_local_mode=True)
+            put(
+                os.path.dirname(__file__) + '/master/*.py', self.configDir,
+                mirror_local_mode=True)
+            put(
+                os.path.dirname(__file__) + '/master/*/*.py', self.configDir,
                 mirror_local_mode=True)
 
             if env.get('installPrivateData'):

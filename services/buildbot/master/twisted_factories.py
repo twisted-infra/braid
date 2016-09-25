@@ -300,14 +300,8 @@ class TwistedDocumentationBuildFactory(TwistedBaseFactory):
         self.addVirtualEnvStep(
             shell.ShellCommand,
             description = "installing dependencies".split(" "),
-            command=['pip', 'install'] + dependencies
+            command=['pip', 'install', 'tox']
         )
-
-        # Build our extensions, in case any API documentation wants to link to
-        # them.
-        self.addVirtualEnvStep(
-            shell.Compile,
-            command=[python, "setup.py", "build_ext", "-i"])
 
         self.addVirtualEnvStep(CheckDocumentation)
         self.addVirtualEnvStep(ProcessDocs)
@@ -435,7 +429,8 @@ class ToxBuildFactoryAbstract(BuildFactory):
         """
         # Update PATH environment so that the virtualenv is listed first.
         env = kwargs.get('env', {})
-        path = env.get('PATH', '')
+        _env = kwargs.get('_env', {}) or {}
+        path = _env.get('EXTRAPATH', '')
 
         if self._path is ntpath:
             pathsep = ";"
@@ -449,6 +444,7 @@ class ToxBuildFactoryAbstract(BuildFactory):
             '${PATH}',
             ])
 
+        env['LANG'] = "en_US.UTF-8"
         env['VCS_COMMIT_ID'] = WithProperties("%(got_revision)s")
         env['CODECOV_OPTIONS'] = "--file=coverage.xml"
 
