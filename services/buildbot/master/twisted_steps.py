@@ -864,16 +864,13 @@ class Trial(ShellCommand):
 
 class ProcessDocs(ShellCommand):
     """
-    I build all docs. This requires some LaTeX packages to be
-    installed. It will result in the full documentation book (dvi,
-    pdf, etc).
+    I build all docs.
     """
 
     name = "process-docs"
     warnOnWarnings = 1
     command = [
-        "python",
-        "bin/admin/build-docs", "."]
+        "tox", "-e", "narrativedocs"]
     description = ["processing", "docs"]
     descriptionDone = ["docs"]
     # TODO: track output and time

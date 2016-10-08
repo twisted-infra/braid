@@ -310,7 +310,7 @@ class TwistedDocumentationBuildFactory(TwistedBaseFactory):
             name="bundle-docs",
             description=["bundling", "docs"],
             descriptionDone=["bundle", "docs"],
-            command=['/bin/tar', 'cjf', 'doc.tar.bz2', 'doc'])
+            command=['/bin/tar', 'cjf', 'doc.tar.bz2', 'docs/_build'])
         self.addStep(
             shell.ShellCommand,
             name="bundle-apidocs",
