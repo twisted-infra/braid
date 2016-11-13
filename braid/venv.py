@@ -47,31 +47,26 @@ class VirtualEnvironment(object):
         """
         Install Twisted and its dependencies.
         """
-        # http2 breaks highscores; see
-        # https://twistedmatrix.com/trac/ticket/8893 for more detail.  We can
-        # put this back once it's fixed.
-
-        # h2==2.5.0
         self.install(" ".join("""
             attrs==16.2.0
-            cffi==1.8.3
+            cffi==1.9.1
             constantly==15.1.0
-            cryptography==1.5.2
+            cryptography==1.5.3
             enum34==1.1.6
+            h2==2.5.0
             hpack==2.3.0
             hyperframe==4.0.1
             idna==2.1
             incremental==16.10.1
             ipaddress==1.0.17
-            priority==1.2.1
+            priority==1.2.2
             pyasn1==0.1.9
             pyasn1-modules==0.0.8
             pycparser==2.17
             pyOpenSSL==16.2.0
             service-identity==16.0.0
             six==1.10.0
-            Twisted==16.5.0
-            TxSNI==0.1.7
+            Twisted==16.6.0rc1
             zope.interface==4.3.2
         """.split()))
 
