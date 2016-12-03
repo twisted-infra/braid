@@ -52,16 +52,17 @@ class Trac(service.Service):
                 mirror_local_mode=True)
 
             self.venv.install_twisted()
-            self.venv.install('psycopg2==2.6.2')
-            self.venv.install('trac==1.0.12')
-            self.venv.install('pygments==1.6')
-
-            self.venv.install('git+https://github.com/twisted-infra/twisted-trac-plugins.git')
-
-            self.venv.install('spambayes==1.1b2')
-            self.venv.install('trac-github==2.1.5 requests_oauthlib==0.6.1')
-            self.venv.install('svn+https://trac-hacks.org/svn/defaultccplugin/tags/0.2/')
-            self.venv.install('svn+https://svn.edgewall.org/repos/trac/plugins/1.0/spam-filter@14340')
+            self.venv.install(" ".join("""
+                psycopg2==2.6.2
+                pygments==1.6
+                spambayes==1.1b2
+                trac==1.0.13
+                trac-github==2.2
+                requests_oauthlib==0.6.1
+                svn+https://trac-hacks.org/svn/defaultccplugin/tags/0.2/
+                svn+https://svn.edgewall.org/repos/trac/plugins/1.0/spam-filter@14340
+                git+https://github.com/twisted-infra/twisted-trac-plugins.git
+            """).split())
 
 
     def task_update(self):

@@ -41,7 +41,7 @@ class VirtualEnvironment(object):
         """
         with settings(user=self._user):
             pip = path.join(self._location, "bin", "pip")
-            run("{} install -U {}".format(pip, package), pty=False)
+            run("{} install {}".format(pip, package), pty=False)
 
     def install_twisted(self):
         """
@@ -51,7 +51,7 @@ class VirtualEnvironment(object):
             attrs==16.2.0
             cffi==1.9.1
             constantly==15.1.0
-            cryptography==1.5.3
+            cryptography==1.6
             enum34==1.1.6
             h2==2.5.0
             hpack==2.3.0
@@ -66,7 +66,7 @@ class VirtualEnvironment(object):
             pyOpenSSL==16.2.0
             service-identity==16.0.0
             six==1.10.0
-            Twisted==16.6.0rc1
+            Twisted==16.6.0
             zope.interface==4.3.2
         """.split()))
 
