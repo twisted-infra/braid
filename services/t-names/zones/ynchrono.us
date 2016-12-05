@@ -42,9 +42,10 @@ zone = [
     NS(name, 'ns1.ynchrono.us'),
     NS(name, 'ns2.ynchrono.us'),
 
+    TXT('ynchrono.us', 'brave-ledger-verification=ba53e430a23c25bad8ff385214d80da7ffb3761ed056c7481bb826415f50981d'),
+
     CNAME('as.ynchrono.us', 'ghs.google.com.', ttl='1D'),
     CNAME('s.ynchrono.us', 's.ynchrono.us.s3-website-us-east-1.amazonaws.com'),
-
 ]
 
 addSubdomains(name, zone, subs)
