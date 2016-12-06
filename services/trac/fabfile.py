@@ -62,7 +62,7 @@ class Trac(service.Service):
                 svn+https://trac-hacks.org/svn/defaultccplugin/tags/0.2/
                 svn+https://svn.edgewall.org/repos/trac/plugins/1.0/spam-filter@14340
                 git+https://github.com/twisted-infra/twisted-trac-plugins.git
-            """).split())
+            """.split()))
 
 
     def task_update(self):
