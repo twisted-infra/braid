@@ -60,7 +60,7 @@ class Trac(service.Service):
                 trac-github==2.2
                 requests_oauthlib==0.6.1
                 svn+https://trac-hacks.org/svn/defaultccplugin/tags/0.2/
-                svn+https://svn.edgewall.org/repos/trac/plugins/1.0/spam-filter@14340
+                svn+https://svn.edgewall.org/repos/trac/plugins/1.2/spam-filter@15310
                 git+https://github.com/twisted-infra/twisted-trac-plugins.git
             """.split()))
 
