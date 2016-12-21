@@ -56,7 +56,7 @@ class Trac(service.Service):
                 psycopg2==2.6.2
                 pygments==1.6
                 spambayes==1.1b2
-                trac==1.0.13
+                trac==1.2
                 trac-github==2.2
                 requests_oauthlib==0.6.1
                 svn+https://trac-hacks.org/svn/defaultccplugin/tags/0.2/
