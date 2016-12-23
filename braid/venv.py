@@ -48,12 +48,12 @@ class VirtualEnvironment(object):
         Install Twisted and its dependencies.
         """
         self.install(" ".join("""
-            attrs==16.2.0
+            attrs==16.3.0
             cffi==1.9.1
             constantly==15.1.0
-            cryptography==1.6
+            cryptography==1.7.1
             enum34==1.1.6
-            h2==2.5.0
+            h2==2.5.1
             hpack==2.3.0
             hyperframe==4.0.1
             idna==2.1
@@ -66,7 +66,7 @@ class VirtualEnvironment(object):
             pyOpenSSL==16.2.0
             service-identity==16.0.0
             six==1.10.0
-            Twisted==16.6.0
+            Twisted==16.7.0rc1
             zope.interface==4.3.2
         """.split()))
 
