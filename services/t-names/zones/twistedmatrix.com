@@ -56,8 +56,8 @@ zone = [
     CNAME('secret.glyph.twistedmatrix.com', googleHosting, ttl='1D'),
     CNAME('labs.twistedmatrix.com', googleHosting, ttl='1D'),
 
-    A(lists, '172.99.70.193'),
-    AAAA(lists, '2001:4802:7800:103:be76:4eff:fe20:798e'),
+    A(lists, '148.62.12.12'),
+    AAAA(lists, '2001:4800:7823:103:be76:4eff:fe04:3c4d'),
 
     TXT(lists, 'v=spf1 include:mailgun.org ~all'),
     TXT('k1._domainkey.lists.twistedmatrix.com',

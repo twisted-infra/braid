@@ -90,8 +90,8 @@ function loadNewsFeeds() {
 }
 google.load('feeds', '1');
 google.setOnLoadCallback(function () {
-    // Load Twisted Matrix Labs news feed.
-    loadNewsFeeds();
     // Enable Bootstrap.js tabs.
     $('#frontpage-tabs a').attr('data-toggle', 'tab');
+    // Load Twisted Matrix Labs news feed.
+    loadNewsFeeds();
 });
