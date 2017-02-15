@@ -66,7 +66,7 @@ class VirtualEnvironment(object):
             pyOpenSSL==16.2.0
             service-identity==16.0.0
             six==1.10.0
-            Twisted==16.7.0rc1
+            Twisted==17.1.0
             zope.interface==4.3.2
         """.split()))
 
