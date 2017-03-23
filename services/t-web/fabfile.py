@@ -84,6 +84,14 @@ class TwistedWeb(service.Service):
             run('ln -s ~/ssl/www.twistedmatrix.com.pem ~/ssl/DEFAULT.pem')
 
 
+    def task_makeTxacmeCertificatesDirectory(self):
+        """
+        Make a directory for txacme's certificates.
+        """
+        with settings(user=self.serviceUser):
+            run('mkdir -p ~/ssl/txacme')
+
+
     def task_updateSoftware(self):
         """
         Update just the Twisted versions.
