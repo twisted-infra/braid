@@ -51,7 +51,7 @@ class VirtualEnvironment(object):
             attrs==16.3.0
             cffi==1.9.1
             constantly==15.1.0
-            cryptography==1.7.1
+            cryptography==1.8.1
             enum34==1.1.6
             h2==2.5.1
             hpack==2.3.0
