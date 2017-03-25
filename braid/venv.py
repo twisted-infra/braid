@@ -33,6 +33,14 @@ class VirtualEnvironment(object):
         self.install("setuptools wheel")
 
 
+    def remove(self):
+        """
+        Remove the virtualenv.
+        """
+        with settings(user=self._user):
+            run("rm -rf {}".format(self._location))
+
+
     def install(self, package):
         """
         Install a package into the virtualenv. It updates if there is a newer
