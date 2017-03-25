@@ -46,9 +46,23 @@ class TwistedWeb(service.Service):
             run('/bin/mkdir -p ~/data')
             if env.get('installPrivateData'):
                 self.task_installTLSKeys()
-                run('/usr/bin/touch {}/production'.format(self.configDir))
+                self.task_makeProductionServer()
             else:
-                run('/bin/rm -f {}/production'.format(self.configDir))
+                self.task_makeStagingServer()
+
+
+    def task_makeProductionServer(self):
+        """
+        Make the target server a production server.
+        """
+        run('/usr/bin/touch {}/production'.format(self.configDir))
+
+
+    def task_makeStagingServer(self):
+        """
+        Make the target server a staging server.
+        """
+        run('/bin/rm -f {}/production'.format(self.configDir))
 
 
     def task_makeTestTLSKeys(self):
