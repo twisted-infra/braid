@@ -87,34 +87,42 @@ class Buildbot(service.Service):
                 os.path.dirname(__file__) + '/start', self.configDir,
                 mirror_local_mode=True)
 
-            buildbotSource = os.path.join(self.configDir, 'buildbot-source')
-            buildmasterSource = os.path.join(buildbotSource, 'master')
-            # For now we are using a buildbot eight HEAD due to a bug in
-            # 0.8.12
-            # https://github.com/buildbot/buildbot/pull/1924
-            # A forked branch is still used to control its version.
-            # If changes are required to this branch it should use a name
-            # other than `eight` to reduce confusion.
-            buildbotBranch = 'eight'
-            git.branch(
-                url='https://github.com/twisted-infra/buildbot',
-                destination=buildbotSource,
-                branch=buildbotBranch,
-                )
-
-            self.venv.install_twisted()
-            self.venv.install("virtualenv twisted==16.2 txacme==0.9.1 txgithub>=15.0.0")
-
-            if _installDeps:
-                # sqlalchemy-migrate only works with a specific version of
-                # sqlalchemy.
-                self.venv.install(
-                    'sqlalchemy==0.7.10 sqlalchemy-migrate==0.7.2 '
-                    '{}'.format(buildmasterSource))
-            else:
-                self.venv.install('--no-deps {}'.format(buildmasterSource))
-
+            self.task_recreateVirtualEnvironment(_installDeps)
             self.updatefast()
+
+
+    def task_recreateVirtualEnvironment(self, installDeps=False):
+        """
+        Recreate the virtual environment.
+        """
+        self.venv.remove()
+        self.venv.create()
+        self.venv.install_twisted()
+        self.venv.install("virtualenv twisted==16.2 txacme==0.9.1 txgithub>=15.0.0")
+
+        buildbotSource = os.path.join(self.configDir, 'buildbot-source')
+        buildmasterSource = os.path.join(buildbotSource, 'master')
+        # For now we are using a buildbot eight HEAD due to a bug in
+        # 0.8.12
+        # https://github.com/buildbot/buildbot/pull/1924
+        # A forked branch is still used to control its version.
+        # If changes are required to this branch it should use a name
+        # other than `eight` to reduce confusion.
+        buildbotBranch = 'eight'
+        git.branch(
+            url='https://github.com/twisted-infra/buildbot',
+            destination=buildbotSource,
+            branch=buildbotBranch,
+            )
+
+        if installDeps:
+            # sqlalchemy-migrate only works with a specific version of
+            # sqlalchemy.
+            self.venv.install(
+                'sqlalchemy==0.7.10 sqlalchemy-migrate==0.7.2 '
+                '{}'.format(buildmasterSource))
+        else:
+            self.venv.install('--no-deps {}'.format(buildmasterSource))
 
 
     def updatefast(self):

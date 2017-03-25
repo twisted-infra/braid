@@ -38,9 +38,19 @@ class AmpTrac(service.Service):
                 os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
 
-            self.venv.install_twisted()
-            self.venv.install('git+https://github.com/twisted-infra/amptrac.git')
-            self.venv.install('git+https://github.com/twisted-infra/amptrac-server')
+        self.task_recreateVirtualEnvironment()
+
+
+    def task_recreateVirtualEnvironment(self):
+        """
+        Recreate the virtual environment.
+        """
+        self.venv.remove()
+        self.venv.create()
+        self.venv.install_twisted()
+        self.venv.install('git+https://github.com/twisted-infra/amptrac.git')
+        self.venv.install('git+https://github.com/twisted-infra/amptrac-server')
+
 
     def task_update(self):
         """
