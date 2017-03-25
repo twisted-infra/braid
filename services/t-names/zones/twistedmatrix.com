@@ -26,7 +26,7 @@ zone = [
         mname = "ns1.twistedmatrix.com",
 
         # Mailbox of individual who handles this
-        rname = "radix.twistedmatrix.com",
+        rname = "glyph.twistedmatrix.com",
 
         # Unique serial identifying this SOA data
         # <4-year> <2-month> <2-day> <2-counter>
