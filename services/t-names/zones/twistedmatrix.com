@@ -47,7 +47,19 @@ zone = [
         ttl="5M",
     ),
 
-    MX(name, 5, 'mail.' + name, ttl='1H'),
+    # mailman.* points at mailman instance, which is a smarthost; although
+    # dornkirk still has forwarding rules scattered around, they should no
+    # longer be necessary.
+    MX("mailman." + name, 5, 'dornkirk.' + name, ttl='1H'),
+    CNAME("email." + name, "mailgun.org", ttl="1H"),
+    MX(name, 10, 'mxa.mailgun.org', ttl=5 * 60),
+    MX(name, 10, 'mxb.mailgun.org', ttl=5 * 60),
+    TXT(name, 'v=spf1 include:mailgun.org ~all'),
+    TXT("smtp._domainkey.twistedmatrix.com",
+        "k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDpLlSOhHfqnfRUYKDlx/rw"
+        "NcgUyZf8/XurHCpfCQD2ByWNwpOLkS4KWpc7FQlfuu8sCyDbWoc0foZPqhiyUKhDGvrOA"
+        "I+e5zuiR6X/Bg9ZXr0zAsxX3UpxV1yBrur/SOS+uw5YslR5pOqI20OzSio0CUXcEXTbD1"
+        "29GE4xiMbXfwIDAQAB"),
 
     CNAME('planet.twistedmatrix.com', planet, ttl='1D'),
     CNAME('radix.twistedmatrix.com', 'wordeology.com', ttl='1D'),
