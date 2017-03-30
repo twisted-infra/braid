@@ -75,7 +75,7 @@ DOC_DEPENDENCIES = [
 
 
 class TwistedBuild(Build):
-    workdir = "Twisted" # twisted's bin/trial expects to live in here
+    workdir = "Twisted"
 
 
 
@@ -102,8 +102,6 @@ class TwistedBaseFactory(BuildFactory):
         list, to allow additional arguments to be passed.
     """
     buildClass = TwistedBuild
-    # bin/trial expects its parent directory to be named "Twisted": it uses
-    # this to add the local tree to PYTHONPATH during tests
     workdir = "Twisted"
 
     forceGarbageCollection = False
