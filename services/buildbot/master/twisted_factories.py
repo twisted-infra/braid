@@ -338,14 +338,6 @@ class TwistedDocumentationBuildFactory(TwistedBaseFactory):
 
 
 
-class Win32RemovePYCs(ShellCommand):
-    name = "remove-.pyc"
-    command = 'del /s *.pyc'
-    description = ["removing", ".pyc", "files"]
-    descriptionDone = ["remove", ".pycs"]
-
-
-
 class ToxBuildFactoryAbstract(BuildFactory):
     """
     A build factor for running the things in a virtual environment which
@@ -563,104 +555,6 @@ class TwistedToxCoverageBuildFactory(TwistedToxBuildFactory):
         )
 
 
-class TwistedVirtualenvReactorsBuildFactory(TwistedBaseFactory):
-    treeStableTimer = 5*60
-
-    def __init__(self, source, RemovePYCs=RemovePYCs, python="python",
-                 trial="./bin/trial", virtualenv_module="virtualenv",
-                 reactors=["select"], uncleanWarnings=False, platform="unix",
-                 dependencies=BASE_DEPENDENCIES + CEXT_DEPENDENCIES + PY2_NONWIN_DEPENDENCIES + EXTRA_DEPENDENCIES,
-                 forceGarbageCollection=False, tests=None, symlinkGIFrom=None):
-
-        TwistedBaseFactory.__init__(
-            self,
-            source=source,
-            python=python,
-            uncleanWarnings=uncleanWarnings,
-            platform=platform,
-            virtualenv=True,
-            virtualenv_module=virtualenv_module,
-            forceGarbageCollection=forceGarbageCollection,
-            trialTests=tests,
-        )
-
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            description = "installing dependencies".split(" "),
-            command=['python', '-m', 'pip', 'install'] + dependencies
-        )
-
-        if symlinkGIFrom:
-            pythonVer = list(filter(lambda _: 'python' in _,
-                                    symlinkGIFrom.split('/')))[0]
-
-            self.addStep(
-                shell.ShellCommand,
-                description="symlinking gi".split(" "),
-                command=[
-                    "ln", "-s", '/'.join([symlinkGIFrom, "gi"]),
-                    '/'.join([self._virtualEnvPath, "lib", pythonVer, "site-packages"])])
-            self.addStep(
-                shell.ShellCommand,
-                description="symlinking pygtkcompat".split(" "),
-                command=[
-                    "ln", "-s", '/'.join([symlinkGIFrom, "pygtkcompat"]),
-                    '/'.join([self._virtualEnvPath, "lib", pythonVer, "site-packages"])])
-
-        self._reportVersions(virtualenv=True)
-
-        cmd = ["python", "setup.py", "build_ext", "-i"]
-        self.addVirtualEnvStep(shell.Compile, command=cmd, warnOnFailure=True)
-
-        for reactor in reactors:
-            self.addStep(RemovePYCs)
-            self.addStep(RemoveTrialTemp, python=self.python)
-            self.addTrialStep(
-                name=reactor, reactor=reactor, flunkOnFailure=True,
-                warnOnFailure=False, virtualenv=True, trial=trial)
-
-
-
-class TwistedBdistFactory(TwistedBaseFactory):
-    treeStableTimer = 5*60
-
-    uploadBase = 'build_products/'
-    def __init__(self, source, uncleanWarnings, arch, pyVersion):
-        python = self.python(pyVersion)
-        TwistedBaseFactory.__init__(self, python, source, uncleanWarnings)
-        learnVersion = LearnVersion(
-            python=python,
-            package='twisted',
-            workdir='Twisted',
-            )
-        self.addStep(learnVersion)
-
-        wheelPythonVersion = 'cp' + pyVersion.replace('.','') + '-none-' + arch.replace('-','_')
-        self.addStep(shell.ShellCommand,
-                name='build-whl',
-                description=['Build', 'wheel'],
-                descriptionDone=['Built', 'wheel'],
-                command=[python, "setup.py", "--command-package", "wheel", "bdist_wheel"],
-                haltOnFailure=True)
-        self.addStep(
-            transfer.FileUpload,
-            name='upload-whl',
-            slavesrc=WithProperties('dist/Twisted-%(version)s-' + wheelPythonVersion + '.whl'),
-            masterdest=WithProperties(
-                self.uploadBase + 'twisted-packages/Twisted-%(version)s-'
-                + wheelPythonVersion + '.whl'),
-            url=WithProperties(
-                '/build/twisted-packages/Twisted-%(version)s-'
-                + wheelPythonVersion + '.whl'),
-            )
-
-
-    def python(self, pyVersion):
-        return (
-            "c:\\python%s\\python.exe" % (
-                pyVersion.replace('.', ''),))
-
-
 
 class TwistedToxDistPublishFactory(ToxBuildFactoryAbstract):
     """
@@ -685,75 +579,6 @@ class TwistedToxDistPublishFactory(ToxBuildFactoryAbstract):
             slavesrc='dist/',
             masterdest=self.uploadBase + 'twisted-packages/',
             url='/builds/twisted-packages/',
-        )
-
-
-
-class TwistedCoveragePyFactory(TwistedBaseFactory):
-    OMIT_PATHS = [
-        '/usr/*',
-        '_trial_temp/*',
-        ]
-
-    def __init__(self, python, source, buildID=None, trial="./bin/trial",
-                 tests=None, dependencies=BASE_DEPENDENCIES + CEXT_DEPENDENCIES + PY2_NONWIN_DEPENDENCIES + EXTRA_DEPENDENCIES,
-                 platform='unix', RemovePYCs=RemovePYCs, uncleanWarnings=False):
-
-        TwistedBaseFactory.__init__(
-            self,
-            source=source,
-            python=python,
-            uncleanWarnings=uncleanWarnings,
-            virtualenv=True,
-            platform=platform,
-            trialTests=tests,
-        )
-
-        OMIT = self.OMIT_PATHS[:]
-        OMIT.append(self._virtualEnvPath + "/*")
-
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            description = "installing dependencies".split(" "),
-            command=["python", '-m', 'pip', 'install'] + dependencies + COVERAGE_DEPENDENCIES
-        )
-
-        self._reportVersions(virtualenv=True)
-
-        cmd = ["python", "setup.py", "build_ext", "-i"]
-        self.addVirtualEnvStep(shell.Compile, command=cmd, warnOnFailure=True)
-
-        self.addStep(RemovePYCs)
-
-        self.addTrialStep(
-            flunkOnFailure=True,
-            python=["python",
-                    "-m", "coverage", "run",
-                    "--omit", ','.join(self.OMIT_PATHS),
-                    "--branch"],
-            warnOnFailure=False, virtualenv=True, trial=trial)
-
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            description = "run coverage combine".split(" "),
-            command=["python", "-m", "coverage", "combine"])
-
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            description = "run coverage xml".split(" "),
-            command=["python", "-m", "coverage", 'xml', '-o', 'coverage.xml',
-                     '--omit', ','.join(OMIT), '-i'])
-
-        self.addVirtualEnvStep(
-            shell.ShellCommand,
-            warnOnFailure=True,
-            description="upload to codecov".split(" "),
-            command=["codecov",
-                     "--token={}".format(private.codecov_twisted_token),
-                     "--build={}".format(buildID),
-                     "--file=coverage.xml",
-                     WithProperties("--commit=%(got_revision)s")
-            ],
         )
 
 
