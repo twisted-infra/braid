@@ -51,7 +51,7 @@ class Codespeed(service.Service):
                 secret = ''.join([random.choice(chars) for i in range(50)])
                 setting = StringIO("SECRET_KEY = '{}'\n".format(secret))
                 put(setting, '{}/secret_key.py'.format(self.configDir),
-                    mode=0600)
+                    mode=0o600)
 
     def update(self):
         """

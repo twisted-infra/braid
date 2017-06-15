@@ -62,7 +62,7 @@ def tempfile(uploadFrom=None, saveTo=None, suffix=''):
         temp = run('/bin/mktemp -t braid-tmp-XXXXXXXX --suffix={}'.format(suffix))
     try:
         if uploadFrom:
-            put(uploadFrom, temp, mode=0600)
+            put(uploadFrom, temp, mode=0o600)
         yield temp
     except:
         raise

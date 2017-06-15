@@ -92,7 +92,7 @@ class TwistedWeb(service.Service):
                          'buildbot.twistedmatrix.com.pem']:
                 fullpath = sibpath(__file__, cert)
                 if path.exists(fullpath):
-                    put(fullpath, '~/ssl/' + cert, mode=0600)
+                    put(fullpath, '~/ssl/' + cert, mode=0o600)
             run('ln -s ~/ssl/www.twistedmatrix.com.pem '
                 '~/ssl/twistedmatrix.com.pem')
             run('ln -s ~/ssl/www.twistedmatrix.com.pem ~/ssl/DEFAULT.pem')
