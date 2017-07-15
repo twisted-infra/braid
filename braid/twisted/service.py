@@ -69,7 +69,7 @@ class Service(tasks.Service):
 
             # Create stop script
             stopFile = FilePath(__file__).sibling('stop')
-            put(stopFile.path, '{}/stop'.format(self.binDir), mode=0755)
+            put(stopFile.path, '{}/stop'.format(self.binDir), mode=0o755)
 
             readme = self._generateReadme()
             put(StringIO(readme), 'README')

@@ -43,7 +43,7 @@ class Kenaan(service.Service):
             if force or not files.exists('private.py'):
                 puts('Using sample private.py and config.py')
                 put(sibpath(__file__, 'private.py.sample'),
-                    os.path.join(self.configDir, "private.py"), mode=0600)
+                    os.path.join(self.configDir, "private.py"), mode=0o600)
                 put(sibpath(__file__, 'config.py.sample'),
                     os.path.join(self.configDir, "config.py"))
 
@@ -58,7 +58,7 @@ class Kenaan(service.Service):
 
             if FilePath(private).exists():
                 put(sibpath(__file__, 'private.py'),
-                    os.path.join(self.configDir, "private.py"), mode=0600)
+                    os.path.join(self.configDir, "private.py"), mode=0o600)
             else:
                 abort('Missing private config.')
 

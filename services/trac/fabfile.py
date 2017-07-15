@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import os
 
 from fabric.api import abort, env, run, settings, put
@@ -135,7 +137,7 @@ class Trac(service.Service):
                 '(the database will not be touched).'
             )
 
-        print ''
+        print('')
         if confirm(msg):
             # TODO: Ask for confirmation here
             if restoreDb:

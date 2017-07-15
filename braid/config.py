@@ -33,7 +33,7 @@ def loadEnvironmentConfig(envFile):
     envName = os.path.splitext(envFile.basename())[0]
     ENVIRONMENTS.setdefault(envName, {})
     glob = {'__file__': envFile.path}
-    exec envFile.getContent() in glob
+    exec(envFile.getContent(), glob)
     ENVIRONMENTS[envName].update(glob['ENVIRONMENT'])
 
 

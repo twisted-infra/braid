@@ -9,6 +9,7 @@
 
 # This port adds no further stipulations.  I forfeit any copyright interest.
 
+from __future__ import print_function
 import md5
 
 def md5crypt(password, salt, magic='$1$'):
@@ -89,6 +90,6 @@ if __name__ == '__main__':
 
     for clearpw, hashpw in test_cases:
         if test(clearpw, hashpw):
-            print '%s: pass' % clearpw
+            print('{}: pass'.format(clearpw))
         else:
-            print '%s: FAIL' % clearpw
+            print('{}: FAIL'.format(clearpw))
