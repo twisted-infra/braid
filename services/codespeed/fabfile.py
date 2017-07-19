@@ -63,15 +63,25 @@ class Codespeed(service.Service):
                 os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
 
-            git.branch('https://github.com/tobami/codespeed.git', '~/codespeed')
-            with cd("~/codespeed"):
-                run("git checkout 9893b87de02bdc1ea6256207de5cc010b095b3a5")
-                run("git reset --hard")
-            self.venv.install_twisted()
-            self.venv.install('-r ~/codespeed/requirements.txt')
+            self.task_recreateVirtualEnvironment()
 
             if env.get('installTestData'):
                 execute(self.task_installTestData)
+
+
+    def task_recreateVirtualEnvironment(self):
+        """
+        Recreate the virtual environment.
+        """
+        self.venv.remove()
+        self.venv.create()
+        git.branch('https://github.com/tobami/codespeed.git', '~/codespeed')
+        with cd("~/codespeed"):
+            run("git checkout 9893b87de02bdc1ea6256207de5cc010b095b3a5")
+            run("git reset --hard")
+        self.venv.install_twisted()
+        self.venv.install('-r ~/codespeed/requirements.txt')
+
 
     def djangoAdmin(self, args):
         """

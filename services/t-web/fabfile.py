@@ -103,15 +103,24 @@ class TwistedWeb(service.Service):
         Update just the Twisted versions.
         """
         self.task_stop()
-        self.venv.install_twisted()
+        self.task_recreateVirtualEnvironment()
         self.task_start()
+
+
+    def task_recreateVirtualEnvironment(self):
+        """
+        Recreate the virtual environment.
+        """
+        self.venv.remove()
+        self.venv.create()
+        self.venv.install_twisted()
 
 
     def update(self):
         """
         Update config.
         """
-        self.venv.install_twisted()
+        self.task_recreateVirtualEnvironment()
 
         with settings(user=self.serviceUser):
             run('mkdir -p ' + self.configDir)

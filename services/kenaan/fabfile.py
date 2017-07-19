@@ -75,7 +75,7 @@ class Kenaan(service.Service):
             ]
             run('mkdir -p ' + self.configDir)
 
-            self.venv.install("git+https://github.com/twisted-infra/amptrac.git")
+            self.task_recreateVirtualEnvironment()
 
             for f in filesToCopy:
                 put(os.path.join(os.path.dirname(__file__), f), self.configDir,
@@ -85,6 +85,16 @@ class Kenaan(service.Service):
                 execute(self.task_installPrivateData)
             else:
                 execute(self.task_installTestData)
+
+
+    def task_recreateVirtualEnvironment(self):
+        """
+        Recreate the virtual environment.
+        """
+        self.venv.remove()
+        self.venv.create()
+        self.venv.install_twisted()
+        self.venv.install("git+https://github.com/twisted-infra/amptrac.git")
 
 
     def task_update(self):

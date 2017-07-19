@@ -47,14 +47,20 @@ class Trac(service.Service):
         Remove the current trac installation and reinstalls it.
         """
         with settings(user=self.serviceUser):
-            self.venv.create()
-
             run('mkdir -p ' + self.configDir)
             put(os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
+            self.task_recreateVirtualEnvironment()
 
-            self.venv.install_twisted()
-            self.venv.install(" ".join("""
+
+    def task_recreateVirtualEnvironment(self):
+        """
+        Recreate the virtual environment.
+        """
+        self.venv.remove()
+        self.venv.create()
+        self.venv.install_twisted()
+        self.venv.install(" ".join("""
                 psycopg2==2.6.2
                 pygments==1.6
                 spambayes==1.1b2

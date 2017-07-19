@@ -35,11 +35,21 @@ class TwistedNames(service.Service):
         Update config.
         """
         with settings(user=self.serviceUser):
-            self.venv.install_twisted()
+            self.task_recreateVirtualEnvironment()
             run('mkdir -p ' + self.configDir)
             put(
                 os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
+
+
+    def task_recreateVirtualEnvironment(self):
+        """
+        Recreate the virtual environment.
+        """
+        self.venv.remove()
+        self.venv.create()
+        self.venv.install_twisted()
+
 
     def task_update(self):
         """
