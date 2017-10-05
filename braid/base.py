@@ -26,9 +26,9 @@ def bootstrap():
     # pypy is installed with a tarball downloaded with wget.
     package.install(['wget'])
     # libssl-dev is needed for installing pyOpenSSL for PyPy.
-    package.install(['libssl-dev'])
+    package.install(['libssl-dev', 'libffi-dev'])
 
-    package.install(['python2.7', 'python2.7-dev'])
+    package.install(['python2.7', 'python2.7-dev', 'python-virtualenv'])
     # gcc and svn is needed for 'pip install'
     package.install(['gcc', 'subversion'])
     # For trac

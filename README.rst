@@ -46,10 +46,6 @@ Usage Notes
 Fabric configuration is located at `braid/settings.py`
 (don't be fooled by braid/config.py).
 
-```shell
-# Get the code
-$ git clone https://github.com/twisted-infra/braid
-```
 
 Some notable commands:
 

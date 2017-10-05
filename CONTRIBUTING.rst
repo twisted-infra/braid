@@ -40,6 +40,9 @@ vagrant provision
 # New VMs should be initialized using:
 fab config.vagrant base.bootstrap
 
+# See the available command:
+fab config.vagrant -l
+
 # Run the braid commands using:
 fab config.vagrant COMMAND
 ```
