@@ -1,12 +1,20 @@
-A very work-in-progress library of fabric stuff for deploying twisted infrastrucutre.
-The immeidate goal is to be able to redeploy everything from cube onto dornkirk.
+Braid
+#####
 
-This package is a library of tools for deploying individual services.
-It also currently contains a fabfile for global configuration of dornkirk.
+The main code for deploying the Twisted infrastructure into production.
+
+A library of fabric stuff for deploying Twisted infrastrucutre.
+
+It contains tools for deploying individual services.
 
 The idea is that each individual service (e.g., t-names, www-data, trac,
-buildbot) will have a configuration repo with a fabfile that uses braid to
-deploy itself on a given machine.
+buildbot) will have a dedicated fabfile that uses braid to deploy itself on a
+given machine.
+
+This README.rst describes how to use this tools and how to deploy.
+
+See CONTRIBUTING.rst for info about how to run a staging server and develop
+and maintain the code.
 
 
 Currently Supported Services
@@ -26,14 +34,17 @@ Currently Supported Services
 
 Server Dependencies
 ===================
+
 braid currently assumes that it is being run against a ubuntu server (precise).
 
 It requires that the `universe` component be enabled, as well `sudo`.
 
+
 Usage Notes
 ===========
 
-Fabric configuration is located at `braid/settings.py`.
+Fabric configuration is located at `braid/settings.py`
+(don't be fooled by braid/config.py).
 
 ```shell
 # Get the code
@@ -70,6 +81,7 @@ $ fab config.testing
 
 Service configuration conventions
 --------------------------------
+
 
 ### Directory structure ###
 
@@ -139,39 +151,3 @@ which is a sibling of the braid base clone directory.
 
 Make sure you pull and reveal the changes before running in production.
 Make sure you push and hide your changes mode in production.
-
-
-style-notes
-===========
-Things that want to root want to be run with `sudo`, and files `put` with `use_sudo`.
-When dealing with things that want to be run as other users, `run` should be
-used, and a ssh connection as that user (with `settings(user='user')` or the like.
-`braid.base.sshConfig` sets things up so anybody with root keys can log-in as any user in the `service` group.
-
-
-Vagrant
-=======
-
-> [Vagrant](https://www.vagrantup.com/) 1.7+ and [Ansible](http://docs.ansible.com/) 1.9+ is required to use the Vagrant image.
-
-There is `Vagrantfile` provided with braid, that will set up a staging server.
-It uses the address `172.16.255.140`, and there is a braid config named `vagrant` that connects to it by default.
-
-```shell
-# Start the VM
-vagrant up
-# In case you already have a VM, re-provision it using:
-vagrant provision
-# New VMs should be initialized using:
-fab config.vagrant base.bootstrap
-# Run the braid commands using:
-fab config.vagrant COMMAND
-```
-
-The following ports are in use on the Vagrant VM, listed here for easy
-discovery and to avoid conflicts:
-
-* 80 - Twisted Web
-* 8000 - Buildmaster redirection placeholder (port 80 in production)
-* 8080 - Buildmaster WebStatus
-* 9987 - Buildmaster slave listener
