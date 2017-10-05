@@ -39,8 +39,6 @@ class Buildbot(service.Service):
         if env.get('environment') == 'production':
            abort("Don't use testInit in production.")
 
-        self.task_install()
-
         targetPath = os.path.join(self.configDir)
         with settings(user=self.serviceUser), cd(targetPath):
             # Copy the new private data for testing.
@@ -104,7 +102,7 @@ class Buildbot(service.Service):
                 )
 
             self.venv.install_twisted()
-            self.venv.install("virtualenv twisted==16.2 txacme==0.9.1 txgithub>=15.0.0")
+            self.venv.install("txgithub>=15.0.0")
 
             if _installDeps:
                 # sqlalchemy-migrate only works with a specific version of
