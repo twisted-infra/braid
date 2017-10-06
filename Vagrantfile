@@ -4,10 +4,10 @@
 VAGRANTFILE_API_VERSION = "2"
 
 
-# Provision root account by copying the ssh key from the default vagrant user.    
+# Provision root account by copying the ssh key from the default user.    
 $root_ssh_authorized_keys = <<ENDMARKER   
 mkdir -p /root/.ssh    
-cp /home/vagrant/.ssh/authorized_keys /root/.ssh  
+cp /home/ubuntu/.ssh/authorized_keys /root/.ssh
 chmod -R 700 /root/.ssh    
 ENDMARKER
 
