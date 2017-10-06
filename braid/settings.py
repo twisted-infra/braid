@@ -36,6 +36,8 @@ ENVIRONMENTS = {
             'buildbot': [vagrant_address],
         },
         'user': 'root',
+        'key_filename': (
+            '.vagrant/machines/dornkirk-staging/virtualbox/private_key'),
         'installPrivateData': False,
     }
 }
