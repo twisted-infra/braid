@@ -42,13 +42,12 @@ class Buildbot(service.Service):
         targetPath = os.path.join(self.configDir)
         with settings(user=self.serviceUser), cd(targetPath):
             # Copy the new private data for testing.
+            puts('Copying testing private.py to %s' % (targetPath,))
             put(
                 os.path.dirname(__file__) + '/master/private.py.sample',
-                self.configDir,
+                self.configDir + '/private.py',
                 mirror_local_mode=True)
 
-            puts('Copying testing private.py to %s' % (targetPath,))
-            run('/bin/cp private.py.sample private.py')
             puts('Migrating SQLite db.')
             run('~/virtualenv/bin/buildbot upgrade-master')
             puts('Copying migrated state.sqlite db to ~/data')
@@ -103,7 +102,6 @@ class Buildbot(service.Service):
                 )
 
             self.venv.install_twisted()
-            self.venv.install("virtualenv twisted==16.2 txacme==0.9.1 txgithub>=15.0.0")
 
             if _installDeps:
                 # sqlalchemy-migrate only works with a specific version of

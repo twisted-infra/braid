@@ -1,12 +1,3 @@
-- hosts: dornkirk-staging
-  become: yes
-  tasks:
-    - name: Add vagrant key
-      action: authorized_key user=root key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
-  roles:
-    - systemupdate
-    - requirements-debian
-
 - hosts: buildbot
   become: yes
   roles:

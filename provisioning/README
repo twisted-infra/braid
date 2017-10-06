@@ -1,5 +1,1 @@
 Here are the build slaves configurations done using Ansible.
-
-For the testing Vagrant VM apply these changes using `vagrant provision`.
-The Vagrant VM still uses braid via services/buildslave to set up the bb-slave
-account and install and start the buildslave process itself.

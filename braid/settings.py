@@ -8,6 +8,7 @@ buildbot = 'buildbot.twistedmatrix.com'
 vagrant_address = '172.16.255.140'
 staging_address = '162.242.246.197'
 
+# For available options see http://docs.fabfile.org/en/latest/usage/env.html
 ENVIRONMENTS = {
     'production': {
         'hosts': [dornkirk],
@@ -24,6 +25,8 @@ ENVIRONMENTS = {
             'nameserver': [staging_address],
         },
         'user': 'root',
+        'key_filename': (
+            '.vagrant/machines/dornkirk-staging/virtualbox/private_key'),
         'installPrivateData': False,
     },
     'vagrant': {

@@ -17,6 +17,11 @@ It uses the following directories:
 
 Note: http.log is located in ~/data
 
+To set up the staging version run:
+
+    fab config.vagrant buildslave.install
+    fab config.vagrant buildslave.installTestData
+
 The slave database used for testing from `master/private.py.sample` might
 get out of sync from the one used in production and which is hosted at
 `/srv/bb-master/private/private.py`.

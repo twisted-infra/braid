@@ -3,10 +3,17 @@
 
 VAGRANTFILE_API_VERSION = "2"
 
+
+# Provision root account by copying the ssh key from the default vagrant user.    
+$root_ssh_authorized_keys = <<ENDMARKER   
+mkdir -p /root/.ssh    
+cp /home/vagrant/.ssh/authorized_keys /root/.ssh  
+chmod -R 700 /root/.ssh    
+ENDMARKER
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.synced_folder ".", "/vagrant", disabled: true
-  config.vm.network :forwarded_port, guest: 22, host: 2222, id: "ssh", disabled: true
 
   config.vm.provider "virtualbox" do |v|
       v.cpus = 1
@@ -17,14 +24,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Every Vagrant virtual environment requires a box to build off of.
     box.vm.box = "ubuntu/precise64"
     box.vm.network :private_network, :ip => "172.16.255.140"
-    box.vm.network "forwarded_port", guest: 22, host: 2522
   end
 
-  # The only vagrant provisioning is to enable SSH access for root account.
-  # After that provisioning is done using fabric/braid.
-  config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "provisioning/playbook.yml"
-    ansible.extra_vars = { ansible_ssh_user: 'vagrant'}
-  end
+  # The only vagrant provisioning is to enable SSH access for root account by
+  # copying the 
+  # The actual provisioning is done outside of vagrant using fabric/braid.
+  config.vm.provision :shell, inline: $root_ssh_authorized_keys
 
 end
