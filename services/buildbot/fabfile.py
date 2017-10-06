@@ -102,7 +102,6 @@ class Buildbot(service.Service):
                 )
 
             self.venv.install_twisted()
-            self.venv.install("txgithub>=15.0.0")
 
             if _installDeps:
                 # sqlalchemy-migrate only works with a specific version of
