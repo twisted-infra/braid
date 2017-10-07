@@ -3,7 +3,7 @@ from fabric.api import sudo, run
 
 def _service(action, service, useSudo=True):
     cmd = sudo if useSudo else run
-    cmd('/usr/bin/service {} {}'.format(service, action))
+    cmd('/usr/sbin/service {} {}'.format(service, action))
 
 
 def start(service, useSudo=True):
