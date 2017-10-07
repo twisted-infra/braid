@@ -4,10 +4,24 @@ from pipes import quote
 
 
 def install():
-    try:
-        package.install(['postgresql-9.1', 'postgresql-server-dev-9.1'])
-    except:
-        package.install(['postgresql-9.3', 'postgresql-server-dev-9.3'])
+    # TODO: what are the names of these packages on each platform and
+    # release?  There ought to be a table.
+    candidates = [
+        ('', '-all'),
+        ['-9.1'] * 2,
+        ['-9.3'] * 2,
+    ]
+    for server, dev in candidates:
+        try:
+            package.install(['postgresql{}'.format(server),
+                             'postgresql-server-dev{}'.format(dev)])
+        except:
+            continue
+        else:
+            break
+    else:
+        raise RuntimeError("Could not install any postgresql")
+
 
 
 def _runQuery(query, database=None):
