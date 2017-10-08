@@ -28,7 +28,7 @@ def bootstrap():
     # libssl-dev is needed for installing pyOpenSSL for PyPy.
     package.install(['libssl-dev', 'libffi-dev'])
 
-    package.install(['python2.7', 'python2.7-dev', 'python-virtualenv'])
+    package.install(['python2.7', 'python2.7-dev'])
     # gcc and svn is needed for 'pip install'
     package.install(['gcc', 'subversion'])
     # For trac

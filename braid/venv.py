@@ -17,6 +17,11 @@ class VirtualEnvironment(object):
         self._user = user
 
 
+    @property
+    def sourceInterpreter(self):
+        return self._python
+
+
     def create(self, site_packages=False):
         """
         Create the virtualenv. This uses "/usr/bin/env python2"'s virtualenv

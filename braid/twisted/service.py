@@ -2,7 +2,7 @@ from cStringIO import StringIO
 
 from fabric.api import settings, run, put
 
-from braid import tasks, users, venv
+from braid import tasks, pip, users, venv
 
 from twisted.python.filepath import FilePath
 
@@ -49,12 +49,13 @@ class Service(tasks.Service):
         readmeContext['tasks'] = '\n'.join(tasks)
         return readmeFile.getContent().format(**readmeContext)
 
-    def bootstrap(self, venv_site_packages=False):
+    def bootstrap(self, venv_site_packages=False, updateDependencies=False):
         # Create the user only if it does not already exist
         users.createService(self.serviceUser)
+        pip.bootstrap(self.serviceUser, self.venv.sourceInterpreter,
+                      updateDependencies=updateDependencies)
 
         with settings(user=self.serviceUser):
-
             # Create a virtualenv in the service user's folder
             # It'll be a PyPy venv by default, unless self.python is changed
             self.venv.create(site_packages=venv_site_packages)
