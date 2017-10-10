@@ -3,6 +3,7 @@ from os import path
 
 
 class VirtualEnvironment(object):
+    BOOTSTRAP_PYTHON = 'python2'
 
     def __init__(self, user, location="~/virtualenv", python="python2.7"):
 
@@ -17,19 +18,14 @@ class VirtualEnvironment(object):
         self._user = user
 
 
-    @property
-    def sourceInterpreter(self):
-        return self._python
-
-
     def create(self, site_packages=False):
         """
         Create the virtualenv. This uses "/usr/bin/env python2"'s virtualenv
         module.
         """
         with settings(user=self._user):
-            run(("/usr/bin/env python2 -m virtualenv --clear "
-                 "-p {} {} {}").format(self._python, self._location,
+            run(("/usr/bin/env {} -m virtualenv --clear "
+                 "-p {} {} {}").format(self.BOOTSTRAP_PYTHON, self._python, self._location,
                                        '--system-site-packages' if site_packages else ''))
 
         # https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning

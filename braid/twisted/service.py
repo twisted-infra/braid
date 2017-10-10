@@ -52,7 +52,7 @@ class Service(tasks.Service):
     def bootstrap(self, venv_site_packages=False, updateDependencies=False):
         # Create the user only if it does not already exist
         users.createService(self.serviceUser)
-        pip.bootstrap(self.serviceUser, self.venv.sourceInterpreter,
+        pip.bootstrap(self.serviceUser, self.venv.BOOTSTRAP_PYTHON,
                       updateDependencies=updateDependencies)
 
         with settings(user=self.serviceUser):

@@ -1,4 +1,4 @@
-from fabric.api import run, cd, settings, sudo
+from fabric.api import run, cd, settings, sudo, task
 from fabric.contrib import files
 
 from os import path
@@ -9,6 +9,7 @@ getPipDirectory = "/opt/pip"
 getPipLocation = path.join(getPipDirectory, "get-pip.py")
 
 
+@task
 def ensureGetPip(target=getPipDirectory, update=False):
     """
     Ensure we have C{get-pip.py} available in our expected location.
@@ -16,7 +17,7 @@ def ensureGetPip(target=getPipDirectory, update=False):
     if update or not files.exists(getPipLocation):
         sudo("mkdir -p {}".format(getPipDirectory))
         with cd(getPipDirectory):
-            sudo('/usr/bin/wget -O {}'.format(getPipLocation, pipURL))
+            sudo('/usr/bin/wget -O {} {}'.format(getPipLocation, pipURL))
         sudo('chmod a+r {}'.format(getPipLocation))
 
 
