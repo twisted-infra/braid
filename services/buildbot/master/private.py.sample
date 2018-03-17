@@ -15,26 +15,10 @@ slaves = [
 
     "bot-glyph-1",
     "bot-glyph-6",
-    "tavendo-freebsd-10.1-amd64",
 
-    "fedora-fedora22-1",
-    "fedora-fedora22-2",
-    "fedora-fedora23-1",
-    "fedora-fedora23-2",
     "fedora-fedora24-1",
     "fedora-fedora24-2",
-    "fedora-rhel7-1",
-    "fedora-rhel7-2",
-
-    "osuosl-osx10.6",
-
-    "rax-ubuntu1204-1",
-    "rax-ubuntu1204-2",
-    "rax-ubuntu1604-1",
-    "rax-ubuntu1604-2",
-    "rax-ubuntu1604-3",
-    "rax-debian8-1",
-    "rax-debian8-2",
+    "fedora-fedora25-1",
 
     "github",
 ]
