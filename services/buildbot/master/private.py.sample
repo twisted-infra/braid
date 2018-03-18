@@ -19,7 +19,8 @@ slaves = [
     "fedora-fedora24-1",
     "fedora-fedora24-2",
     "fedora-fedora25-1",
-
+    "fedora-rhel7-1",
+    "fedora-rhel7-2",
     "github",
 ]
 
