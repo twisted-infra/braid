@@ -82,8 +82,6 @@ trac = proxy.ReverseProxyResource('127.0.0.1', 9881, '/trac')
 trac.putChild('chrome', static.File(websiteRoot.child('trac-files').path))
 tm.putChild('trac', trac)
 
-root.addHost('saph.twistedmatrix.com', distrib.ResourceSubscription('unix', '/home/saph/.twistd-web-pb'))
-
 # Change this if you want default mime-type to be different:
 # default.defaultType = 'text/html'
 
