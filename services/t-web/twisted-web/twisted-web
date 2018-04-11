@@ -69,12 +69,6 @@ root.putChild('cgi-bin', twcgi.CGIDirectory('/usr/lib/cgi-bin'))
 
 
 ###
-### BuildBot
-###
-
-root.addHost('buildbot.twistedmatrix.com', proxy.ReverseProxyResource('localhost', 8080, ''))
-
-###
 ### Codespeed Speedcenter
 ###
 
