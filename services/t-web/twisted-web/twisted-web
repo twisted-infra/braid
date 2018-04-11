@@ -4,7 +4,7 @@
 
 from twisted.internet import reactor
 from twisted.web import script, static, server, distrib, twcgi, vhost, rewrite
-from twisted.web import util as twutil, proxy
+from twisted.web import util as twutil, proxy, http, resource
 from twisted.application import service
 from twisted.application.internet import StreamServerEndpointService
 from twisted.internet.endpoints import serverFromString
@@ -13,6 +13,69 @@ from twisted.python import filepath
 
 import sys, os
 sys.path.append(os.path.dirname(__file__))
+
+
+def movedTo(request, url):
+    """
+    Permanently redirect C{request} to C{url}.
+
+    @param request: The L{twisted.web.server.Reqeuest} to redirect.
+
+    @param url: The new URL to which to redirect the request.
+    @type url: L{bytes}
+
+    @return: The redirect HTML page.
+    @rtype: L{bytes}
+    """
+    request.setResponseCode(http.MOVED_PERMANENTLY)
+    request.setHeader(b"location", url)
+    return ("""
+<html>
+    <head>
+        <meta http-equiv=\"refresh\" content=\"0;URL=%(url)s\">
+    </head>
+    <body bgcolor=\"#FFFFFF\" text=\"#000000\">
+    <a href=\"%(url)s\">click here</a>
+    </body>
+</html>
+""" % {'url': url}).encode('ascii')
+
+
+class RedirectToHTTPS(resource.Resource):
+    """
+    Redirect any request to its HTTPS equivalent.
+    """
+    isLeaf = False
+
+    def render(self, request):
+        httpsPath = request.URLPath()
+        httpsPath.scheme = 'https'
+        return movedTo(request,
+                       str(httpsPath).encode('ascii'))
+
+    def getChild(self, path, request):
+        return self
+
+
+class EnsureHTTPS(resource.Resource):
+    """
+    Wrap a resource so that all requests that are not over HTTPS are
+    redirected to HTTPS.
+    """
+    def __init__(self, wrappedResource):
+        """
+        Initialize L{EnsureHTTPS}.
+
+        @param wrappedResource: A resource representing the root of a web site.
+        @type wrappedResource: L{twisted.web.resource.Resource}
+        """
+        self._wrappedResource = wrappedResource
+
+    def getChildWithDefault(self, path, request):
+        if request.isSecure():
+            return self._wrappedResource.getChildWithDefault(path, request)
+        else:
+            return RedirectToHTTPS()
 
 
 # Add useful extra extension -> content-type mapping entries
@@ -41,7 +104,6 @@ for file in vhostDir.children():
     root.addHost(file.basename(), r)
     root.addHost('www.' + file.basename(), r)
 
-root.hosts['www.twistedmatrix.com'] = twutil.ChildRedirector('https://twistedmatrix.com/')
 tm = root.hosts['twistedmatrix.com']
 
 tm.putChild('', twutil.Redirect('trac/'))
@@ -102,7 +164,7 @@ top = rewrite.RewriterResource(root, rewrite.tildeToUsers, rewrite.alias("highsc
 
 # Generate the Site factory. You will not normally
 # want to modify this line.
-site = server.Site(top, logPath=logPath)
+site = server.Site(EnsureHTTPS(top), logPath=logPath)
 
 # Generate the Application. You will not normally
 # want to modify this line.
