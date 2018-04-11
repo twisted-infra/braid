@@ -14,18 +14,6 @@ from twisted.python import filepath
 import sys, os
 sys.path.append(os.path.dirname(__file__))
 
-from moved import Moved
-
-class BugsRedirect(twutil.Redirect):
-    isLeaf = False
-    def __init__(self):
-        twutil.Redirect.__init__(self, '/trac/report')
-
-    def getChild(self, name, request):
-        if name.startswith('issue'):
-            return twutil.Redirect('/trac/ticket/%s' % (name[5:],))
-
-        return twutil.Redirect.getChild(self, name, request)
 
 # Add useful extra extension -> content-type mapping entries
 static.File.contentTypes['.tac'] = 'text/plain'
