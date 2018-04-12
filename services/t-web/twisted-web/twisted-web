@@ -111,7 +111,6 @@ SUBDOMAINS = [
     'dornkirk',
     'ftp',
     'irc',
-    'java',
     'mail',
     'ns1',
     'ns2',
