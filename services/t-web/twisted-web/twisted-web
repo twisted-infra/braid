@@ -2,17 +2,25 @@
 # please refer to README.Debian
 #
 
+import os
+
 from twisted.internet import reactor
 from twisted.web import script, static, server, distrib, twcgi, vhost, rewrite
-from twisted.web import util as twutil, proxy, http, resource
+from twisted.web import util as twutil, proxy, http, resource, static
 from twisted.application import service
 from twisted.application.internet import StreamServerEndpointService
 from twisted.internet.endpoints import serverFromString
 
 from twisted.python import filepath
 
-import sys, os
-sys.path.append(os.path.dirname(__file__))
+from josepy.jwa import RS256
+
+from txacme.challenges import HTTP01Responder
+from txacme.client import Client
+from txacme.endpoint import load_or_create_client_key
+from txacme.service import AcmeIssuingService
+from txacme.store import DirectoryStore
+from txacme.urls import LETSENCRYPT_DIRECTORY
 
 
 def movedTo(request, url):
@@ -41,11 +49,18 @@ def movedTo(request, url):
 """ % {'url': url}).encode('ascii')
 
 
-class RedirectToHTTPS(resource.Resource):
+class RespondToHTTP01AndRedirectToHTTPS(resource.Resource):
     """
-    Redirect any request to its HTTPS equivalent.
+    Allow an L{HTTP01Responder} to handle requests for
+    C{.well_known/acme-challenges} only.  Redirect any other requests
+    to their HTTPS equivalent.
     """
-    isLeaf = False
+    def __init__(self, responderResource):
+        resource.Resource.__init__(self)
+        wellKnown = resource.Resource()
+        wellKnown.putChild(b'acme-challenge', responderResource)
+        self.putChild(b'.well-known', wellKnown)
+        self.putChild(b'check', static.Data(b'OK', b'text/plain'))
 
     def render(self, request):
         httpsPath = request.URLPath()
@@ -62,7 +77,7 @@ class EnsureHTTPS(resource.Resource):
     Wrap a resource so that all requests that are not over HTTPS are
     redirected to HTTPS.
     """
-    def __init__(self, wrappedResource):
+    def __init__(self, wrappedResource, responderResource):
         """
         Initialize L{EnsureHTTPS}.
 
@@ -70,12 +85,14 @@ class EnsureHTTPS(resource.Resource):
         @type wrappedResource: L{twisted.web.resource.Resource}
         """
         self._wrappedResource = wrappedResource
+        self._httpResource = RespondToHTTP01AndRedirectToHTTPS(
+                responderResource)
 
     def getChildWithDefault(self, path, request):
         if request.isSecure():
             return self._wrappedResource.getChildWithDefault(path, request)
         else:
-            return RedirectToHTTPS()
+            return self._httpResource.getChildWithDefault(path, request)
 
 
 # Add useful extra extension -> content-type mapping entries
@@ -184,7 +201,8 @@ top = rewrite.RewriterResource(root, rewrite.tildeToUsers, rewrite.alias("highsc
 
 # Generate the Site factory. You will not normally
 # want to modify this line.
-site = server.Site(EnsureHTTPS(top), logPath=logPath)
+responder = HTTP01Responder()
+site = server.Site(EnsureHTTPS(top, responder.resource), logPath=logPath)
 
 # Generate the Application. You will not normally
 # want to modify this line.
@@ -197,19 +215,37 @@ application.setComponent(
     ILogObserver,
     FileLogObserver(LogFile("twistd.log", os.path.expanduser("~/log"), maxRotatedFiles=10)).emit)
 
-# Listen on all ports specified:
-if websiteRoot.child('production').exists():
-    portPath = websiteRoot.child('twisted-web').child('ports')
-else:
-    portPath = websiteRoot.child('twisted-web').child('ports.testing')
-ports = [serverFromString(reactor, s)
-         for s in portPath.getContent().splitlines()]
-del s, portPath
 
-for port in ports:
-    svc = StreamServerEndpointService(port, site)
-    svc.setServiceParent(application)
-del svc, port, ports
+certificates = filepath.FilePath('/srv/t-web/ssl')
+httpService = StreamServerEndpointService(
+    serverFromString(reactor, 'tcp:80'),
+    site,
+)
+httpService.setServiceParent(application)
+
+httpsService = StreamServerEndpointService(
+    serverFromString(
+        reactor,
+        'txsni:{}:tcp:443'.format(certificates.path),
+    ),
+    site,
+)
+httpsService.setServiceParent(application)
+
+if websiteRoot.child('production').exists():
+    issuingService = AcmeIssuingService(
+        cert_store=DirectoryStore(certificates),
+        client_creator=(lambda: Client.from_url(
+            reactor=reactor,
+            url=LETSENCRYPT_DIRECTORY,
+            key=load_or_create_client_key(certificates),
+            alg=RS256,
+        )),
+        clock=reactor,
+        responders=[responder],
+    )
+
+    issuingService.setServiceParent(application)
 
 # If you do not want to modify this file directly, most modifications
 # can be done via putting a Python file in /etc/twisted-web/local.d

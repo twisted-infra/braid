@@ -68,7 +68,8 @@ class VirtualEnvironment(object):
             service-identity==16.0.0
             six==1.10.0
             Twisted==17.1.0
-            txacme==0.9.1
+            txacme==0.9.2
+            josepy==1.0.1
             zope.interface==4.3.2
         """.split()))
 
