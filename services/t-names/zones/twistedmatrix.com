@@ -10,7 +10,7 @@ subs = {
     cube: ['cube.'],
     wolfwood: ['cvs.', 'wolfwood.', 'svn.', 'git.', 'code.'],
     dornkirk: ['dornkirk.', '', 'projects.', 'ftp.', 'www.', 'speed.',
-               'reality.', 'irc.', 'saph.',
+               'reality.', 'irc.',
                'java.', 'smtp.', 'mail.'],
     xpdev: ['xpdev.'],
     jeb: ['staging.'],
