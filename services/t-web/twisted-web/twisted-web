@@ -104,6 +104,27 @@ for file in vhostDir.children():
     root.addHost(file.basename(), r)
     root.addHost('www.' + file.basename(), r)
 
+
+# Subdomains under which www.twistedmatrix.com has historically been
+# available
+SUBDOMAINS = [
+    'dornkirk',
+    'ftp',
+    'irc',
+    'java',
+    'mail',
+    'ns1',
+    'ns2',
+    'projects',
+    'reality',
+    'saph',
+    'smtp',
+]
+
+for sub in SUBDOMAINS:
+    root.addHost(sub + '.twistedmatrix.com',
+                 twutil.ChildRedirector('https://www.twistedmatrix.com'))
+
 tm = root.hosts['twistedmatrix.com']
 
 tm.putChild('', twutil.Redirect('trac/'))
