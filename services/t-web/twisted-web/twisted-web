@@ -4,9 +4,11 @@
 
 import os
 
+from twisted.python.url import URL
+
 from twisted.internet import reactor
 from twisted.web import script, static, server, distrib, twcgi, vhost, rewrite
-from twisted.web import util as twutil, proxy, http, resource, static
+from twisted.web import util as twutil, proxy, http, resource
 from twisted.application import service
 from twisted.application.internet import StreamServerEndpointService
 from twisted.internet.endpoints import serverFromString
@@ -63,10 +65,22 @@ class RespondToHTTP01AndRedirectToHTTPS(resource.Resource):
         self.putChild(b'check', static.Data(b'OK', b'text/plain'))
 
     def render(self, request):
-        httpsPath = request.URLPath()
-        httpsPath.scheme = 'https'
-        return movedTo(request,
-                       str(httpsPath).encode('ascii'))
+        # request.args can include URL encoded bodies, so extract the
+        # query from request.uri
+        _, _, query = request.uri.partition(b'?')
+        # Assume HTTPS is served over 443
+        httpsURL = URL(
+            scheme=u'https',
+            # I'm sure ASCII will be fine.
+            host=request.getRequestHostname().decode('ascii'),
+            path=tuple(segment.decode('ascii')
+                       for segment in request.prepath + request.postpath),
+
+        )
+        httpsLocation = httpsURL.asText().encode('ascii')
+        if query:
+            httpsLocation += (b'?' + query)
+        return movedTo(request, httpsLocation)
 
     def getChild(self, path, request):
         return self
