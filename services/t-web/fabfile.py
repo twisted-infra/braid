@@ -100,9 +100,10 @@ class TwistedWeb(service.Service):
 
     def task_updateSoftware(self):
         """
-        Update just the Twisted versions.
+        Update just the PyPy and Twisted versions.
         """
         self.task_stop()
+        self.bootstrap()
         self.venv.install_twisted()
         self.task_start()
 

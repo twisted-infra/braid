@@ -19,6 +19,8 @@ __all__ = [ 'config' ]
 
 class Codespeed(service.Service):
 
+    python = "python"
+
     def task_install(self):
         """
         Install codespeed, a benchmark reporting tool
