@@ -55,12 +55,12 @@ class Trac(service.Service):
 
             self.venv.install_twisted()
             self.venv.install(" ".join("""
-                psycopg2==2.6.2
-                pygments==1.6
+                psycopg2==2.7.4
+                pygments==2.2.0
                 spambayes==1.1b2
-                trac==1.2
-                trac-github==2.2
-                requests_oauthlib==0.6.1
+                trac==1.2.2
+                trac-github==2.3
+                requests_oauthlib==0.8.0
                 svn+https://svn.edgewall.org/repos/trac/plugins/1.2/spam-filter@15310
                 git+https://github.com/twisted-infra/twisted-trac-plugins.git
             """.split()))
