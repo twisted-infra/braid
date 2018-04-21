@@ -8,12 +8,12 @@ from braid.utils import fails
 pypyVersion = "5.10.0"
 
 pypyURLs = {
-    'x86_64': 'https://bitbucket.org/pypy/pypy/downloads/pypy-{version}-linux64.tar.bz2',
-    'x86': 'https://bitbucket.org/pypy/pypy/downloads/pypy-{version}-linux.tar.bz2',
+    'x86_64': 'https://bitbucket.org/pypy/pypy/downloads/pypy2-v{version}-linux64.tar.bz2',
+    'x86': 'https://bitbucket.org/pypy/pypy/downloads/pypy2-v{version}-linux.tar.bz2',
     }
 pypyDirs = {
-    'x86_64': '/opt/pypy-{version}-linux64',
-    'x86': '/opt/pypy-{version}-linux',
+    'x86_64': '/opt/pypy2-v{version}-linux64',
+    'x86': '/opt/pypy2-v{version}-linux',
     }
 
 @task
