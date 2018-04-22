@@ -797,4 +797,4 @@ class TwistedBenchmarksFactory(TwistedBaseFactory):
             command=self.python + [
                 "twisted-benchmarks/speedcenter.py",
                 "--duration", "1", "--iterations", "30", "--warmup", "5",
-                "--url", "http://speed.twistedmatrix.com/result/add/json/"])
+                "--url", "https://speed.twistedmatrix.com/result/add/json/"])
