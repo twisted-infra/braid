@@ -15,6 +15,8 @@ ADMINS = (
     ('Amber Brown', 'hawkowl@atleastfornow.net'),
 )
 
+ALLOWED_HOSTS = ["speed.twistedmatrix.com"]
+
 MANAGERS = ADMINS
 DATABASES = {
     'default': {
@@ -83,26 +85,30 @@ if DEBUG:
                                  (request.build_absolute_uri(),
                                   traceback.format_exc()))
     # And add it to the middleware classes
-    MIDDLEWARE_CLASSES += ('sample_project.settings.LogUncatchedErrors',)
+    MIDDLEWARE_CLASSES += ('twistedcodespeed.local_settings.LogUncatchedErrors',)
 
     # set shown level of logging output to debug
     logging.basicConfig(level=logging.DEBUG)
 
 ROOT_URLCONF = '{0}.urls'.format(TOPDIR)
 
-TEMPLATE_DIRS = (
-    os.path.join(BASEDIR, 'templates'),
-)
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.contrib.messages.context_processors.messages',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.core.context_processors.request',
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASEDIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
 
 INSTALLED_APPS = (
     'django.contrib.auth',

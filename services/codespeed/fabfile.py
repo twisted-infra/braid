@@ -67,10 +67,10 @@ class Codespeed(service.Service):
 
             git.branch('https://github.com/tobami/codespeed.git', '~/codespeed')
             with cd("~/codespeed"):
-                run("git checkout 9893b87de02bdc1ea6256207de5cc010b095b3a5")
+                run("git checkout 0.12.0")
                 run("git reset --hard")
             self.venv.install_twisted()
-            self.venv.install('-r ~/codespeed/requirements.txt')
+            self.venv.install('-U -r ~/codespeed/requirements.txt')
 
             if env.get('installTestData'):
                 execute(self.task_installTestData)
@@ -89,7 +89,6 @@ class Codespeed(service.Service):
         """
         Create test db.
         """
-        self.djangoAdmin(['syncdb', '--noinput'])
         self.djangoAdmin(['migrate'])
 
     def task_createSuperuser(self):
