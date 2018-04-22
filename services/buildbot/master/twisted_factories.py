@@ -793,7 +793,7 @@ class TwistedBenchmarksFactory(TwistedBaseFactory):
 
         self.addVirtualEnvStep(
             shell.ShellCommand,
-            env={'PYTHONPATH': '.'},
+            env={'PYTHONPATH': '.', 'PYTHONWARNINGS': 'ignore'},
             command=self.python + [
                 "twisted-benchmarks/speedcenter.py",
                 "--duration", "1", "--iterations", "30", "--warmup", "5",
