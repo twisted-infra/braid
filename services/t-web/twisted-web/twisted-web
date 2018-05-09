@@ -25,6 +25,43 @@ from txacme.store import DirectoryStore
 from txacme.urls import LETSENCRYPT_DIRECTORY
 
 
+
+def hotPatch255():
+    """
+    Hot patch for #255
+    See https://twistedmatrix.com/trac/ticket/9438
+    and https://github.com/twisted/twisted/pull/1008
+    """
+
+    def directoryListing(self):
+        """
+        Return a resource that generates an HTML listing of the
+        directory this path represents.
+
+        @return: A resource that renders the directory to HTML.
+        @rtype: L{DirectoryLister}
+        """
+        # DirectoryLister works in terms of native strings, so on
+        # Python 2, ensure we have a bytes paths for this
+        # directory and its contents.  We use the asBytesMode
+        # method inherited from FilePath to ensure consistent
+        # encoding of the actual path.  This returns a FilePath
+        # instance even when called on subclasses, however, so we
+        # have to create a new File instance.
+        nativeStringPath = self.createSimilarFile(self.asBytesMode().path)
+        path = nativeStringPath.path
+        names = nativeStringPath.listNames()
+        return static.DirectoryLister(path,
+                                      names,
+                                      self.contentTypes,
+                                      self.contentEncodings,
+                                      self.defaultType)
+
+    static.File.directoryListing = directoryListing
+
+hotPatch255()
+
+
 def movedTo(request, url):
     """
     Permanently redirect C{request} to C{url}.
