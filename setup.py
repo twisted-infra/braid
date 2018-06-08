@@ -9,7 +9,7 @@ setup(
     author_email='jonathan@stoppani.name',
     packages=['braid', 'braid.twisted'],
     install_requires=[
-        'fabric >= 1.6.0',
+        'fabric >= 1.6.0, < 2.0',
         'twisted >= 12.3.0',
         'requests >= 1.2.0',
     ],
