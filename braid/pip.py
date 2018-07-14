@@ -16,8 +16,5 @@ def install(python):
         python=python,
         pipURL=path.join('/tmp/', path.basename(pipURL))))
 
-    # See https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
-    sudo("{} -m pip install -U ndg-httpsclient".format(python))
-
     # Ensure we have the latest pip, virtualenv, setuptools, and wheel.
     sudo("{} -m pip install -U pip virtualenv setuptools wheel".format(python))
