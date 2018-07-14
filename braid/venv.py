@@ -27,11 +27,7 @@ class VirtualEnvironment(object):
                  "-p {} {} {}").format(self._python, self._location,
                                        '--system-site-packages' if site_packages else ''))
 
-        # https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
-        self.install("-U pip")
-        self.install("requests[security]")
-        # We need to force setuptools, as otherwise it might use the old
-        self.install("-U setuptools wheel")
+        self.install("-U pip setuptools wheel")
 
 
     def install(self, package):
