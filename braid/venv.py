@@ -49,10 +49,10 @@ class VirtualEnvironment(object):
         Install Twisted and its dependencies.
         """
         self.install(" ".join("""
-            acme==0.23.0
+            acme==0.26.0
             asn1crypto==0.24.0
-            attrs==17.4.0
-            automat==0.6.0
+            attrs==18.1.0
+            automat==0.7.0
             certifi==2018.4.16
             cffi==1.11.5
             chardet==3.0.4
@@ -65,29 +65,31 @@ class VirtualEnvironment(object):
             hpack==3.0.0
             hyperframe==5.1.0
             hyperlink==18.0.0
-            idna==2.6
+            idna==2.7
             incremental==17.5.0
             ipaddress==1.0.22
             josepy==1.1.0
             mock==2.0.0
-            pbr==4.0.2
-            pem==17.1.0
+            pbr==4.1.0
+            pem==18.1.0
             priority==1.3.0
-            pyasn1-modules==0.2.1
-            pyasn1==0.4.2
+            pyasn1-modules==0.2.2
+            pyasn1==0.4.3
             pycparser==2.18
-            pyopenssl==17.5.0
-            pyrfc3339==1.0
-            pyrsistent==0.14.2
-            pytz==2018.4
-            requests[security]==2.18.4
+            pyhamcrest==1.9.0
+            pyopenssl==18.0.0
+            pyrfc3339==1.1
+            pyrsistent==0.14.4
+            pytz==2018.5
+            requests-toolbelt==0.8.0
+            requests[security]==2.19.1
             service-identity==17.0.0
             six==1.11.0
-            treq==17.8.0
-            twisted[tls]==18.4.0pre1
+            treq==18.6.0
+            twisted[tls]==18.7.0
             txacme==0.9.2
             txsni==0.1.9
-            urllib3==1.22
+            urllib3==1.23
             zope.interface==4.5.0
         """.split()))
 

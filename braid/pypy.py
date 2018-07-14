@@ -5,7 +5,7 @@ from fabric.api import cd, task, sudo, abort
 from braid import info
 from braid.utils import fails
 
-pypyVersion = "5.10.0"
+pypyVersion = "6.0.0"
 
 pypyURLs = {
     'x86_64': 'https://bitbucket.org/pypy/pypy/downloads/pypy2-v{version}-linux64.tar.bz2',
