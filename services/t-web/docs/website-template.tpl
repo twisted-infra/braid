@@ -52,14 +52,6 @@
               delete container;
           }
         </script>
-        <!-- Site Meter -->
-        <script type="text/javascript" src="http://sm7.sitemeter.com/js/counter.js?site=sm7twistedmatrix">
-        </script>
-        <noscript>
-        <a href="http://sm7.sitemeter.com/stats.asp?site=sm7twistedmatrix" target="_top">
-        <img src="http://sm7.sitemeter.com/meter.asp?site=sm7twistedmatrix" alt="Site Meter" border="0"/></a>
-        </noscript>
-        <!-- Copyright (c)2006 Site Meter -->
     </div>
 
   </body>
