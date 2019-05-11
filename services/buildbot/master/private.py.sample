@@ -96,4 +96,4 @@ codecov_twisted_token = 'invalid'
 # web status options
 # - default for testing deployments: port 8080 on localhost
 # - deployed version uses distrib_port at ~/webstatus.twistd-web-pb
-webOptions = { 'http_port': 'tcp:port=8080' }
+webOptions = { 'http_port': 'txsni:/srv/bb-master/config/certs:port=443' }
