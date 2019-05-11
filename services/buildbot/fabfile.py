@@ -109,6 +109,8 @@ class Buildbot(service.Service):
                 self.venv.install(
                     'sqlalchemy==0.7.10 sqlalchemy-migrate==0.7.2 '
                     '{}'.format(buildmasterSource))
+                # master.cfg uses GitHubStatus, which requires txgithub
+                self.venv.install("txgithub")
             else:
                 self.venv.install('--no-deps {}'.format(buildmasterSource))
 
