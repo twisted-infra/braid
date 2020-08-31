@@ -27,7 +27,11 @@ class VirtualEnvironment(object):
                  "-p {} {} {}").format(self._python, self._location,
                                        '--system-site-packages' if site_packages else ''))
 
-        self.install("-U pip setuptools wheel")
+        if '3' not in self._python:
+            setuptools = "'setuptools<45'"
+        else:
+            setuptools = 'setuptools'
+        self.install("-U pip {setuptools} wheel".format(setuptools=setuptools))
 
 
     def install(self, package):
