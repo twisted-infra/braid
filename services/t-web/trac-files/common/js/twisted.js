@@ -54,44 +54,7 @@ function removeNodeContent(node) {
 }
 
 
-/**
- * Load news feed items, from the Twisted Matrix Labs blog, and insert them
- * into the "twisted-news" element, if it exists.
- */
-function loadNewsFeeds() {
-    var container = document.getElementById('twisted-news');
-    // Bail out if there is no news element.
-    if (!container) {
-        return;
-    }
-
-    var feed = new google.feeds.Feed(
-        'http://feeds.feedburner.com/TwistedMatrixLaboratories');
-    feed.setNumEntries(5);
-    feed.load(function(result) {
-        if (!result.error) {
-            removeNodeContent(container);
-            var D = DOMBuilder(container.ownerDocument);
-            for (var i = 0; i < result.feed.entries.length; i++) {
-                var entry = result.feed.entries[i];
-                var prettyDate = formatDate(new Date(entry.publishedDate));
-                var entryNode = D('div', {'class': 'feed-entry'}, [
-                    D('a', {'href': entry.link}, [entry.title]),
-                    D('div', {'class': 'feed-updated'}, [
-                        'by ',
-                        D('strong', {}, [entry.author]),
-                        ' on ',
-                        D('strong', {}, [prettyDate])])
-                    ]);
-                container.appendChild(entryNode);
-            }
-        }
-    });
-}
-google.load('feeds', '1');
-google.setOnLoadCallback(function () {
+$(document).ready(function () {
     // Enable Bootstrap.js tabs.
     $('#frontpage-tabs a').attr('data-toggle', 'tab');
-    // Load Twisted Matrix Labs news feed.
-    loadNewsFeeds();
 });
