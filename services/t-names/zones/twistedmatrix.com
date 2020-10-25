@@ -62,6 +62,7 @@ zone = [
         "29GE4xiMbXfwIDAQAB"),
 
     CNAME('planet.twistedmatrix.com', planet, ttl='1D'),
+    CNAME('docs.twistedmatrix.com', 'readthedocs.io', ttl='1D'),
     CNAME('glyph.twistedmatrix.com', 'writing.glyph.im', ttl='1D'),
     CNAME('secret.glyph.twistedmatrix.com', googleHosting, ttl='1D'),
     CNAME('labs.twistedmatrix.com', googleHosting, ttl='1D'),
