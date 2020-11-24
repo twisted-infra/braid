@@ -103,31 +103,26 @@ Most service provide scripts to start and stop the service in `~/bin`.
 #### How to start/stop/restart services ####
 
 Each service has its own Fabric namespace.
-Actions are available as part of each namespace. For example, the `t-names` service can be started, stopped, and see the logs as follows:
+Actions are available as part of each namespace. For example, the `t-names` service can be started, stopped, and see the logs as follows::
 
-```shell
-fab config.production t-names.start
-fab config.production t-names.stop
-fab config.production t-names.log
-```
+    fab config.production t-names.start
+    fab config.production t-names.stop
+    fab config.production t-names.log
+    ```
 
 #### How to update existing services ####
 
-Similarly as done for managing the running states, an `update` task lives in each service namespace. It can be run as follows:
+Similarly as done for managing the running states, an `update` task lives in each service namespace. It can be run as follows::
 
-```shell
-fab config.production t-names.update
-```
+    fab config.production t-names.update
 
 Note that this will restart the service after updating.
 
 #### How to install new services ####
 
-A service which was just added to the fabfile can be installed by running its `install` task:
+A service which was just added to the fabfile can be installed by running its `install` task::
 
-```shell
-fab config.production t-names.install
-```
+    fab config.production t-names.install
 
 Note, however, that while the previous actions did not require root privileges, installing a new service requires to be able to `sudo` to `root`.
 This is needed to create the necessary users, install additional packages and create the base environment.
