@@ -39,13 +39,12 @@ braid currently assumes that it is being run against a Ubuntu 16.04.
 
 It requires that the `universe` component be enabled, as well as `sudo`.
 
-It only works on Python 2.7:
+It only works on Python 2.7::
 
-```shell
-$ virtualenv -p python2.7 build
-$ . build/bin/activate
-$ pip install -e .
-```
+    $ virtualenv -p python2.7 build
+    $ . build/bin/activate
+    $ pip install -e .
+
 
 Usage Notes
 ===========
@@ -53,32 +52,25 @@ Usage Notes
 Fabric configuration is located at `braid/settings.py`
 (don't be fooled by braid/config.py).
 
-Some notable commands:
+Some notable commands::
 
-```shell
-# Add keys from file to remote user
-$ fab users.uploadKeyFile:<user>,<keyfile>
-# Add keys from launchpad to remote user
-$ fab users.uploadLaunchpadKeys:<user>[,<launchpadUser>]
-```
+    # Add keys from file to remote user
+    $ fab users.uploadKeyFile:<user>,<keyfile>
+    # Add keys from launchpad to remote user
+    $ fab users.uploadLaunchpadKeys:<user>[,<launchpadUser>]
 
-```shell
-# Install base packages, and ssh config
-$ fab base.bootstrap
-```
+    # Install base packages, and ssh config
+    $ fab base.bootstrap
 
-There are some tools to help specifying which machines to target.
+There are some tools to help specifying which machines to target::
 
-```shell
-# Install against dornkirk
-$ fab config.production
-```
+    # Install against dornkirk
+    $ fab config.production
 
 There is a sample `testing.env` that can be put in ~/.config/braid/.
-Any files matching *.env are accessible via
-```shell
-$ fab config.testing
-```
+Any files matching *.env are accessible via::
+
+    $ fab config.testing
 
 
 Service configuration conventions
