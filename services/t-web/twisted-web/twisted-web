@@ -22,7 +22,6 @@ from txacme.client import Client
 from txacme.endpoint import load_or_create_client_key
 from txacme.service import AcmeIssuingService
 from txacme.store import DirectoryStore
-from txacme.urls import LETSENCRYPT_DIRECTORY
 
 
 def movedTo(request, url):
@@ -155,7 +154,7 @@ for sub in SUBDOMAINS:
     root.addHost(sub + '.twistedmatrix.com',
                  twutil.ChildRedirector('https://www.twistedmatrix.com'))
 
-tm = root.hosts['twistedmatrix.com']
+tm = root.hosts['twisted-vm.centralus.cloudapp.azure.com']
 
 tm.putChild('', twutil.Redirect('trac/'))
 
@@ -247,19 +246,27 @@ httpsService = StreamServerEndpointService(
 httpsService.setServiceParent(application)
 
 if websiteRoot.child('production').exists():
-    issuingService = AcmeIssuingService(
-        cert_store=DirectoryStore(certificates),
-        client_creator=(lambda: Client.from_url(
-            reactor=reactor,
-            url=LETSENCRYPT_DIRECTORY,
-            key=load_or_create_client_key(certificates),
-            alg=RS256,
-        )),
-        clock=reactor,
-        responders=[responder],
+
+    d = Client.from_url(
+        reactor=reactor,
+        url=URL.fromText(
+            u'https://acme-v02.api.letsencrypt.org/directory'),
+        key=load_or_create_client_key(certificates),
+        alg=RS256,
     )
 
-    issuingService.setServiceParent(application)
+    def cb_got_client(client):
+        issuingService = AcmeIssuingService(
+            cert_store=DirectoryStore(certificates),
+            client=client,
+            clock=reactor,
+            responders=[responder],
+        )
+        issuingService.start()
+
+        issuingService.setServiceParent(application)
+
+    d.addCallback(cb_got_client)
 
 # If you do not want to modify this file directly, most modifications
 # can be done via putting a Python file in /etc/twisted-web/local.d

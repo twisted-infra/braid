@@ -4,7 +4,7 @@ from braid.api import sudo, task, put
 
 from twisted.python.filepath import FilePath
 
-from braid import pypy, service, authbind, git, package, bazaar, postgres
+from braid import service, authbind, git, package, postgres
 
 
 __all__ = ['bootstrap', 'sshConfig']
@@ -28,7 +28,13 @@ def bootstrap():
     # libssl-dev is needed for installing pyOpenSSL for PyPy.
     package.install(['libssl-dev', 'libffi-dev'])
 
-    package.install(['python2.7', 'python2.7-dev', 'python-virtualenv'])
+    package.install(['python2.7-dev', 'pypy-dev' ])
+
+    # We don't have pip for python2.7 on Ubuntu 20.04
+    sudo('curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py')
+    sudo('python2 get-pip.py')
+    sudo('pip2 install virtualenv')
+
     # gcc and svn is needed for 'pip install'
     package.install(['gcc', 'subversion'])
     # For trac
@@ -37,10 +43,8 @@ def bootstrap():
     package.install(['equivs'])
     # For buildbot/codespeed
     package.install(['sqlite3'])
-    pypy.install()
     authbind.install()
     git.install()
-    bazaar.install()
     postgres.install()
 
     sshConfig()

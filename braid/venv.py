@@ -7,7 +7,7 @@ class VirtualEnvironment(object):
     def __init__(self, user, location="~/virtualenv", python="python2.7"):
 
         if python == "pypy":
-            self._python = "~pypy/bin/pypy"
+            self._python = "/usr/bin/pypy"
         elif python == "python2.7":
             self._python = "/usr/bin/python2.7"
         else:
@@ -23,7 +23,7 @@ class VirtualEnvironment(object):
         module.
         """
         with settings(user=self._user):
-            run(("/usr/bin/env python2 -m virtualenv --clear "
+            run(("/usr/bin/env python2 -m virtualenv "
                  "-p {} {} {}").format(self._python, self._location,
                                        '--system-site-packages' if site_packages else ''))
 

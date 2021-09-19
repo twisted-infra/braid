@@ -41,6 +41,14 @@ class Trac(service.Service):
         postgres.createUser('trac')
         postgres.createDb('trac', 'trac')
 
+        # We don't have a braid rule for highscore,
+        # so I am just hacking this here to have a functional restore.
+        postgres.createUser('highscore')
+        postgres.grantRead('trac', 'highscore')
+        # amptrack has a dedicated braid, but is better to have it here
+        # so that dump and restore don't depend on it.
+        postgres.createUser('amptrac')
+        postgres.grantRead('trac', 'amptrac')
 
     def update(self):
         """
@@ -104,7 +112,15 @@ class Trac(service.Service):
         """
         Create a tarball containing all information not currently stored in
         version control and download it to the given C{localfile}.
+
+        C{localfile} is a path on your local system.
+
+        Keep it in sync with task_restore.
+
+        For it to work you need your SSH public key added to
+        /srv/trac/.ssh/authorized_keys
         """
+        import pdb; import sys; sys.stdout = sys.__stdout__; pdb.set_trace()
         with settings(user=self.serviceUser):
             with utils.tempfile() as temp:
                 postgres.dumpToPath('trac', temp)
@@ -114,7 +130,8 @@ class Trac(service.Service):
                 }
 
                 if withAttachments is True:
-                    files['attachments'] = 'attachments'
+                    #files['attachments'] = 'attachments'
+                    files['trac-attachments'] = 'config/trac-env/files/attachments'
 
                 archive.dump(files, localfile)
 
@@ -123,6 +140,8 @@ class Trac(service.Service):
         """
         Restore all information not stored in version control from a tarball
         on the invoking users machine.
+
+        Keep it in sync with task_dump.
         """
         restoreDb = str(restoreDb).lower() in ('true', '1', 'yes', 'ok', 'y')
 
@@ -151,7 +170,8 @@ class Trac(service.Service):
                     }
 
                     if withAttachments is True:
-                        files['attachments'] = 'attachments'
+                        #files['attachments'] = 'attachments'
+                        files['trac-attachments'] = 'config/trac-env/files/attachments'
 
                     archive.restore(files, localfile)
                     if restoreDb:
