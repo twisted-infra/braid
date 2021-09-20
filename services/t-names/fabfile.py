@@ -3,7 +3,7 @@ Support for DNS service installation and management.
 """
 import os
 
-from fabric.api import execute, put, run, settings
+from fabric.api import execute, put, run, sudo, settings
 
 from braid import authbind, cron
 from braid.twisted import service
@@ -22,7 +22,9 @@ class TwistedNames(service.Service):
         self.bootstrap()
 
         # Setup authbind
+        # Fix authbid, for now I just went with the generic setcap.
         authbind.allow(self.serviceUser, 53)
+        #sudo('setcap cap_net_bind_service=+ep /srv/t-names/virtualenv/bin/pypy')
 
         with settings(user=self.serviceUser):
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
