@@ -69,6 +69,12 @@ class Trac(service.Service):
                 git+https://github.com/twisted-infra/twisted-trac-plugins.git
             """.split()))
 
+            # This is txacme v2 but is not yet released.
+            # Should be replaced on we have txacme v2.
+            # See https://github.com/twisted/txacme/pull/158
+            self.venv.install(
+                "--index=https://pypi.chevah.com/simple txacme==1.0.0.chevah4")
+
             run('mkdir -p ' + self.configDir)
             put(os.path.dirname(__file__) + '/*', self.configDir,
                 mirror_local_mode=True)
@@ -120,7 +126,6 @@ class Trac(service.Service):
         For it to work you need your SSH public key added to
         /srv/trac/.ssh/authorized_keys
         """
-        import pdb; import sys; sys.stdout = sys.__stdout__; pdb.set_trace()
         with settings(user=self.serviceUser):
             with utils.tempfile() as temp:
                 postgres.dumpToPath('trac', temp)
