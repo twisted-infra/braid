@@ -154,7 +154,7 @@ for sub in SUBDOMAINS:
     root.addHost(sub + '.twistedmatrix.com',
                  twutil.ChildRedirector('https://www.twistedmatrix.com'))
 
-tm = root.hosts['twisted-vm.centralus.cloudapp.azure.com']
+tm = root.hosts['twistedmatrix.com']
 
 tm.putChild('', twutil.Redirect('trac/'))
 

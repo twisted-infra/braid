@@ -21,6 +21,7 @@ ns2 = glyphIM
 dornkirk = '66.35.39.66'
 jeb = '162.242.246.197'
 buildbot = '104.130.225.105'
+azure_vm = '13.86.118.140'
 
 
 def nameservers(host, *addresses):
