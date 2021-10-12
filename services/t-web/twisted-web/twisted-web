@@ -215,7 +215,8 @@ top = rewrite.RewriterResource(root, rewrite.tildeToUsers, rewrite.alias("highsc
 
 # Generate the Site factory. You will not normally
 # want to modify this line.
-responder = HTTP01Responder()
+# responder = HTTP01Responder()
+responder = static.File("/srv/t-web/acme-challenge")
 site = server.Site(EnsureHTTPS(top, responder.resource), logPath=logPath)
 
 # Generate the Application. You will not normally
