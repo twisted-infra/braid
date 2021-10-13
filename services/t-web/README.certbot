@@ -17,7 +17,8 @@ at
 
 Certbot was set up to run in webroot mode (see the transcript below).
 
-There is a hook to restart t-web on cert renewal at /etc/letsencrypt/renewal-hooks/post/t-web.sh
+There is a hook to concatenate the certs and restart t-web on cert renewal at
+/etc/letsencrypt/renewal-hooks/deploy/t-web.sh
 
 —twm
 March 591th, 2020 
