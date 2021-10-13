@@ -22,7 +22,6 @@ from txacme.client import Client
 from txacme.endpoint import load_or_create_client_key
 from txacme.service import AcmeIssuingService
 from txacme.store import DirectoryStore
-from txacme.urls import LETSENCRYPT_DIRECTORY
 
 
 def movedTo(request, url):
@@ -215,9 +214,9 @@ top = rewrite.RewriterResource(root, rewrite.tildeToUsers, rewrite.alias("highsc
 
 # Generate the Site factory. You will not normally
 # want to modify this line.
-# responder = HTTP01Responder()
-responder = static.File("/srv/t-web/acme-challenge")
-site = server.Site(EnsureHTTPS(top, responder.resource), logPath=logPath)
+responder = HTTP01Responder()
+# site = server.Site(EnsureHTTPS(top, responder.resource), logPath=logPath)
+site = server.Site(EnsureHTTPS(top, static.File("/srv/t-web/certbot-webroot/.well-known/acme-challenge")), logPath=logPath)
 
 # Generate the Application. You will not normally
 # want to modify this line.
@@ -248,19 +247,27 @@ httpsService = StreamServerEndpointService(
 httpsService.setServiceParent(application)
 
 if websiteRoot.child('production').exists():
-    issuingService = AcmeIssuingService(
-        cert_store=DirectoryStore(certificates),
-        client_creator=(lambda: Client.from_url(
-            reactor=reactor,
-            url=LETSENCRYPT_DIRECTORY,
-            key=load_or_create_client_key(certificates),
-            alg=RS256,
-        )),
-        clock=reactor,
-        responders=[responder],
+
+    d = Client.from_url(
+        reactor=reactor,
+        url=URL.fromText(
+            u'https://acme-v02.api.letsencrypt.org/directory'),
+        key=load_or_create_client_key(certificates),
+        alg=RS256,
     )
 
-    issuingService.setServiceParent(application)
+    def cb_got_client(client):
+        issuingService = AcmeIssuingService(
+            cert_store=DirectoryStore(certificates),
+            client=client,
+            clock=reactor,
+            responders=[responder],
+        )
+        issuingService.start()
+
+        issuingService.setServiceParent(application)
+
+    d.addCallback(cb_got_client)
 
 # If you do not want to modify this file directly, most modifications
 # can be done via putting a Python file in /etc/twisted-web/local.d
