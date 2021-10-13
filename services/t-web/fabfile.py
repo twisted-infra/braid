@@ -9,7 +9,7 @@ from fabric.api import run, settings, env, put, sudo, local
 from os import path
 from twisted.python.util import sibpath
 
-from braid import authbind, cron, archive
+from braid import authbind, archive
 from braid.twisted import service
 from braid.debian import equivs
 from braid.tasks import addTasks
@@ -41,7 +41,7 @@ class TwistedWeb(service.Service):
             run('/bin/ln -nsf {}/start {}/start'.format(self.configDir, self.binDir))
             run('/bin/ln -nsf {}/start-maintenance {}/start-maintenance'.format(self.configDir, self.binDir))
             self.update()
-            cron.install(self.serviceUser, '{}/crontab'.format(self.configDir))
+            # cron.install(self.serviceUser, '{}/crontab'.format(self.configDir))
 
             run('/bin/mkdir -p ~/data')
             if env.get('installPrivateData'):
