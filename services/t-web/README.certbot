@@ -1,0 +1,55 @@
+Certbot was installed as a snap per https://certbot.eff.org/lets-encrypt/ubuntufocal-other
+This includes the weird symlink in step 6.
+
+There is now a systemd service to run t-web at /etc/systemd/system/t-web.service
+
+To start it:
+
+  systemctl restart t-web
+
+The config/twisted-web/twisted-web script has been modified to serve:
+
+  /srv/t-web/certbot-webroot/.well-known/acme-challenge
+
+at
+
+  http://twistedmatrix.com/.well-known/acme-challenge
+
+Certbot was set up to run in webroot mode (see the transcript below).
+
+There is a hook to restart t-web on cert renewal at /etc/letsencrypt/renewal-hooks/post/t-web.sh
+
+—twm
+March 591th, 2020 
+
+==============================================================================================
+
+Certbot transcript:
+
+$ sudo certbot certonly --webroot
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Please enter the domain name(s) you would like on your certificate (comma and/or
+space separated) (Enter 'c' to cancel): twistedmatrix.com www.twistedmatrix.com
+Requesting a certificate for twistedmatrix.com and www.twistedmatrix.com
+Input the webroot for twistedmatrix.com: (Enter 'c' to cancel): /srv/t-web/certbot-webroot
+
+Select the webroot for www.twistedmatrix.com:
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+1: Enter a new webroot
+2: /srv/t-web/certbot-webroot
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Select the appropriate number [1-2] then [enter] (press 'c' to cancel): 2
+
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/twistedmatrix.com/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/twistedmatrix.com/privkey.pem
+This certificate expires on 2022-01-10.
+These files will be updated when the certificate renews.
+Certbot has set up a scheduled task to automatically renew this certificate in the background.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+If you like Certbot, please consider supporting our work by:
+ * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+ * Donating to EFF:                    https://eff.org/donate-le
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+

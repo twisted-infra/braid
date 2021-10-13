@@ -1,0 +1,15 @@
+[Unit]
+Description=Twisted Web
+After=network.target
+
+[Service]
+Environment=WEBSITE_ROOT=/srv/t-web/config
+Environment=WEBSITE_NAME=twisted-web
+LimitNOFILE=4096
+User=t-web
+Type=forking
+ExecStart=/usr/bin/authbind -- ${HOME}/virtualenv/bin/twistd --reactor poll --pidfile ${HOME}/run/twistd.pid --rundir ${HOME}/run/ --python=${WEBSITE_ROOT}/twisted-web/twisted-web --logfile=${HOME}/log/twistd.log --no_save
+PIDFile=/srv/t-web/run/twistd.pid
+
+[Install]
+WantedBy=multi-user.target
