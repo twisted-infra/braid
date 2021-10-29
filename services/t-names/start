@@ -3,10 +3,13 @@
 Z=~/config/zones
 export PYTHONPATH=$PYTHONPATH:$Z
 
+# localhost:53 is used by local resolver.
+# Update t-names to remove the local resolver.
 authbind --deep ~/virtualenv/bin/twistd \
     --logfile ~/log/twistd.log \
     --pidfile ~/run/twistd.pid \
     dns \
+    -i 10.0.0.4 \
     --pyzone $Z/twistedmatrix.com \
     --pyzone $Z/divunal.com \
     --pyzone $Z/ynchrono.us \

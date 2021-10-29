@@ -4,10 +4,7 @@ from pipes import quote
 
 
 def install():
-    try:
-        package.install(['postgresql-9.1', 'postgresql-server-dev-9.1'])
-    except:
-        package.install(['postgresql-9.3', 'postgresql-server-dev-9.3'])
+    package.install(['postgresql-12'])
 
 
 def _runQuery(query, database=None):
@@ -108,6 +105,7 @@ def dumpToPath(database, dumpPath):
         '--blobs',
         '--no-owner',
         '--format', 'custom',
+        '--create',
         '--file', dumpPath,
         '--compress', '9',
         database,

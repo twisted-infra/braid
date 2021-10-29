@@ -3,10 +3,10 @@ from twisted.names.authority import getSerial
 
 name = 'ynchrono.us'
 
-from hosts import dornkirk, ns2, addSubdomains
+from hosts import azure_vm, ns2, addSubdomains
 
 subs = {
-    dornkirk: ['ns1.', ''],
+    azure_vm: ['ns1.', ''],
     ns2: ['ns2.', ''],
     '104.130.225.186': ['chronology.'],
 }

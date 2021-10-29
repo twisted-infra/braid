@@ -4,6 +4,7 @@ Default configuration settings.
 
 dornkirk = 'dornkirk.twistedmatrix.com'
 buildbot = 'buildbot.twistedmatrix.com'
+twisted_vm = 'twisted-vm.centralus.cloudapp.azure.com'
 
 vagrant_address = '172.16.255.140'
 staging_address = '162.242.246.197'
@@ -11,10 +12,19 @@ staging_address = '162.242.246.197'
 # For available options see http://docs.fabfile.org/en/latest/usage/env.html
 ENVIRONMENTS = {
     'production': {
+        'hosts': [twisted_vm],
+        'roledefs': {
+            'nameserver': [twisted_vm],
+            'buildbot': [twisted_vm],
+        },
+        'user': 'root',
+        'installPrivateData': True,
+    },
+    'dornkirk': {
         'hosts': [dornkirk],
         'roledefs': {
             'nameserver': [dornkirk],
-            'buildbot': [buildbot],
+            'buildbot': [dornkirk],
         },
         'user': 'root',
         'installPrivateData': True,

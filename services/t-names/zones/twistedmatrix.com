@@ -1,3 +1,7 @@
+#
+# This is no longer used as it was moved to Gandi.
+# Here left for reference.
+#
 
 from twisted.names.authority import getSerial
 

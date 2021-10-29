@@ -34,3 +34,14 @@ More information about how the post-commit hook works is available in the `trac-
 Use `fab -l` to check the available commands.
 
 Trac is available inside the Vagrant VM at http://172.16.255.140/trac
+
+
+GitHub Login
+------------
+
+First create a an OAuth Application or update the existing one at
+https://github.com/organizations/twisted/settings/applications
+
+Set/update the public client ID inside trac-env/conf/trac.ini
+
+Manually save the file as user trac  (mode 600) in secrets/secret.txt
